@@ -274,7 +274,7 @@ function pageHome(lang) {
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
-<section class="hero" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
+<section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
       <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span><span>${esc(tr(H, "line2", lang))}</span></h1>

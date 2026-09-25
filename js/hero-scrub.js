@@ -53,6 +53,9 @@
   // Benötigte Pixel = tatsächliche Anzeigebreite × Pixeldichte
   var need = (media.getBoundingClientRect().width || Math.min(window.innerWidth, 720)) * Math.min(2, window.devicePixelRatio || 1);
   if (!mqDesktop.matches) sources = sources.filter(function (s) { return !s.desktopOnly; });
+  // Mobil höchstens 540 px Breite: Jeder Suchschritt dekodiert ein ganzes Bild,
+  // größere Bilder lassen das Scrubben auf Telefonen ruckeln.
+  if (!mqDesktop.matches) need = Math.min(need, 540);
   sources.sort(function (a, b) { return a.width - b.width; });
   var chosen = sources[sources.length - 1];
   for (var i = 0; i < sources.length; i++) { if (sources[i].width >= need * 0.9) { chosen = sources[i]; break; } }

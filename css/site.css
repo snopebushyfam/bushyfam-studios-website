@@ -254,6 +254,15 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .hero--static .hero-stage{position:relative;top:0}
 .hero--static .hero-outro{position:relative;height:auto;opacity:1;visibility:visible;grid-column:1/-1}
 .hero--static .hero-outro-stage{position:relative;height:auto;padding:4rem var(--gutter) 0}
+/* Mobil, Hochformat-Film: Überschrift liegt über dem dunklen oberen Bildteil (Sternenhimmel, ≈ 40 % der Höhe).
+   Auf niedrigen Bildschirmen rückt der Film so weit nach unten, dass Cockpit und Person unter der Überschrift bleiben. */
+@media (max-width:899.98px){
+  .hero--tall{--tall-off:max(0px,calc((276px + env(safe-area-inset-top,0px) - 42svh) / .58));--stage-h:min(calc(100svh - var(--tall-off)),calc(100vw / var(--ar,1)))}
+  .hero--tall .hero-copy{position:absolute;top:0;left:0;right:0}
+  .hero--tall .hero-scrub{margin-top:0}
+  .hero--tall .hero-stage{top:var(--tall-off)}
+  .hero--tall .hero-media{width:min(100vw,calc((100svh - var(--tall-off)) * var(--ar,1)))}
+}
 
 /* Abschlussfilm */
 .ending{position:relative;--end-w:min(100vw,calc(100svh * var(--ar,1)),760px);--end-h:calc(var(--end-w) / var(--ar,1))}
