@@ -104,7 +104,7 @@ a{color:inherit} button{font:inherit;color:inherit}
 
 /* Startseite: Über Taha */
 .about{display:grid;gap:1.75rem;align-items:center}
-.about-img{width:min(100%,22rem);aspect-ratio:3/4;object-fit:cover;border-radius:2px;background:var(--surface)}
+.about-img{width:min(100%,22rem);height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:2px;background:var(--surface)}
 .role{font-weight:500;margin:.4rem 0 1rem}
 .about p.body{color:var(--muted);max-width:34rem}
 
@@ -149,7 +149,7 @@ dialog.lb::backdrop{background:rgba(0,0,0,.86)}
 
 /* ---------- Studio-Seite ---------- */
 .studio-top{display:grid;gap:2rem}
-.studio-top img{width:min(100%,26rem);aspect-ratio:3/4;object-fit:cover;border-radius:2px}
+.studio-top img{width:min(100%,26rem);height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
 .studio-top .body{color:var(--muted);max-width:38rem}
 .studio-top .body + .body{margin-top:1rem}
 .stations li{display:grid;gap:1rem;padding-block:2rem;border-top:1px solid var(--line)}
