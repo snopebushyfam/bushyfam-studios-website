@@ -198,11 +198,11 @@ collections:
             widget: object
             fields:
               - { label: "Überschrift Zeile 1 (DE)", name: line1_de, widget: string }
-              - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string }
+              - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string, required: false, hint: "Optional – leer lassen für eine ruhigere erste Ansicht" }
               - { label: "Überschrift Zeile 1 (EN)", name: line1_en, widget: string }
-              - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string }
-              - { label: "Beschreibung (DE)", name: text_de, widget: text }
-              - { label: "Beschreibung (EN)", name: text_en, widget: text }
+              - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string, required: false }
+              - { label: "Aussage unter dem Namen (DE)", name: text_de, widget: text, hint: "Ein kurzer Satz" }
+              - { label: "Aussage unter dem Namen (EN)", name: text_en, widget: text }
               - { label: "Satz am Filmende (DE)", name: outro_de, widget: text, required: false }
               - { label: "Satz am Filmende (EN)", name: outro_en, widget: text, required: false }
               - label: "Film"

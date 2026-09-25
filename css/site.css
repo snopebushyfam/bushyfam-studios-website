@@ -380,12 +380,6 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .feature-summary{color:var(--muted);max-width:36rem}
 .feature-view{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem;font-size:.9375rem;font-weight:500;border-bottom:1px solid var(--line-strong);padding-bottom:.15rem}
 .feature-link:hover .feature-view{border-color:var(--white)}
-@media (min-width:900px){
-  .feature--wide .feature-media{aspect-ratio:auto;height:min(88vh,56.25vw)}
-  .feature--split .feature-link{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(2rem,4vw,5rem);align-items:end;max-width:calc(var(--max) + 2*var(--gutter));margin:0 auto;padding:0 var(--gutter)}
-  .feature--split .feature-media{aspect-ratio:4/3}
-  .feature--split .feature-cap{padding:0 0 1rem;margin:0}
-}
 @media (prefers-reduced-motion:reduce){.feature-media img{transition:none}}
 
 /* Objects in Motion: Produkte schweben durch den schwarzen Raum – Kanten laufen in alle Richtungen aus */
@@ -393,24 +387,11 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .objects-motion .head-row{align-items:end}
 .objects-motion h2.eyebrow{margin-bottom:.75rem}
 .objects-motion .lead{color:var(--white)}
-.marquee{margin-top:clamp(1.5rem,3vw,2.5rem)}
-.marquee-row{overflow:hidden;padding-block:1.5rem}
-.marquee-track{display:flex;align-items:center;width:max-content;animation:marquee linear infinite;animation-duration:calc(var(--speed,20) * 1s)}
-.obj-tile{flex:none;height:clamp(320px,36vw,520px);aspect-ratio:2/3;margin-right:clamp(.5rem,2vw,2rem);
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 8%,#000 90%,transparent 100%);-webkit-mask-composite:source-in;
-  mask-image:linear-gradient(to right,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 8%,#000 90%,transparent 100%);mask-composite:intersect}
-.obj-tile img{width:100%;height:100%;object-fit:contain}
-/* Tiefe: drei Ebenen im Wechsel (ein Durchlauf hat immer ein Vielfaches von 12 Kacheln) */
-.obj-tile:nth-child(3n+2){transform:scale(.8) translateY(6%);opacity:.8}
-.obj-tile:nth-child(3n){transform:scale(.9) translateY(-4%)}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.marquee[data-paused="true"] .marquee-track{animation-play-state:paused}
 .marquee-toggle{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;padding:.4rem .3rem;border:0;background:none;cursor:pointer;font-size:.8125rem;font-weight:500;color:var(--muted)}
 .marquee-toggle:hover{color:var(--white)}
 .marquee-toggle-icon{width:11px;height:11px;position:relative}
 .marquee-toggle[data-state="running"] .marquee-toggle-icon{border-inline:3.5px solid currentColor}
 .marquee-toggle[data-state="paused"] .marquee-toggle-icon{border-left:10px solid currentColor;border-block:6px solid transparent;height:0;width:0}
-@media (prefers-reduced-motion:reduce){.marquee-track{animation:none}}
 
 /* Leistungen: redaktionelle Zeilen, keine Karten */
 .svc-title{margin-bottom:clamp(2rem,4vw,3.5rem)}
@@ -455,66 +436,16 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .project-head .page-title{max-width:14ch;font-size:clamp(3rem,1.2rem + 7vw,8rem)}
 .project-head .lead{max-width:34rem}
 .project-intro{display:grid;gap:2rem;padding-bottom:clamp(3rem,6vw,6rem)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1.25rem 2rem;margin:0;border-top:1px solid var(--line);padding-top:1.25rem}
-.facts dt{font-size:.8125rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
-.facts dd{margin:0;font-weight:500}
-.fact--wide{grid-column:1/-1}
+.facts{display:flex;flex-wrap:wrap;gap:1rem 2.5rem;margin:0}
+.facts dt{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.facts dd{margin:0;font-weight:500;font-size:.9375rem}
 .project-body{display:grid;gap:1rem;max-width:40rem}
 .project-body p{font-size:clamp(1.125rem,1rem + .5vw,1.375rem);line-height:1.55;color:var(--white)}
 @media (min-width:900px){
   .project-intro{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(3rem,6vw,7rem);align-items:start}
-  .facts{grid-template-columns:1fr}
+  .facts{flex-direction:column}
 }
 
-.chapter{padding-bottom:clamp(4rem,3rem + 5vw,9rem)}
-.chapter-head{display:flex;align-items:baseline;gap:1rem;border-top:1px solid var(--line);padding-top:1.25rem;margin-bottom:clamp(1.5rem,3vw,2.5rem)}
-.chapter-no{font-size:.9375rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.chapter-title{font-size:clamp(1.75rem,1.2rem + 2.2vw,3.25rem);font-weight:700;letter-spacing:-.03em;line-height:1}
-.chapter-n{margin-left:auto;color:var(--muted);font-size:.9375rem;font-variant-numeric:tabular-nums}
-
-/* Filme: Hochformat-Clips als Reihe – mobil zum Wischen, am Desktop als Triptychon */
-.film-row{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 var(--gutter);scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain}
-.film-row::-webkit-scrollbar{display:none}
-.film-row .clip{flex:none;width:min(78vw,420px);scroll-snap-align:start}
-.film-row--single .clip{width:min(100%,420px)}
-@media (min-width:900px){
-  .film-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:clamp(1rem,2vw,2rem);overflow:visible;max-width:calc(var(--max) + 2*var(--gutter));margin:0 auto}
-  .film-row .clip{width:auto}
-  .film-row--single{grid-template-columns:minmax(0,420px)}
-  .film-row .clip:nth-child(3n+2){margin-top:clamp(2rem,6vw,6rem)}
-}
-
-/* Bilder: kuratiertes, versetztes Raster statt gleich großer Kacheln */
-.stills{display:grid;gap:clamp(2.5rem,6vw,5rem)}
-.still figure{margin:0}
-.still img{width:100%;height:auto}
-.still--1,.still--2{width:78%}
-.still--1{justify-self:end}
-@media (min-width:900px){
-  .stills{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(1rem,2vw,2rem);row-gap:clamp(3rem,6vw,6rem);align-items:start}
-  .still{width:auto!important}
-  .still--0{grid-column:1 / span 7}
-  .still--1{grid-column:9 / span 4;margin-top:clamp(4rem,14vw,14rem)}
-  .still--2{grid-column:2 / span 4}
-  .still--3{grid-column:7 / span 6;margin-top:clamp(-6rem,-6vw,-2rem)}
-}
-
-/* Nächstes Projekt: großer Übergang mit Bild */
-.project-next{border-top:1px solid var(--line);padding-block:clamp(3rem,6vw,6rem) 0;display:grid;gap:1.5rem}
-.project-next > .wrap{width:100%}
-.project-next > p{padding-bottom:1rem}
-.next-link{display:grid;gap:1.5rem;text-decoration:none;color:inherit}
-.next-text{display:grid;gap:.35rem;align-content:end}
-.next-title{font-size:clamp(2.5rem,1.4rem + 5vw,6rem);font-weight:700;letter-spacing:-.04em;line-height:.95}
-.next-link:hover .next-title{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:8px}
-.next-link .client{color:var(--muted)}
-.next-media{display:block;aspect-ratio:16/10;overflow:hidden;background:var(--black)}
-.next-media img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
-.next-media--contain img{object-fit:contain;padding:1.5rem}
-.next-link:hover .next-media img{transform:scale(1.03)}
-.project-all{padding-block:2rem 0}
-@media (min-width:900px){.next-link{grid-template-columns:minmax(0,6fr) minmax(0,5fr);align-items:end;gap:clamp(2rem,5vw,6rem)}}
-@media (prefers-reduced-motion:reduce){.next-media img{transition:none}}
 
 /* =========================================================
    V3 – Studio: redaktionelles Profil statt Lebenslauf
@@ -529,13 +460,174 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .moment-text h3{font-size:clamp(1.75rem,1.2rem + 2vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.05}
 .moment-text .t{color:var(--muted);max-width:32rem}
 .year{font-size:.8125rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-@media (min-width:900px){
-  .moment{grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(2.5rem,5vw,6rem);align-items:center}
-  .moment--right{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
-  .moment--right .moment-media{order:2}
-}
 .notes{display:grid;gap:2rem;margin-top:clamp(2rem,4vw,3rem);border-top:1px solid var(--line);padding-top:clamp(2rem,4vw,3rem)}
 .notes li{display:grid;gap:.5rem;align-content:start}
 .notes h3{font-size:clamp(1.25rem,1.1rem + .7vw,1.625rem);font-weight:700;letter-spacing:-.01em;line-height:1.2}
 .notes .t{color:var(--muted)}
 @media (min-width:900px){.notes{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(2.5rem,5vw,6rem)}}
+
+/* =========================================================
+   V3.1 – Creative-Director-Feinschliff
+   ========================================================= */
+
+/* Hero: Der Film ist der Hero. Name groß über dem Sternenhimmel, eine Aussage, ein Knopf – leicht verzögert */
+.hero-title{font-size:clamp(3.25rem,1rem + 10vw,5.5rem);line-height:.9;letter-spacing:-.045em}
+.hero-foot{margin-top:1.1rem}
+.hero-text{display:block;margin:0;font-size:clamp(1.125rem,1rem + .6vw,1.5rem);line-height:1.3;color:var(--white);max-width:22ch}
+.hero .btn-row{display:none}
+@keyframes hero-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-foot{animation:hero-in 1.4s .8s cubic-bezier(.22,1,.36,1) both}
+@media (min-width:900px){
+  .hero{display:grid;grid-template-columns:minmax(0,1fr);height:270vh}
+  .hero-copy,.hero-scrub{grid-area:1/1}
+  .hero-copy{position:sticky;top:0;height:100vh;padding:0;display:block;z-index:2;pointer-events:none}
+  .hero-copy-inner{max-width:calc(var(--max) + 2*var(--gutter));height:100%;margin:0 auto;padding:calc(var(--header-h) + clamp(1.5rem,5vh,4rem)) var(--gutter) clamp(2rem,6vh,4.5rem);display:flex;flex-direction:column;justify-content:space-between}
+  .hero-copy a{pointer-events:auto}
+  .hero-title{font-size:clamp(4.5rem,1rem + 7.6vw,10rem);white-space:nowrap}
+  .hero-foot{display:flex;align-items:end;justify-content:space-between;gap:2rem;margin:0}
+  .hero-text{font-size:clamp(1.25rem,.9rem + .7vw,1.75rem)}
+  .hero .btn-row{display:flex;margin:0}
+  .hero-scrub{height:100%;margin:0}
+  .hero-media{width:min(100vw,calc(100vh * var(--ar,1)))}
+  .hero--static .hero-copy{position:relative;height:auto;min-height:100vh}
+  .hero--static .hero-copy-inner{min-height:100vh}
+}
+@media (prefers-reduced-motion:reduce){.hero-foot{animation:none}}
+
+/* Ausgewählte Arbeiten: eine dominante Arbeit, weitere leiser und versetzt */
+.work-feature{padding-top:clamp(6rem,4rem + 8vw,12rem)}
+.feature--lead .feature-title{font-size:clamp(3.25rem,1.2rem + 8vw,9.5rem)}
+.feature--minor .feature-link{display:grid;gap:1.25rem;padding:0 var(--gutter)}
+.feature--minor .feature-media{width:72%;aspect-ratio:1}
+.feature--right .feature-media{justify-self:end}
+.feature--minor .feature-cap{padding:0;margin:0;max-width:none}
+.feature--minor .feature-title{font-size:clamp(2rem,1.3rem + 2.6vw,3.75rem)}
+.feature--minor .feature-summary{font-size:1rem}
+@media (min-width:900px){
+  .feature--lead .feature-media{aspect-ratio:auto;height:min(92vh,56.25vw)}
+  .feature--minor{margin-top:clamp(2rem,6vw,6rem)}
+  .feature--minor .feature-link{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(1rem,2vw,2rem);align-items:end;max-width:calc(var(--max) + 2*var(--gutter));margin:0 auto}
+  .feature--minor .feature-media{width:auto;grid-row:1}
+  .feature--right .feature-media{grid-column:8 / span 4}
+  .feature--right .feature-cap{grid-column:2 / span 5;grid-row:1;padding-bottom:1rem}
+  .feature--left .feature-media{grid-column:2 / span 4}
+  .feature--left .feature-cap{grid-column:7 / span 5;grid-row:1;padding-bottom:1rem}
+}
+
+/* Objects in Motion: eine Installation – jedes Objekt einmal, in drei Tiefen, langsames Schweben */
+.objects-motion{padding-block:clamp(6rem,4rem + 8vw,12rem)}
+.float-stage{--base:clamp(320px,40vw,700px);position:relative;margin-top:clamp(1rem,3vw,2rem)}
+.float-list{position:relative;height:calc(var(--base) * 1.12)}
+.obj{position:absolute;left:var(--x);top:50%;height:calc(var(--base) * var(--s,1));aspect-ratio:2/3;translate:-50% -50%;
+  animation:drift var(--dur,30s) var(--delay,0s) ease-in-out infinite alternate;
+  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 58%,transparent 100%)}
+.obj img{width:100%;height:100%;object-fit:contain;scale:1.3}
+.obj--front{--s:1;--dx:3.5vw;--dy:-1.2vw;z-index:3;top:56%}
+.obj--mid{--s:.74;--dx:2.2vw;--dy:1vw;z-index:2;top:44%;opacity:.85}
+.obj--back{--s:.56;--dx:1.4vw;--dy:-.8vw;z-index:1;top:36%;opacity:.55}
+@keyframes drift{from{transform:translate(calc(-1*var(--dx)),0)}to{transform:translate(var(--dx),var(--dy))}}
+.float-stage[data-paused="true"] .obj{animation-play-state:paused}
+@media (max-width:899.98px){
+  /* Mobil: eine ruhige Reihe zum Wischen, zwei Tiefen, kaum Eigenbewegung */
+  .float-stage{--base:min(88vw,460px)}
+  .float-list{height:auto;display:flex;align-items:center;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:1rem var(--gutter);overscroll-behavior-x:contain}
+  .float-list::-webkit-scrollbar{display:none}
+  .obj{position:relative;left:auto;top:auto;translate:none;flex:none;scroll-snap-align:center;margin-inline:-9vw;--dx:0px;--dy:-10px}
+  .obj--back,.obj--mid{--s:.78;opacity:.8}
+}
+@media (prefers-reduced-motion:reduce){.obj{animation:none}}
+
+/* Leistungen: Typografie trägt den Abschnitt */
+.services{padding-block:clamp(6rem,4rem + 6vw,11rem)}
+.svc-rows li{padding-block:clamp(2.25rem,4vw,4rem)}
+.svc-rows h3{font-size:clamp(2.25rem,1.3rem + 4vw,5rem)}
+
+/* Abschluss: ein Handlungsaufruf, direkter Weg leise daneben */
+.cta{padding-block:clamp(7rem,5rem + 8vw,13rem) clamp(3rem,6vw,6rem)}
+.cta .h2{font-size:clamp(2.75rem,1.4rem + 5vw,6.5rem);max-width:13ch}
+.link-quiet{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;color:var(--muted);font-weight:500;text-decoration:none;border-bottom:1px solid transparent}
+.link-quiet:hover{color:var(--white);border-bottom-color:var(--line-strong)}
+.cta .btn-row{gap:1.5rem}
+
+/* Projektseiten: erzählte Abfolge mit bewusst wechselnden Größen */
+.project-head{padding-bottom:clamp(2.5rem,5vw,4.5rem)}
+.project-intro{padding-block:clamp(4rem,3rem + 5vw,9rem)}
+.case-hero{margin:0}
+.clip--hero .clip-frame{aspect-ratio:4/5;border-radius:0}
+.clip--hero .clip-frame img{object-fit:cover}
+.clip--hero .m-cap{max-width:calc(var(--max) + 2*var(--gutter));margin:.9rem auto 0;padding:0 var(--gutter)}
+.still--hero{margin:0 auto;width:min(100% - 2*var(--gutter),76vh);padding-block:clamp(1rem,4vw,4rem)}
+.still img{width:100%;height:auto}
+.still figcaption{color:var(--muted)}
+.case-seq{display:grid;gap:clamp(5rem,4rem + 8vw,14rem);padding-bottom:clamp(6rem,4rem + 8vw,12rem)}
+.seq--pair{display:grid;gap:1.5rem}
+.seq--pair .still--b{width:72%;justify-self:end}
+.seq--films{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 var(--gutter);scroll-padding-inline:var(--gutter);overscroll-behavior-x:contain}
+.seq--films::-webkit-scrollbar{display:none}
+.seq--films .clip{flex:none;width:min(74vw,380px);scroll-snap-align:start}
+.seq--films-single .clip{margin-inline:auto}
+.seq--single .still--large{margin:0 auto;width:min(100% - 2*var(--gutter),800px)}
+.seq--small .still--small{width:62%}
+.seq--right .still--small{margin-left:auto}
+@media (min-width:900px){
+  .clip--hero .clip-frame{aspect-ratio:auto;height:min(92vh,56.25vw)}
+  .seq--pair{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(1rem,2vw,2rem);align-items:start}
+  .seq--pair .still--a{grid-column:1 / span 6}
+  .seq--pair .still--b{grid-column:8 / span 4;width:auto;margin-top:clamp(6rem,16vw,16rem)}
+  .seq--films{justify-content:center;overflow:visible;gap:clamp(2rem,6vw,7rem);padding:0}
+  .seq--films .clip{width:min(26vw,380px)}
+  .seq--films .clip:nth-child(even){margin-top:clamp(4rem,10vw,10rem)}
+  .seq--single .still--large{width:min(56vw,800px)}
+  .seq--small .still--small{width:min(26vw,420px)}
+  .seq--left .still--small{margin-left:calc(100% / 12)}
+  .seq--right .still--small{margin-right:calc(100% / 12)}
+}
+
+/* Nächstes Projekt: großes Band, das in den nächsten Fall zieht */
+.project-next{display:grid;gap:1.5rem;padding-bottom:1rem}
+.next-band{position:relative;display:block;min-height:clamp(420px,70vh,760px);overflow:hidden;text-decoration:none;color:inherit;background:var(--black)}
+.next-band .next-media{position:absolute;inset:0}
+.next-band .next-media img{width:100%;height:100%;object-fit:cover;opacity:.55;transition:opacity .8s,transform 1.2s cubic-bezier(.22,1,.36,1)}
+.next-band--contain .next-media{left:auto;width:min(100%,70vh);padding:clamp(1.5rem,4vw,4rem)}
+.next-band--contain .next-media img{object-fit:contain;opacity:.9}
+.next-band:hover .next-media img{opacity:.75;transform:scale(1.02)}
+.next-band .next-text{position:absolute;left:0;right:0;bottom:0;display:grid;gap:.4rem;padding-bottom:clamp(2rem,5vw,4.5rem)}
+.next-band .next-text .eyebrow{margin:0;color:var(--white)}
+.next-title{font-size:clamp(2.75rem,1.4rem + 6vw,8rem);font-weight:700;letter-spacing:-.045em;line-height:.92;text-wrap:balance}
+.next-band .client{color:var(--muted)}
+.next-band:focus-visible{outline-offset:-6px}
+@media (max-width:899.98px){.next-band--contain .next-media{width:100%;bottom:40%}}
+@media (prefers-reduced-motion:reduce){.next-band .next-media img{transition:none}}
+.next-link{display:grid;gap:.3rem;text-decoration:none;padding-block:clamp(2rem,4vw,3rem)}
+.project-next > .wrap{width:100%}
+
+/* Studio: zwei unterschiedliche Kapitel – Museum als Galeriemoment, Buch als Objekt */
+.moment{border-top:0;padding-block:clamp(3rem,4rem + 6vw,11rem) 0}
+.moment--gallery .moment-media{margin:0 auto;width:min(100%,86vh)}
+.moment--gallery .moment-text{margin-top:1.5rem}
+.moment--object .moment-media{width:78%;margin-left:auto;background:none}
+@media (min-width:900px){
+  .moment--gallery{display:block}
+  .moment--gallery .moment-media{width:min(80vw,86vh)}
+  .moment--gallery .moment-text{width:min(80vw,86vh);margin:2rem auto 0;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:2.5rem;display:grid}
+  .moment--gallery .moment-text .year,.moment--gallery .moment-text h3{grid-column:1}
+  .moment--gallery .moment-text .t{grid-column:2;grid-row:1 / span 2}
+  .moment--gallery .moment-text h3{font-size:clamp(1.25rem,1rem + .8vw,1.75rem)}
+  .moment--object{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:2rem;align-items:center}
+  .moment--object .moment-text{grid-column:2 / span 4;grid-row:1}
+  .moment--object .moment-media{grid-column:8 / span 4;width:auto;margin:0}
+}
+.notes{border-top:0;margin-top:clamp(5rem,4rem + 6vw,10rem)}
+
+/* Zusammenarbeit: eine typografische Sequenz statt vier Karten */
+.steps{border-top:0;display:grid;gap:1.5rem}
+.steps li{display:block;padding:0;border:0}
+.steps h3{font-size:1rem;font-weight:700;margin-bottom:.35rem}
+.steps p{color:var(--muted);font-size:.9375rem;max-width:22rem}
+@media (min-width:900px){.steps{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:2.5rem}}
+
+/* Kontakt: Formular ist der Hauptweg, der direkte Weg steht leise darunter */
+.direct{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.direct-label{color:var(--muted);font-size:.9375rem;margin:0 0 .25rem}
+.direct p{margin:0}
+:lang(de) :is(.page-title,.feature-title,.next-title,.svc-rows h3,.h2){hyphens:auto;hyphenate-limit-chars:10 4 4}

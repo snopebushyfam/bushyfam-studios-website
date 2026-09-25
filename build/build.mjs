@@ -261,16 +261,17 @@ function footer(lang) {
 const catLabel = (id, lang) => (CATEGORIES.find((c) => c.id === id) || {})[lang] || id;
 const metaLine = (p, lang) => [catLabel(p.category, lang), p.client, p.year].filter(Boolean).map(esc).join(" · ");
 
-/* Ausgewählte Arbeiten: abwechselnd randloses Kinobild und geteiltes Layout (Bild | Text),
-   damit nicht jede Arbeit gleich aussieht. „Bild ganz zeigen“ (cover.fit) für Logos & Grafiken. */
+/* Ausgewählte Arbeiten: Die erste Arbeit dominiert (randloses Kinobild), alle weiteren stehen kleiner,
+   versetzt und ruhiger – abwechselnd rechts und links. „Bild ganz zeigen“ (cover.fit) für Logos & Grafiken. */
 function featureBlock(p, lang, i, { h = 3, eager = false } = {}) {
   const hasVideo = (p.media || []).some((m) => m.type === "video");
   const disciplines = tr(p, "disciplines", lang);
   const meta = [p.client, disciplines, p.year].filter(Boolean).map(esc).join(" · ");
   const fit = p.cover.fit === "contain" ? " feature-media--contain" : "";
-  return `<li class="feature feature--${i % 2 ? "split" : "wide"}">
+  const kind = i === 0 ? "lead" : `minor feature--${i % 2 ? "right" : "left"}`;
+  return `<li class="feature feature--${kind}">
     <a class="feature-link" href="${hrefFor(lang, "project", p.slug)}">
-      <div class="feature-media${fit}">${img(p.cover.src, tr(p.cover, "alt", lang), { sizes: i % 2 ? "(min-width: 900px) 58vw, 100vw" : "100vw", lazy: !eager })}${hasVideo ? `<span class="play">${esc(T[lang].film)}</span>` : ""}</div>
+      <div class="feature-media${fit}">${img(p.cover.src, tr(p.cover, "alt", lang), { sizes: i ? "(min-width: 900px) 34vw, 72vw" : "100vw", lazy: !eager })}${hasVideo ? `<span class="play">${esc(T[lang].film)}</span>` : ""}</div>
       <div class="feature-cap">
         <span class="feature-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
         <div class="feature-cap-text">
@@ -304,9 +305,11 @@ function pageHome(lang) {
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span><span>${esc(tr(H, "line2", lang))}</span></h1>
-      <p class="hero-text">${esc(tr(H, "text", lang))}</p>
-      <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a><a class="btn btn--ghost" href="${R.work}">${esc(t.seeWork)}</a></div>
+      <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <div class="hero-foot">
+        <p class="hero-text">${esc(tr(H, "text", lang))}</p>
+        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+      </div>
     </div>
   </div>
   <div class="hero-scrub" data-hero-scrub>
@@ -322,7 +325,7 @@ function pageHome(lang) {
 
 ${featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
   <div class="wrap head-row">
-    <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
+    <h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2>
     <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
   </div>
   <ul class="feature-list">
@@ -334,10 +337,8 @@ ${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-o
   <div class="wrap head-row"><div><h2 class="eyebrow" id="h-obj">${esc(t.objectsTitle)}</h2><p class="lead">${esc(t.objectsLead)}</p></div>
     <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
   </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
+  <div class="float-stage" data-marquee>
+    <ul class="float-list">${OBJECTS.map((o, k) => objectTile(o, lang, k, OBJECTS.length)).join("")}</ul>
   </div>
 </section>` : ""}
 
@@ -353,7 +354,6 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
 
 <section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
   <div class="wrap">
-    <p class="eyebrow">${esc(t.nav.services)}</p>
     <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
     <ol class="svc-rows">
       ${(SERV.items || []).map((s, i) => `<li><span class="svc-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><div class="svc-text"><p>${esc(tr(s, "text", lang))}</p>${tr(s, "tags", lang) ? `<p class="svc-tags">${esc(tr(s, "tags", lang))}</p>` : ""}</div></li>`).join("\n      ")}
@@ -388,7 +388,7 @@ ${namedClients.length ? `<section class="section clients" aria-labelledby="h-cli
   <div class="wrap">
     <h2 class="h2" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
     <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
-    <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${WA_URL ? ext(WA_URL, "WhatsApp", lang) : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang) : ""}</div>
+    <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${WA_URL ? ext(WA_URL, "WhatsApp", lang, "link-quiet") : ""}</div>
   </div>
 </section>
 
@@ -438,40 +438,34 @@ function pageProject(p, lang, i) {
   const films = (p.media || []).filter((m) => m.type === "video");
   const images = (p.media || []).filter((m) => m.type !== "video");
 
-  const film = (m) => {
+  const clip = (m, cls = "") => {
     const ttl = tr(m, "title", lang) || title;
     const meta = [m.duration, m.audio === true ? t.withSound : m.audio === false ? t.noSound : ""].filter(Boolean).join(" · ");
     const dim = m.poster ? imageSize(m.poster) || {} : {};
-    return `<li class="clip"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
-        ${m.poster ? img(m.poster, "", { sizes: "(min-width: 900px) 30vw, 78vw" }) : ""}
+    return `<div class="clip${cls}"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
+        ${m.poster ? img(m.poster, "", { sizes: cls ? "100vw" : "(min-width: 900px) 30vw, 78vw" }) : ""}
         <button class="clip-play" type="button" data-clip-play data-title="${esc(ttl)}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.play)}</span><span class="vh">: ${esc(ttl)}</span></button>
-      </div><p class="m-cap"><strong>${esc(ttl)}</strong>${meta ? ` <span>${esc(meta)}</span>` : ""}</p></li>`;
+      </div><p class="m-cap"><strong>${esc(ttl)}</strong>${meta ? ` <span>${esc(meta)}</span>` : ""}</p></div>`;
   };
-  const still = (m, k) => {
+  const still = (m, cls, sizes) => {
     const cap = tr(m, "caption", lang);
-    return `<li class="still still--${k % 4}"><figure>${img(m.src, tr(m, "alt", lang), { sizes: k % 4 === 0 || k % 4 === 3 ? "(min-width: 900px) 55vw, 100vw" : "(min-width: 900px) 40vw, 80vw" })}${cap ? `<figcaption class="m-cap">${esc(cap)}</figcaption>` : ""}</figure></li>`;
+    return `<figure class="still ${cls}">${img(m.src, tr(m, "alt", lang), { sizes })}${cap ? `<figcaption class="m-cap">${esc(cap)}</figcaption>` : ""}</figure>`;
   };
-  // Kapitel in der Reihenfolge, in der die Medienarten im Admin zuerst vorkommen
-  const chapters = [];
-  for (const m of p.media || []) {
-    const kind = m.type === "video" ? "film" : "image";
-    if (!chapters.includes(kind)) chapters.push(kind);
-  }
-  const chapterHtml = chapters.map((kind, ci) => {
-    const id = `ch-${kind}`;
-    const label = kind === "film" ? t.chFilm : p.category === "branding" ? t.chIdentity : t.chPhoto;
-    const n = kind === "film" ? films.length : images.length;
-    const head = `<div class="wrap chapter-head"><span class="chapter-no" aria-hidden="true">${String(ci + 1).padStart(2, "0")}</span><h2 class="chapter-title" id="${id}">${esc(label)}</h2>${n > 1 ? `<span class="chapter-n">${n}</span>` : ""}</div>`;
-    return kind === "film"
-      ? `<section class="chapter chapter--film" aria-labelledby="${id}">${head}
-    <ul class="film-row${films.length > 1 ? "" : " film-row--single"}">${films.map(film).join("\n      ")}</ul>
-  </section>`
-      : `<section class="chapter chapter--stills" aria-labelledby="${id}">${head}
-    <ul class="wrap stills">${images.map(still).join("\n      ")}</ul>
-  </section>`;
-  }).join("\n  ");
 
-  const facts = [[t.factClient, p.client], [t.factYear, p.year], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  /* Erzählte Abfolge aus den vorhandenen Medien – nichts wird erfunden oder wiederholt:
+     großer Einstieg (erster Film randlos, sonst erstes Bild groß) → Kontext → Bildpaar →
+     weitere Filme → großes Einzelbild → kleine, versetzte Bilder. */
+  const imgs = images.slice(), vids = films.slice();
+  const hero = vids.length
+    ? `<section class="case-hero case-hero--film" aria-label="${esc(t.chFilm)}">${clip(vids.shift(), " clip--hero")}</section>`
+    : imgs.length ? `<section class="case-hero case-hero--still" aria-label="${esc(p.category === "branding" ? t.chIdentity : t.chPhoto)}">${still(imgs.shift(), "still--hero", "(min-width: 900px) 70vw, 100vw")}</section>` : "";
+  const seq = [];
+  if (imgs.length >= 2) seq.push(`<div class="seq seq--pair wrap">${still(imgs.shift(), "still--a", "(min-width: 900px) 45vw, 100vw")}${still(imgs.shift(), "still--b", "(min-width: 900px) 34vw, 80vw")}</div>`);
+  if (vids.length) seq.push(`<div class="seq seq--films${vids.length === 1 ? " seq--films-single" : ""}">${vids.map((m) => clip(m)).join("")}</div>`);
+  if (imgs.length >= 2 || (imgs.length && films.length)) seq.push(`<div class="seq seq--single">${still(imgs.shift(), "still--large", "(min-width: 900px) 56vw, 100vw")}</div>`);
+  imgs.forEach((m, k) => seq.push(`<div class="seq seq--small seq--${k % 2 ? "left" : "right"} wrap">${still(m, "still--small", "(min-width: 900px) 30vw, 70vw")}</div>`));
+
+  const facts = [[t.factClient, p.client], [t.factYear, p.year], [t.factDisciplines, tr(p, "disciplines", lang)]].filter(([, v]) => v);
   const nextSame = next && next.client && next.client === tr(next, "title", lang);
   const body = `
 <article class="project">
@@ -480,15 +474,16 @@ function pageProject(p, lang, i) {
     <h1 class="page-title">${esc(title)}</h1>
     ${tr(p, "summary", lang) ? `<p class="lead">${esc(tr(p, "summary", lang))}</p>` : ""}
   </header>
+  ${hero}
   <div class="wrap project-intro">
-    ${facts.length ? `<dl class="facts">${facts.map(([k, v, w]) => `<div${w ? ` class="fact--${w}"` : ""}><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+    ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
     ${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
   </div>
-  ${chapterHtml}
+  ${seq.length ? `<div class="case-seq">\n    ${seq.join("\n    ")}\n  </div>` : ""}
   ${next && next.slug !== p.slug ? `<nav class="project-next" aria-label="${esc(t.moreWork)}">
-    <a class="next-link wrap" href="${hrefFor(lang, "project", next.slug)}">
-      <span class="next-text"><span class="eyebrow">${esc(t.nextProject)}</span><span class="next-title">${esc(tr(next, "title", lang))}&nbsp;<span aria-hidden="true">→</span></span>${next.client && !nextSame ? `<span class="client">${esc(next.client)}</span>` : ""}</span>
-      <span class="next-media${next.cover.fit === "contain" ? " next-media--contain" : ""}">${img(next.cover.src, "", { sizes: "(min-width: 900px) 30vw, 100vw" })}</span>
+    <a class="next-band${next.cover.fit === "contain" ? " next-band--contain" : ""}" href="${hrefFor(lang, "project", next.slug)}">
+      <span class="next-media">${img(next.cover.src, "", { sizes: "100vw" })}</span>
+      <span class="next-text wrap"><span class="eyebrow">${esc(t.nextProject)}</span><span class="next-title">${esc(tr(next, "title", lang))}&nbsp;<span aria-hidden="true">→</span></span>${next.client && !nextSame ? `<span class="client">${esc(next.client)}</span>` : ""}</span>
     </a>
     <p class="wrap"><a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a></p>
   </nav>` : `<p class="wrap project-all"><a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a></p>`}
@@ -498,8 +493,14 @@ ${ctaBlock(lang)}`;
     description: tr(p, "summary", lang) || t.workLead, body, scripts: films.length ? ["video-preview.js"] : [], ogImage: p.cover.src });
 }
 
-function objectTile(o, lang) {
-  return `<li class="obj-tile">${img(o.image, tr(o, "alt", lang) || o.title_de || "", { sizes: "320px" })}</li>`;
+/* Objects in Motion: jedes Objekt genau einmal, verteilt auf drei Tiefen (vorne, Mitte, hinten).
+   Position und Tempo ergeben sich aus der Reihenfolge – neue Objekte aus dem Admin ordnen sich ein. */
+const DEPTHS = ["front", "back", "mid", "front", "mid", "back"];
+function objectTile(o, lang, k = 0, n = 1) {
+  const depth = DEPTHS[k % DEPTHS.length];
+  const x = ((k + 0.5) / n) * 100;
+  const dur = { front: 26, mid: 34, back: 44 }[depth] + (k % 3) * 3;
+  return `<li class="obj obj--${depth}" style="--x:${x.toFixed(1)}%;--dur:${dur}s;--delay:-${(k * 7) % dur}s">${img(o.image, tr(o, "alt", lang) || o.title_de || "", { sizes: "(min-width: 900px) 30vw, 60vw" })}</li>`;
 }
 
 const ctaBlock = (lang) => `<section class="section cta" aria-labelledby="h-cta2">
@@ -592,8 +593,8 @@ ${tr(STU, "statement", lang) ? `<section class="wrap studio-statement"><p>${esc(
 ${(STU.stations || []).length ? `<section class="section path" aria-labelledby="h-st">
   <div class="wrap">
     <h2 class="h2 path-title" id="h-st">${esc(tr(STU, "stationsTitle", lang))}</h2>
-    ${STU.stations.filter((s) => s.feature && s.image && s.image.src).map((s, k) => `<article class="moment moment--${k % 2 ? "right" : "left"}">
-      <figure class="moment-media">${img(s.image.src, tr(s.image, "alt", lang), { sizes: "(min-width: 900px) 55vw, 100vw" })}</figure>
+    ${STU.stations.filter((s) => s.feature && s.image && s.image.src).map((s, k) => `<article class="moment moment--${k % 2 ? "object" : "gallery"}">
+      <figure class="moment-media">${img(s.image.src, tr(s.image, "alt", lang), { sizes: k % 2 ? "(min-width: 900px) 34vw, 80vw" : "(min-width: 900px) 80vw, 100vw" })}</figure>
       <div class="moment-text">${tr(s, "year", lang) ? `<p class="year">${esc(tr(s, "year", lang))}</p>` : ""}<h3>${esc(tr(s, "title", lang))}</h3><p class="t">${esc(tr(s, "text", lang))}</p>${s.link && s.link.url ? `<p class="st-link">${ext(s.link.url, esc(tr(s.link, "label", lang)), lang)}${tr(s.link, "note", lang) ? `<span class="note-link">${esc(tr(s.link, "note", lang))}</span>` : ""}</p>` : ""}</div>
     </article>`).join("\n    ")}
     ${STU.stations.some((s) => !(s.feature && s.image && s.image.src)) ? `<ul class="notes">
@@ -605,7 +606,7 @@ ${(STU.stations || []).length ? `<section class="section path" aria-labelledby="
   <div class="wrap">
     <div class="head-row"><div><p class="eyebrow">${esc(t.process)}</p><h2 class="h2" id="h-proc">${esc(tr(STU, "processTitle", lang))}</h2></div></div>
     <ol class="steps">
-      ${(STU.process || []).map((s, i) => `<li><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
+      ${(STU.process || []).map((s) => `<li><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
     </ol>
   </div>
 </section>
@@ -624,9 +625,9 @@ function pageContact(lang) {
 <section class="wrap contact-grid">
   <div>
     <p class="lead">${esc(tr(CON, "intro", lang))}</p>
-    ${WA_URL || S.instagramUrl ? `<p class="muted direct-label">${esc(t.direct)}</p>` : ""}
-    ${WA_URL ? `<p>${ext(WA_URL, `WhatsApp ${esc(S.whatsapp)}`, lang, "link-arrow link-big")}</p>` : ""}
-    ${S.instagramUrl ? `<p>${ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "link-arrow link-big")}</p>` : ""}
+    ${WA_URL || S.instagramUrl ? `<div class="direct"><p class="direct-label">${esc(t.direct)}</p>
+    ${WA_URL ? `<p>${ext(WA_URL, `WhatsApp · ${esc(S.whatsapp)}`, lang, "link-quiet")}</p>` : ""}
+    ${S.instagramUrl ? `<p>${ext(S.instagramUrl, `Instagram · ${esc(S.instagramHandle || "")}`, lang, "link-quiet")}</p>` : ""}</div>` : ""}
     ${S.email ? `<p><a class="link-arrow link-big" href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>` : ""}
   </div>
   <form class="form" name="kontakt" method="POST" action="${ROUTES[lang].thanks}" data-netlify="true" netlify-honeypot="bot-field" novalidate data-form data-lang="${lang}"${WA_URL ? ` data-wa="${WA_URL}"` : ""}>
