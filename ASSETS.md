@@ -30,7 +30,7 @@ Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASO
 | Benötigt | Status | Platzhalter |
 |---|---|---|
 | Bestätigter dunkler Website-Entwurf | nicht im Chat vorhanden | – |
-| BushyFam-Logo als SVG oder transparentes PNG (mind. 1000 px) | fehlt | Original-PNG per Ausschnitt |
+| BushyFam-Logo als SVG | fehlt (transparentes PNG liegt seit 25.09.2026 vor, siehe unten) | – |
 | Favicon / App-Icon in finaler Qualität (aus SVG) | fehlt | provisorisch: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Symbol aus dem Original-Logo ausgeschnitten, mittig auf Schwarz gesetzt, nur skaliert |
 | Kamera-Originale bzw. finale Exporte der MASON’S-Fotos | teilweise unklar | Uploads verwendet |
 | Social-Sharing-Bild (Open Graph) | fehlt | keins eingebunden |
@@ -64,3 +64,11 @@ Nicht mehr verwendet und im Repository löschbar: `assets/hero/hero-ufo-scrub-54
 | `hf_20260925_143923_….mp4` (HEVC 10 Bit, 1080 × 1920, 24 fps, 7,05 s, mit Ton) | Frau im UFO-Cockpit, Schriftzug „BUSHYFAM STUDIOS“ vollständig sichtbar, Zoom bis in die Pupille, endet schwarz (ab ≈ 6,7 s) | Einstieg (ersetzt `hero-cockpit-sq`) | `assets/hero/hero-cockpit-hoch-540/720/1080.mp4` (540 × 960, 720 × 1280, 1080 × 1920; H.264, nur Keyframes, ohne Ton), Standbild `hero-cockpit-hoch-poster.jpg` (erstes Bild) |
 
 Die quadratischen Dateien `assets/hero/hero-cockpit-sq-*` wurden entfernt. Der Hinweis zum angeschnittenen Schriftzug oben gilt damit nicht mehr.
+
+## Nachtrag 25.09.2026 – Logo
+
+| Upload | Inhalt | Verwendung | Datei im Projekt |
+|---|---|---|---|
+| `image.png` (PNG, 813 × 813, weiß auf transparent) | BushyFam-Studios-Logo | Header und Footer (ersetzt den CSS-Ausschnitt aus `bushyfam-logo-original.png`) | `assets/brand/bushyfam-logo-weiss.png` (664 × 362, nur leerer Rand abgeschnitten, sonst unverändert) |
+
+Die Favicons stammen weiterhin aus dem alten Ausschnitt.

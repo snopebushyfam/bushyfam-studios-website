@@ -181,7 +181,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
 <a class="skip" href="#main">${esc(t.skip)}</a>
 <header class="site-header${key === "home" ? "" : " solid"}" data-header>
   <div class="header-inner">
-    <a class="brand" href="${ROUTES[lang].home}" aria-label="${esc(S.brandName)} – ${esc(t.homeLabel)}"><span class="brand-crop"><img src="/assets/brand/bushyfam-logo-original.png" width="500" height="500" alt=""></span></a>
+    <a class="brand" href="${ROUTES[lang].home}" aria-label="${esc(S.brandName)} – ${esc(t.homeLabel)}"><img class="brand-logo" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt=""></a>
     <nav class="nav" aria-label="${esc(t.mainNav)}">
       <ul>
         ${nav.map(([k, l]) => `<li><a href="${navHref(k)}"${cur(k)}>${esc(l)}</a></li>`).join("\n        ")}
@@ -217,7 +217,7 @@ function footer(lang) {
   return `<footer class="site-footer">
   <div class="wrap footer-grid">
     <div>
-      <span class="brand-crop brand-crop--footer"><img src="/assets/brand/bushyfam-logo-original.png" width="500" height="500" alt="${esc(S.brandName)}" loading="lazy"></span>
+      <img class="brand-logo brand-logo--footer" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt="${esc(S.brandName)}" loading="lazy">
       <p class="muted footer-line">${esc(S.brandName)} · ${esc(tr(S, "location", lang))} · ${esc(tr(S, "reach", lang))}</p>
     </div>
     <nav aria-label="${esc(t.footerNav)}">

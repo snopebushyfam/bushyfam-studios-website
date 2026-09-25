@@ -37,8 +37,8 @@ a{color:inherit} button{font:inherit;color:inherit}
 .site-header.solid{background:rgba(0,0,0,.82);border-bottom-color:var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .header-inner{display:flex;align-items:center;gap:1rem;height:var(--header-h);max-width:calc(var(--max) + 2*var(--gutter));margin:0 auto;padding:0 var(--gutter)}
 .brand{display:block;border-radius:2px;flex:none}
-.brand-crop{--s:.36;position:relative;display:block;overflow:hidden;width:calc(272px*var(--s));height:calc(150px*var(--s))}
-.brand-crop img{position:absolute;max-width:none;width:calc(500px*var(--s));height:calc(500px*var(--s));left:calc(-114px*var(--s));top:calc(-175px*var(--s))}
+/* Logo: weiß auf transparent, Breiten wie beim bisherigen Ausschnitt */
+.brand-logo{width:98px;height:auto}
 .nav{display:none}
 .nav ul{display:flex;align-items:center;gap:clamp(1rem,2.4vw,2.4rem)}
 .nav a:not(.btn){display:inline-block;padding:.6rem .1rem;font-weight:500;font-size:.9875rem;text-decoration:none;background:linear-gradient(currentColor,currentColor) left 85%/0 1px no-repeat;transition:background-size .3s}
@@ -195,7 +195,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 }
 @media (min-width:900px){
   :root{--header-h:80px}
-  .brand-crop{--s:.42}
+  .brand-logo{width:114px}
   .nav{display:block;margin-left:auto}
   .menu-btn,.mobile-menu,.header-cta{display:none!important}
   .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;height:270vh}
@@ -233,7 +233,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:1px solid var(--line-strong);border-radius:999px;font-size:.8125rem;font-weight:500;text-decoration:none;background:none!important}
 .lang:hover{border-color:var(--white)}
 .mm-lang a{font-size:1.125rem!important;font-weight:500!important;color:var(--muted)}
-.brand-crop--footer{--s:.5}
+.brand-logo--footer{width:136px}
 .footer-line{margin-top:1rem}
 .footer-legal{margin-top:.25rem}
 .footer-legal a{color:var(--muted);font-weight:400}
