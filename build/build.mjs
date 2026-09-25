@@ -442,7 +442,7 @@ function pageProject(p, lang, i) {
   </nav>
 </article>
 ${ctaBlock(lang)}`;
-  return layout({ lang, key: "project", slug: p.slug, title: `${tr(p, "title", lang)} – ${p.client ? p.client + " – " : ""}${S.brandName}`,
+  return layout({ lang, key: "project", slug: p.slug, title: `${tr(p, "title", lang)} – ${p.client && p.client !== tr(p, "title", lang) ? p.client + " – " : ""}${S.brandName}`,
     description: tr(p, "summary", lang) || t.workLead, body, scripts: (p.media || []).some((m) => m.type === "video") ? ["video-preview.js"] : [], ogImage: p.cover.src });
 }
 
