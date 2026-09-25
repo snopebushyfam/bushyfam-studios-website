@@ -304,9 +304,11 @@ function pageHome(lang) {
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span><span>${esc(tr(H, "line2", lang))}</span></h1>
-      <p class="hero-text">${esc(tr(H, "text", lang))}</p>
-      <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a><a class="btn btn--ghost" href="${R.work}">${esc(t.seeWork)}</a></div>
+      <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <div class="hero-foot">
+        <p class="hero-text">${esc(tr(H, "text", lang))}</p>
+        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+      </div>
     </div>
   </div>
   <div class="hero-scrub" data-hero-scrub>

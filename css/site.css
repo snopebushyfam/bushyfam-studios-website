@@ -539,3 +539,30 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .notes h3{font-size:clamp(1.25rem,1.1rem + .7vw,1.625rem);font-weight:700;letter-spacing:-.01em;line-height:1.2}
 .notes .t{color:var(--muted)}
 @media (min-width:900px){.notes{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(2.5rem,5vw,6rem)}}
+
+/* =========================================================
+   V3.1 – Hero
+   ========================================================= */
+/* Hero: Der Film ist der Hero. Name groß über dem Sternenhimmel, eine Aussage, ein Knopf – leicht verzögert */
+.hero-title{font-size:clamp(3.25rem,1rem + 10vw,5.5rem);line-height:.9;letter-spacing:-.045em}
+.hero-foot{margin-top:1.1rem}
+.hero-text{display:block;margin:0;font-size:clamp(1.125rem,1rem + .6vw,1.5rem);line-height:1.3;color:var(--white);max-width:22ch}
+.hero .btn-row{display:none}
+@keyframes hero-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-foot{animation:hero-in 1.4s .8s cubic-bezier(.22,1,.36,1) both}
+@media (min-width:900px){
+  .hero{display:grid;grid-template-columns:minmax(0,1fr);height:270vh}
+  .hero-copy,.hero-scrub{grid-area:1/1}
+  .hero-copy{position:sticky;top:0;height:100vh;padding:0;display:block;z-index:2;pointer-events:none}
+  .hero-copy-inner{max-width:calc(var(--max) + 2*var(--gutter));height:100%;margin:0 auto;padding:calc(var(--header-h) + clamp(1.5rem,5vh,4rem)) var(--gutter) clamp(2rem,6vh,4.5rem);display:flex;flex-direction:column;justify-content:space-between}
+  .hero-copy a{pointer-events:auto}
+  .hero-title{font-size:clamp(4.5rem,1rem + 7.6vw,10rem);white-space:nowrap}
+  .hero-foot{display:flex;align-items:end;justify-content:space-between;gap:2rem;margin:0}
+  .hero-text{font-size:clamp(1.25rem,.9rem + .7vw,1.75rem)}
+  .hero .btn-row{display:flex;margin:0}
+  .hero-scrub{height:100%;margin:0}
+  .hero-media{width:min(100vw,calc(100vh * var(--ar,1)))}
+  .hero--static .hero-copy{position:relative;height:auto;min-height:100vh}
+  .hero--static .hero-copy-inner{min-height:100vh}
+}
+@media (prefers-reduced-motion:reduce){.hero-foot{animation:none}}
