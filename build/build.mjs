@@ -106,6 +106,14 @@ for (const p of PROJECTS) {
     if (m.poster) need(assetExists(m.poster), `${where}: Vorschaubild nicht gefunden: ${m.poster}`);
   }
 }
+// Bekannte Altlasten aus der MASON'S-Zusammenführung: falls diese Dateien noch
+// zusätzlich zu "masons.json" im Repository liegen, würde MASON'S mehrfach erscheinen.
+// Lieber der Build bricht sichtbar ab, als dass die Seite live dupliziert wird.
+var legacyMasonsFiles = ["content/projects/masons-clips.json", "content/projects/masons-produktfotografie.json"];
+for (var lf of legacyMasonsFiles) {
+  if (fs.existsSync(path.join(ROOT, lf))) errors.push(`Altlast gefunden: ${lf} liegt noch neben content/projects/masons.json. Bitte diese Datei in GitHub löschen (siehe ANLEITUNG-GITHUB-NETLIFY.md) – sonst erscheint MASON'S mehrfach.`);
+}
+
 const castSlugs = new Set();
 for (const p of CAST) {
   const where = `Besetzung „${p.name || p.__file}“`;
@@ -262,7 +270,7 @@ const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ..
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const logos = CLIENTS.filter((c) => c.logo);
+  const namedClients = CLIENTS.filter((c) => c.name);
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
@@ -324,7 +332,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   <div class="wrap">
     <p class="eyebrow" id="h-svc">${esc(t.nav.services)}</p>
     <ul class="svc-rows">
-      ${(SERV.items || []).map((s) => `<li><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
+      ${(SERV.items || []).map((s) => `<li>${s.image ? `<div class="svc-thumb">${img(s.image, tr(s, "imageAlt", lang) || "", { sizes: "160px" })}</div>` : ""}<div class="svc-text"><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></div></li>`).join("\n      ")}
     </ul>
     ${tr(SERV, "note", lang) ? `<p class="svc-note">${esc(tr(SERV, "note", lang))}</p>` : ""}
   </div>
@@ -343,9 +351,12 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   </div>
 </section>
 
-${logos.length >= 5 ? `<section class="section clients" aria-labelledby="h-clients">
+${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
   <div class="wrap"><h2 class="eyebrow" id="h-clients">${esc(t.clients)}</h2>
-    <ul class="client-row">${logos.map((c) => `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">` : ""}${img(c.logo, c.name, { sizes: "160px" })}${c.url ? `<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}</li>`).join("")}</ul>
+    <ul class="client-row">${namedClients.map((c) => {
+      const mark = c.logo ? img(c.logo, c.name, { sizes: "160px" }) : `<span class="client-word">${esc(c.name)}</span>`;
+      return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
+    }).join("")}</ul>
   </div>
 </section>` : ""}
 

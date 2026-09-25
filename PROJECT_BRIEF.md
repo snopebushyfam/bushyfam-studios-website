@@ -228,3 +228,25 @@ Neue Sammlung **Besetzung** für Menschen, mit denen das Studio arbeitet: Models
 - Objects in Motion inhaltlich weiterhin mit MASON’S-Studiofotos als Platzhalter, keine echten freigestellten Produktaufnahmen. Optisch leicht aufgelockert (organischere Anordnung), aber echte Substanz kommt erst mit echtem Material.
 - Tablet-Breiten 768/820/1024 nur bei 768 geprüft, nicht alle drei einzeln.
 - Case-Study-Baukasten (Kontext → Prozess → Behind-the-Scenes als eigene Blöcke) nicht gebaut, nur Titelbild + Galerie wie zuvor.
+
+## Version 1.4 (25.09.2026) – V2.5 Reparatur- und Qualitätsdurchgang
+
+**Zugriffsgrenzen zuerst:** Die Live-Seite konnte nicht automatisiert geprüft werden (`robots.txt` blockiert das bewusst, solange `launch: false` ist – dieselbe Regel, die auch Suchmaschinen fernhält). Es gibt weiterhin keinen GitHub- oder Netlify-Zugriff, Deploys geschehen ausschließlich durch dich. Die Prüfung erfolgte deshalb am lokal gebauten, identischen Code.
+
+**Root Cause der MASON’S-Dopplung bestätigt:** Du hast berichtet, `update-v13.zip` wurde hochgeladen, die Anweisung zum Löschen von `masons-clips.json` und `masons-produktfotografie.json` aber noch nicht ausgeführt. Das bedeutet: Auf der Live-Seite lag zu diesem Zeitpunkt vermutlich die zusammengeführte `masons.json` **zusätzlich** zu den beiden alten Einzeldateien – MASON’S wäre also dreifach aufgetaucht. Simuliert und bestätigt.
+
+**Neue, dauerhafte Sicherung:** Der Build bricht ab, wenn diese beiden Dateien noch vorhanden sind, mit einer Meldung, die genau sagt, was zu tun ist. Kein CSS-Verstecken, sondern eine harte Prüfung an der Wurzel des Problems – das war ausdrücklich gefordert. **Das bedeutet: Der nächste Deploy schlägt fehl, bis die zwei Dateien gelöscht sind. Das ist beabsichtigt.**
+
+**Selected Clients & Collaborations aktiviert.** Vorher erst ab fünf Logos sichtbar – das war meine eigene, vorsichtigere Entscheidung. Jetzt erscheint der Abschnitt schon mit den zwei echten, vorhandenen Namen: MASON’S als Text-Wortmarke (kein Logo-Bild vorhanden), Nelvie Tiafack mit dem echten NEV-Logo.
+
+**Leistungen mit echten Bildbeispielen.** Drei der vier Zeilen (Film & Content, Photography, Brand & Design) zeigen jetzt ein kleines, echtes Bild aus vorhandener Arbeit – durchgängig sichtbar statt hover-abhängig, funktioniert dadurch identisch auf Mobilgeräten. „Digital & Growth“ bleibt ohne Bild, weil dafür noch keine echte Arbeit existiert – bewusst nicht erfunden.
+
+**Studio-Text geschärft:** Der vom Brief explizit genannte generische Satz („His strength lies in understanding other people's ideas…“) wurde ersetzt durch eine konkretere Formulierung.
+
+**Objects in Motion – Bildqualität geprüft, nicht nur vermutet.** Die vier Produktfotos wurden pixelgenau gemessen: Die Eckwerte liegen bei 0–5 von 255, praktisch reines Schwarz. Das im Brief befürchtete Problem sichtbarer Bildkanten besteht bei diesen vier Dateien tatsächlich nicht. Trotzdem ergänzt: derselbe weiche Randverlauf wie bei den Filmen (optische Konsistenz) und mehr Größenvarianz für ein organischeres Bild.
+
+**Next-Project-Logik geprüft:** Mit aktuell zwei Projekten verlinkt MASON’S korrekt zu N.E.V. (nicht zu sich selbst). Bei nur zwei Projekten ist ein Wechsel zwischen beiden unvermeidbar und kein Fehler.
+
+**Datenschutz-Entwurf hinterlegt.** Die Seite zeigte bisher „in Vorbereitung“. Jetzt steht dort ein vollständiger Entwurf in beiden Sprachen, mit klar als solchen markierten Lücken (`[BITTE ERGÄNZEN]`) für Anschrift und E-Mail sowie dem Hinweis, dass die Seite juristisch geprüft werden muss, bevor sie live geht.
+
+**Kontaktformular bewusst weiterhin nicht live geschaltet.** Der Brief nennt das ausdrücklich launch-blockierend und verlangt, es „richtig zu lösen, nicht vorzutäuschen“ – das ist hier keine Codefrage, sondern es fehlen echte Angaben: die geschäftliche E-Mail-Adresse (`settings.json` → `email` ist weiterhin leer) und die Bestätigung, dass Netlifys automatische Formularerkennung für dieses Projekt aktiv ist. Technisch ist alles fertig (Netlify Forms, Validierung, Spam-Schutz, echte Erfolgs-/Fehlerzustände im Code vorhanden). Das Formular bleibt im ehrlichen Vorschau-Modus, bis diese drei Dinge da sind: E-Mail-Adresse, geprüfte Datenschutzerklärung, bestätigte Formularerkennung.

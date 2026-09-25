@@ -176,3 +176,18 @@ Getestet mit zwei Testpersonen (Model, DJ) und einer Person ohne Einwilligung, d
 | „Powered by Netlify“ | In Quellcode und `dist/` nicht vorhanden – bestätigt als reine Plattform-UI, nicht Teil der Website |
 
 **Nicht geprüft:** 820/1024 px einzeln, echte Geräte, Safari, Netlify Forms im Livebetrieb, echte Objects-in-Motion-Fotografie.
+
+## Version 1.4 (25.09.2026) – V2.5
+
+| Prüfung | Ergebnis |
+|---|---|
+| Alle Hauptseiten | 27 Aufrufe bei 390/768/1440 px, je eine H1, kein Überlauf, keine Fehler |
+| MASON’S-Dopplung, simuliert | Build bricht mit klarer Meldung ab, solange die alten Dateien neben `masons.json` liegen; läuft sauber durch, sobald sie fehlen |
+| MASON’S → nächstes Projekt | Verlinkt korrekt zu N.E.V., nicht zu sich selbst |
+| Kunden-Abschnitt | Erscheint jetzt mit 2 echten Namen; Logo-Bild und Text-Wortmarke beide getestet |
+| Leistungen mit Bild | 3 von 4 Zeilen zeigen ein echtes Bild, sichtbar ohne Hover auf allen Breiten |
+| Datenschutz-Entwurf | Lädt korrekt, Platzhalter-Markierungen vorhanden |
+| Formular | Weiterhin ehrlicher Vorschau-Modus, technisch unverändert bereit |
+| Bildschwarzwerte Objects in Motion | Gemessen: 0–5 von 255 an allen vier Bildkanten (praktisch reines Schwarz) |
+
+**Nicht geprüft:** die tatsächliche Live-URL (robots-gesperrt für automatisierten Zugriff), 820/1024 px einzeln, echte Geräte, Safari, Netlify-Formularerkennung im Livebetrieb.

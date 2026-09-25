@@ -273,6 +273,9 @@ collections:
               - { label: "Begriff (EN)", name: title_en, widget: string, required: false }
               - { label: "Erklärung (DE)", name: text_de, widget: text }
               - { label: "Erklärung (EN)", name: text_en, widget: text, required: false }
+              - { label: "Bildbeispiel (optional)", name: image, widget: image, required: false, hint: "Echte Arbeit, die zu dieser Leistung passt – leer lassen, wenn noch keine passt" }
+              - { label: "Bildbeschreibung (DE)", name: imageAlt_de, widget: string, required: false }
+              - { label: "Bildbeschreibung (EN)", name: imageAlt_en, widget: string, required: false }
           - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "z. B. „Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.“" }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
 

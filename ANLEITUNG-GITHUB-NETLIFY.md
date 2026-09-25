@@ -121,3 +121,27 @@ ZIP zusätzlich von Hand entfernen:
 
 Ohne diesen Schritt erscheint MASON’S doppelt: einmal als der neue zusammengeführte
 Fall, einmal als die beiden alten Einzelprojekte.
+
+
+---
+
+## ⚠️ Wichtig bei diesem Update (v1.4): Build schlägt jetzt absichtlich fehl
+
+Dieses Update enthält eine neue Sicherung. **Wenn `masons-clips.json` und
+`masons-produktfotografie.json` noch in `content/projects/` liegen, bricht
+der nächste Deploy mit einem Fehler ab** – das ist gewollt, damit MASON’S
+nicht dreifach live geht.
+
+**Bitte in dieser Reihenfolge vorgehen:**
+
+1. Diese ZIP wie gewohnt komplett hochladen und committen.
+2. **Sofort danach**, noch bevor du zu Netlify wechselst: in GitHub zu
+   `content/projects/` gehen und dort löschen:
+   - `masons-clips.json`
+   - `masons-produktfotografie.json`
+
+   (Datei anklicken → Mülltonne oben rechts → Commit.)
+3. Erst danach in Netlify **Deploy project without cache** auslösen.
+
+Falls der Deploy trotzdem fehlschlägt: im Deploy-Log nachsehen, welche
+Datei laut Fehlermeldung noch vorhanden ist, und genau die löschen.

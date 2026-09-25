@@ -4,19 +4,28 @@
       "title_de": "Film & Content",
       "title_en": "Film & Content",
       "text_de": "Werbeclips, Social Content, Reels und Kampagnenfilme.",
-      "text_en": "Commercials, social content, reels and campaign films."
+      "text_en": "Commercials, social content, reels and campaign films.",
+      "image": "/assets/work/masons/videos/masons-lounge.jpg",
+      "imageAlt_en": "Still from a MASON’S commercial",
+      "imageAlt_de": "Still from a MASON’S commercial"
     },
     {
       "title_de": "Fotografie",
       "title_en": "Photography",
       "text_de": "Produkte, Kampagnen und Editorial.",
-      "text_en": "Products, campaigns and editorial."
+      "text_en": "Products, campaigns and editorial.",
+      "image": "/assets/work/masons/photos/masons-cocktail-melone-800.webp",
+      "imageAlt_en": "Product photography for MASON’S",
+      "imageAlt_de": "Product photography for MASON’S"
     },
     {
       "title_de": "Marke & Design",
       "title_en": "Brand & Design",
       "text_de": "Identität, Art Direction und Grafikdesign.",
-      "text_en": "Identity, art direction and graphic design."
+      "text_en": "Identity, art direction and graphic design.",
+      "image": "/assets/work/nelvie-tiafack/nev3-logo-gelb.png",
+      "imageAlt_en": "NEV logo for Nelvie Tiafack",
+      "imageAlt_de": "NEV logo for Nelvie Tiafack"
     },
     {
       "title_de": "Digital & Growth",
