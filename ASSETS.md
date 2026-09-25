@@ -30,8 +30,8 @@ Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASO
 | Benötigt | Status | Platzhalter |
 |---|---|---|
 | Bestätigter dunkler Website-Entwurf | nicht im Chat vorhanden | – |
-| BushyFam-Logo als SVG oder transparentes PNG (mind. 1000 px) | fehlt | Original-PNG per Ausschnitt |
-| Favicon / App-Icon in finaler Qualität (aus SVG) | fehlt | provisorisch: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Symbol aus dem Original-Logo ausgeschnitten, mittig auf Schwarz gesetzt, nur skaliert |
+| BushyFam-Logo als SVG | fehlt (transparentes PNG liegt seit 25.09.2026 vor, siehe unten) | – |
+| Favicon / App-Icon aus SVG | fehlt | seit 25.09.2026 aus dem transparenten Logo: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Planeten-Symbol mittig auf Schwarz, nur skaliert |
 | Kamera-Originale bzw. finale Exporte der MASON’S-Fotos | teilweise unklar | Uploads verwendet |
 | Social-Sharing-Bild (Open Graph) | fehlt | keins eingebunden |
 
@@ -56,3 +56,29 @@ Poppins (Regular, Medium, Bold) von Indian Type Foundry, Lizenz **SIL Open Font 
 
 Hinweis: Im quadratischen Einstiegsvideo ist der Schriftzug „BUSHYFAM STUDIOS“ auf dem UFO-Rumpf am unteren Bildrand angeschnitten („STUDIOS“ fehlt). Liegt am Bildausschnitt der Datei.
 Nicht mehr verwendet und im Repository löschbar: `assets/hero/hero-ufo-scrub-540/720/1080.mp4`, `assets/hero/hero-ufo-poster.jpg`.
+
+## Nachtrag 25.09.2026 – Einstiegsvideo
+
+| Upload | Inhalt | Verwendung | Web-Dateien |
+|---|---|---|---|
+| `hf_20260925_143923_….mp4` (HEVC 10 Bit, 1080 × 1920, 24 fps, 7,05 s, mit Ton) | Frau im UFO-Cockpit, Schriftzug „BUSHYFAM STUDIOS“ vollständig sichtbar, Zoom bis in die Pupille, endet schwarz (ab ≈ 6,7 s) | Einstieg (ersetzt `hero-cockpit-sq`) | `assets/hero/hero-cockpit-hoch-540/720/1080.mp4` (540 × 960, 720 × 1280, 1080 × 1920; H.264, nur Keyframes, ohne Ton), Standbild `hero-cockpit-hoch-poster.jpg` (erstes Bild) |
+
+Die quadratischen Dateien `assets/hero/hero-cockpit-sq-*` wurden entfernt. Der Hinweis zum angeschnittenen Schriftzug oben gilt damit nicht mehr.
+
+## Nachtrag 25.09.2026 – Logo
+
+| Upload | Inhalt | Verwendung | Datei im Projekt |
+|---|---|---|---|
+| `image.png` (PNG, 813 × 813, weiß auf transparent) | BushyFam-Studios-Logo | Header und Footer (ersetzt den CSS-Ausschnitt aus `bushyfam-logo-original.png`) | `assets/brand/bushyfam-logo-weiss.png` (664 × 362, nur leerer Rand abgeschnitten, sonst unverändert) |
+
+Die Favicons wurden daraus neu erzeugt (Planeten-Symbol auf Schwarz); die Links tragen `?v=2`, damit zwischengespeicherte alte Icons ersetzt werden.
+
+## Nachtrag 25.09.2026 – Einstiegsfilm auf Telefonen als Einzelbilder
+
+Safari auf dem iPhone braucht für jeden Sprung im Video etwa 100 ms; beim Scrollen kamen so nur ~10 neue Filmbilder pro Sekunde an (Ruckeln). Telefone und Tablets zeigen den Einstiegsfilm deshalb als Einzelbilder auf einer Zeichenfläche, der Desktop behält das Video.
+
+| Quelle | Dateien | Hinweis |
+|---|---|---|
+| `hf_20260925_143923_….mp4` (alle 169 Bilder) | `assets/hero/hero-cockpit-hoch-frames/f-001.webp` … `f-169.webp` (540 × 960, WebP Qualität 60, zusammen 2,6 MB) | Eingetragen unter Einstellungen → Einstieg → Film → „Einzelbilder fürs Handy“ mit `forVideo` = `hero-cockpit-hoch-540.mp4`. Wird der Film ausgetauscht, passt `forVideo` nicht mehr und Telefone bekommen automatisch wieder das Video. |
+
+Neue Einzelbilder für einen neuen Film: `ffmpeg -i film.mp4 -vf "scale=540:960:flags=lanczos,format=yuv420p" -c:v libwebp -quality 60 -compression_level 6 ordner/f-%03d.webp`, dann Ordner, Anzahl und zugehörige Datei eintragen.

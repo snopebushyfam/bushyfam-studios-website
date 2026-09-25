@@ -1,12 +1,13 @@
 {
   "launch": false,
-  "siteUrl": "",
+  "siteUrl": "https://inspiring-mandazi-b55d10.netlify.app",
   "brandName": "BushyFam Studios",
   "location_de": "Köln",
   "location_en": "Cologne",
   "reach_de": "Remote-Zusammenarbeit weltweit möglich",
   "reach_en": "Remote-friendly worldwide",
   "email": "",
+  "whatsapp": "+49 1514 4930658",
   "instagramUrl": "https://www.instagram.com/bushyfamstudios/",
   "instagramHandle": "@bushyfamstudios",
   "seo": {
@@ -17,32 +18,37 @@
   },
   "hero": {
     "line1_de": "BushyFam Studios",
-    "line2_de": "Film. Design. Digital.",
+    "line2_de": "",
     "line1_en": "BushyFam Studios",
-    "line2_en": "Film. Design. Digital.",
-    "text_de": "Wir schaffen Dinge, die es wert sind, angesehen zu werden.",
-    "text_en": "We create things worth looking at.",
-    "outro_de": "Kreativstudio für Markenaufbau, Content und digitales Marketing.",
-    "outro_en": "A creative studio for branding, content and digital marketing.",
+    "line2_en": "",
+    "text_de": "Wir machen Dinge, die man nicht übersieht.",
+    "text_en": "We make things worth looking at.",
+    "outro_de": "Ein Kreativstudio für Film, Fotografie, Design und Digital.",
+    "outro_en": "A creative studio for film, photography, design and digital.",
     "video": {
       "sources": [
         {
-          "src": "/assets/hero/hero-cockpit-sq-540.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-540.mp4",
           "width": 540
         },
         {
-          "src": "/assets/hero/hero-cockpit-sq-720.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-720.mp4",
           "width": 720
         },
         {
-          "src": "/assets/hero/hero-cockpit-sq-1080.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-1080.mp4",
           "width": 1080,
           "desktopOnly": true
         }
       ],
-      "poster": "/assets/hero/hero-cockpit-sq-poster.jpg",
+      "frames": {
+        "folder": "/assets/hero/hero-cockpit-hoch-frames",
+        "count": 169,
+        "forVideo": "/assets/hero/hero-cockpit-hoch-540.mp4"
+      },
+      "poster": "/assets/hero/hero-cockpit-hoch-poster.jpg",
       "width": 1080,
-      "height": 1080,
+      "height": 1920,
       "description_de": "Kurzfilm: Eine Frau blickt aus einem UFO-Cockpit mit BushyFam-Schriftzug, die Kamera fährt bis in ihre Pupille.",
       "description_en": "Short film: a woman looks out of a UFO cockpit with the BushyFam lettering; the camera moves all the way into her pupil."
     }
@@ -79,8 +85,5 @@
     "duration": "",
     "title_de": "Showreel",
     "title_en": "Showreel"
-  },
-  "form": {
-    "enabled": false
   }
 }

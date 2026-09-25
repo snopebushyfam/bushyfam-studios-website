@@ -46,7 +46,7 @@ Kontaktformular, in dem der Name schon in der Nachricht steht.
 ## Weitere Bereiche
 
 - **Kunden & Partner**: Name, Logo, Website. Die Logoleiste auf der Startseite erscheint automatisch **ab fünf Logos**.
-- **Seiten & Einstellungen → Allgemein**: Ort, E-Mail, Instagram, Suchmaschinen-Texte, die beiden Filme, Showreel, Formular-Freigabe, Freigabe für Suchmaschinen.
+- **Seiten & Einstellungen → Allgemein**: Ort, E-Mail, Instagram, Suchmaschinen-Texte, die beiden Filme, Showreel, Freigabe für Suchmaschinen.
 - **Startseite**: Überschriften und Kurztexte.
 - **Leistungen**: die vier Begriffe zum Aufklappen.
 - **Studio**: Porträt, Absätze, Stationen & Projekte, Schritte der Zusammenarbeit.
