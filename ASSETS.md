@@ -72,3 +72,13 @@ Die quadratischen Dateien `assets/hero/hero-cockpit-sq-*` wurden entfernt. Der H
 | `image.png` (PNG, 813 × 813, weiß auf transparent) | BushyFam-Studios-Logo | Header und Footer (ersetzt den CSS-Ausschnitt aus `bushyfam-logo-original.png`) | `assets/brand/bushyfam-logo-weiss.png` (664 × 362, nur leerer Rand abgeschnitten, sonst unverändert) |
 
 Die Favicons wurden daraus neu erzeugt (Planeten-Symbol auf Schwarz); die Links tragen `?v=2`, damit zwischengespeicherte alte Icons ersetzt werden.
+
+## Nachtrag 25.09.2026 – Einstiegsfilm auf Telefonen als Einzelbilder
+
+Safari auf dem iPhone braucht für jeden Sprung im Video etwa 100 ms; beim Scrollen kamen so nur ~10 neue Filmbilder pro Sekunde an (Ruckeln). Telefone und Tablets zeigen den Einstiegsfilm deshalb als Einzelbilder auf einer Zeichenfläche, der Desktop behält das Video.
+
+| Quelle | Dateien | Hinweis |
+|---|---|---|
+| `hf_20260925_143923_….mp4` (alle 169 Bilder) | `assets/hero/hero-cockpit-hoch-frames/f-001.webp` … `f-169.webp` (540 × 960, WebP Qualität 60, zusammen 2,6 MB) | Eingetragen unter Einstellungen → Einstieg → Film → „Einzelbilder fürs Handy“ mit `forVideo` = `hero-cockpit-hoch-540.mp4`. Wird der Film ausgetauscht, passt `forVideo` nicht mehr und Telefone bekommen automatisch wieder das Video. |
+
+Neue Einzelbilder für einen neuen Film: `ffmpeg -i film.mp4 -vf "scale=540:960:flags=lanczos,format=yuv420p" -c:v libwebp -quality 60 -compression_level 6 ordner/f-%03d.webp`, dann Ordner, Anzahl und zugehörige Datei eintragen.

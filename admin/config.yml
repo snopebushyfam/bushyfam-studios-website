@@ -205,6 +205,16 @@ collections:
                       - { label: "Datei", name: src, widget: file }
                       - { label: "Breite (px)", name: width, widget: number, value_type: int }
                       - { label: "Nur Desktop", name: desktopOnly, widget: boolean, required: false, default: false }
+                  - label: "Einzelbilder fürs Handy"
+                    name: frames
+                    widget: object
+                    required: false
+                    collapsed: true
+                    hint: "Ruckelfreies Scrollen auf Telefonen. Werden automatisch nicht verwendet, sobald der Film ausgetauscht wird (dann läuft das Video)."
+                    fields:
+                      - { label: "Ordner", name: folder, widget: string, required: false }
+                      - { label: "Anzahl Bilder", name: count, widget: number, value_type: int, required: false }
+                      - { label: "Gehört zu Datei", name: forVideo, widget: string, required: false }
                   - { label: "Standbild", name: poster, widget: image }
                   - { label: "Breite (px)", name: width, widget: number, value_type: int }
                   - { label: "Höhe (px)", name: height, widget: number, value_type: int }

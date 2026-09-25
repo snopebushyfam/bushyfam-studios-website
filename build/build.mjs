@@ -130,6 +130,20 @@ for (const p of CAST) {
 }
 for (const o of OBJECTS) need(assetExists(o.image), `Objekt „${o.title_de || o.__file}“: Bild nicht gefunden: ${o.image}`);
 for (const v of [S.hero?.video, S.ending?.video]) for (const s of (v?.sources || [])) need(assetExists(s.src), `Film-Datei nicht gefunden: ${s.src}`);
+/* Einzelbilder fürs Handy (f-001.webp …): nur verwenden, wenn sie zum eingetragenen Film gehören –
+   nach einem Filmtausch im Admin läuft sonst wieder das Video statt veralteter Bilder. */
+const frameName = (i) => `f-${String(i).padStart(3, "0")}.webp`;
+const HERO_FRAMES = (() => {
+  const F = S.hero?.video?.frames;
+  if (!F || !F.folder || !F.count) return null;
+  if (!(S.hero.video.sources || []).some((s) => s.src === F.forVideo)) {
+    console.warn(`Hinweis: Einzelbilder (${F.folder}) gehören nicht zum eingetragenen Einstiegsfilm – Handys bekommen das Video.`);
+    return null;
+  }
+  const base = F.folder.replace(/\/+$/, "");
+  for (let i = 1; i <= F.count; i++) need(assetExists(`${base}/${frameName(i)}`), `Einstiegsfilm: Einzelbild fehlt: ${base}/${frameName(i)}`);
+  return { base: url(base) + "/", count: F.count };
+})();
 if (errors.length) {
   console.error("\n✖ Build abgebrochen – bitte im Admin korrigieren:\n" + errors.map((e) => "  • " + e).join("\n") + "\n");
   process.exit(1);
@@ -289,7 +303,7 @@ function pageHome(lang) {
   </div>
   <div class="hero-scrub" data-hero-scrub>
     <div class="hero-stage">
-      <figure class="hero-media" data-hero-media data-sources="${sourcesAttr(V)}">
+      <figure class="hero-media" data-hero-media data-sources="${sourcesAttr(V)}"${HERO_FRAMES ? ` data-frames="${esc(JSON.stringify(HERO_FRAMES))}"` : ""}>
         <img class="hero-poster" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="${esc(tr(V, "description", lang))}" fetchpriority="high" decoding="async">
         <video class="hero-video" muted playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" width="${V.width}" height="${V.height}"></video>
       </figure>

@@ -41,6 +41,11 @@
           "desktopOnly": true
         }
       ],
+      "frames": {
+        "folder": "/assets/hero/hero-cockpit-hoch-frames",
+        "count": 169,
+        "forVideo": "/assets/hero/hero-cockpit-hoch-540.mp4"
+      },
       "poster": "/assets/hero/hero-cockpit-hoch-poster.jpg",
       "width": 1080,
       "height": 1920,
