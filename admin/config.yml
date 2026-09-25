@@ -285,6 +285,8 @@ collections:
           - { label: "Name", name: name, widget: string }
           - { label: "Rolle (DE)", name: role_de, widget: string }
           - { label: "Rolle (EN)", name: role_en, widget: string }
+          - { label: "Großes Statement ganz oben (DE)", name: statement_de, widget: text, required: false, hint: "Ein großer, kurzer Satz – erscheint sehr groß direkt unter dem Namen" }
+          - { label: "Großes Statement ganz oben (EN)", name: statement_en, widget: text, required: false }
           - { label: "Einleitung (DE)", name: lead_de, widget: text }
           - { label: "Einleitung (EN)", name: lead_en, widget: text }
           - label: "Porträt"
@@ -316,6 +318,7 @@ collections:
                 widget: select
                 required: false
                 options: ["Art", "Exhibition", "Publishing", "Film", "BushyFam"]
+              - { label: "Groß darstellen", name: feature, widget: boolean, default: false, required: false, hint: "Bild über volle Breite statt klein neben dem Text – für die stärksten Momente wie das Museum" }
               - { label: "Titel (DE)", name: title_de, widget: string }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }

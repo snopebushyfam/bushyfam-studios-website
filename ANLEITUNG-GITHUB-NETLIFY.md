@@ -106,3 +106,18 @@ Du musst dazu in Netlify nichts einstellen, die Datei hat Vorrang vor den Einste
 2. **Forms** → **Formularerkennung aktivieren**, damit das Kontaktformular Anfragen entgegennimmt. Danach unter **Notifications** eine E-Mail-Benachrichtigung einrichten.
 3. Erst wenn beides steht **und** die Datenschutzerklärung fertig ist, im Admin unter *Allgemein → Kontaktformular* **„Formular freigeschaltet“** einschalten. Vorher sagt das Formular ehrlich, dass nichts gesendet wird.
 4. **Für Suchmaschinen freigeben** (im Admin unter *Allgemein*) erst einschalten, wenn Domain, Impressum und Datenschutz stehen. Solange bleibt die Seite auf `noindex`.
+
+---
+
+## Wichtig bei diesem Update (v1.3): zwei Dateien manuell löschen
+
+MASON’S wurde von zwei getrennten Projekten zu einem zusammengeführt. GitHub-Uploads
+löschen nie automatisch alte Dateien, deshalb bitte **nach** dem Hochladen dieser
+ZIP zusätzlich von Hand entfernen:
+
+1. In GitHub zu `content/projects/` navigieren.
+2. `masons-clips.json` öffnen → Mülltonne oben rechts → Commit.
+3. `masons-produktfotografie.json` öffnen → Mülltonne oben rechts → Commit.
+
+Ohne diesen Schritt erscheint MASON’S doppelt: einmal als der neue zusammengeführte
+Fall, einmal als die beiden alten Einzelprojekte.

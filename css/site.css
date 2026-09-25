@@ -384,3 +384,35 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .person-actions{margin-top:2rem}
 .station-tag{margin-bottom:.6rem}
 .cta .btn--primary::after{content:" ↗"}
+
+/* =========================================================
+   V2 – Feinschliff
+   ========================================================= */
+:is(h1,h2,h3,[id]){scroll-margin-top:calc(var(--header-h) + 1.5rem)}
+
+/* Selected Work: Nummer, Kontextsatz, "View case" */
+.feature-cap{display:grid;grid-template-columns:auto 1fr;gap:1rem 1.5rem;align-items:start;padding-block:1.5rem}
+.feature-no{font-size:.9375rem;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:.3rem}
+.feature-cap-text{display:grid;gap:.4rem}
+.feature-summary{color:var(--muted);max-width:42rem;margin-top:.25rem}
+.feature-view{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem;font-size:.9375rem;font-weight:500}
+.feature-link:hover .feature-view{text-decoration:underline;text-underline-offset:4px}
+.work-page-list .feature{padding-bottom:0}
+
+/* Studio: großes Eröffnungsstatement */
+.studio-statement{padding-bottom:clamp(2.5rem,5vw,4rem)}
+.studio-statement p{font-size:clamp(1.75rem,1.1rem + 3vw,3.25rem);font-weight:700;letter-spacing:-.025em;line-height:1.12;max-width:22ch}
+
+/* Stationen: einzelne Momente großformatig */
+.station--feature{grid-template-columns:1fr!important}
+.station--feature img{max-width:none;width:100%;aspect-ratio:16/9;object-fit:cover;margin-bottom:1.5rem}
+@media (min-width:900px){.station--feature{display:block}.station--feature > div{max-width:42rem}}
+
+/* Objects in Motion: ruhigere Pause-Schaltfläche, etwas organischere Anmutung */
+.marquee-toggle{border-color:transparent;padding:.4rem .3rem;font-size:.8125rem;color:var(--muted)}
+.marquee-toggle:hover{color:var(--white);border-color:transparent}
+.obj-tile:nth-child(3n+1){transform:translateY(6px)}
+.obj-tile:nth-child(3n+2){transform:translateY(-4px)}
+
+/* Footer: Instagram-Link etwas ruhiger als der primäre Fließtext */
+.footer-line{color:var(--muted)}

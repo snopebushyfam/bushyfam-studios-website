@@ -1,0 +1,78 @@
+{
+  "slug": "masons",
+  "order": 1,
+  "featured": true,
+  "category": "video",
+  "client": "MASON’S",
+  "year": "2026",
+  "title_de": "MASON’S",
+  "title_en": "MASON’S",
+  "summary_de": "Laufende visuelle Partnerschaft: Werbeclips, Social Content und Produktfotografie für MASON’S.",
+  "summary_en": "An ongoing visual partnership — commercial films, social content and product photography for MASON’S.",
+  "body_de": "Film · Fotografie · Social",
+  "body_en": "Film · Photography · Social",
+  "cover": {
+    "src": "/assets/work/masons/videos/masons-lounge.jpg",
+    "alt_de": "Standbild: Gäste in einer Lounge",
+    "alt_en": "Still: guests in a lounge"
+  },
+  "media": [
+    {
+      "type": "video",
+      "src": "/assets/work/masons/videos/masons-lounge.mp4",
+      "poster": "/assets/work/masons/videos/masons-lounge.jpg",
+      "title_de": "Lounge-Clip",
+      "title_en": "Lounge clip",
+      "duration": "29 s",
+      "audio": true,
+      "alt_de": "",
+      "alt_en": ""
+    },
+    {
+      "type": "video",
+      "src": "/assets/work/masons/videos/masons-drink-einschenken.mp4",
+      "poster": "/assets/work/masons/videos/masons-drink-einschenken.jpg",
+      "title_de": "Drink-Clip „Einschenken“",
+      "title_en": "Drink clip “Pouring”",
+      "duration": "7 s",
+      "audio": true,
+      "alt_de": "",
+      "alt_en": ""
+    },
+    {
+      "type": "video",
+      "src": "/assets/work/masons/videos/masons-drink-bar.mp4",
+      "poster": "/assets/work/masons/videos/masons-drink-bar.jpg",
+      "title_de": "Drink-Clip „Bar“",
+      "title_en": "Drink clip “Bar”",
+      "duration": "7 s",
+      "audio": false,
+      "alt_de": "",
+      "alt_en": ""
+    },
+    {
+      "type": "image",
+      "src": "/assets/work/masons/photos/masons-longdrink-orange-800.webp",
+      "alt_de": "Rot-oranger Longdrink mit Orangenscheiben in einem geschliffenen Glas vor schwarzem Hintergrund",
+      "alt_en": "Red-orange long drink with orange slices in a cut-crystal glass against a black background"
+    },
+    {
+      "type": "image",
+      "src": "/assets/work/masons/photos/masons-eisbecher-800.webp",
+      "alt_de": "Eisbecher mit Vanilleeis, Schokoladensauce und Keksen vor schwarzem Hintergrund",
+      "alt_en": "Sundae with vanilla ice cream, chocolate sauce and biscuits against a black background"
+    },
+    {
+      "type": "image",
+      "src": "/assets/work/masons/photos/masons-cocktail-melone-800.webp",
+      "alt_de": "Roter Cocktail mit Sahnehaube und Melonenscheibe im Hurricane-Glas vor schwarzem Hintergrund",
+      "alt_en": "Red cocktail with whipped cream and a melon slice in a hurricane glass against a black background"
+    },
+    {
+      "type": "image",
+      "src": "/assets/work/masons/photos/masons-martini-kiwi-800.webp",
+      "alt_de": "Roter Frozen-Drink mit Kiwischeibe im Martiniglas vor schwarzem Hintergrund",
+      "alt_en": "Red frozen drink with a kiwi slice in a martini glass against a black background"
+    }
+  ]
+}

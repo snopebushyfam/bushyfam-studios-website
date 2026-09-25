@@ -205,3 +205,26 @@ Neue Sammlung **Besetzung** für Menschen, mit denen das Studio arbeitet: Models
 - *Vollflächige Case-Study-Hero-Bilder auf Projektseiten* – die bestehende Projektseite (Titel, Metadaten, Galerie) wurde nicht umgebaut, nur die Startseiten-Vorschau. Wäre der nächste sinnvolle Schritt, wenn gewünscht.
 
 **Weiterhin offen:** echte Objects-in-Motion-Fotos, E-Mail, Impressum/Datenschutz, Domain, Logo als SVG.
+
+## Version 1.3 (25.09.2026) – V2-Verfeinerung
+
+**MASON’S zu einem Fall zusammengeführt.** Vorher zwei getrennte Projekteinträge desselben Kunden (Clips, Produktfotografie), jetzt ein Case mit allen 10 Medien, Kontextsatz „An ongoing visual partnership“ und Disziplinen „Film · Photography · Social“. Die Kategorie bleibt technisch einwertig (Auswahlfeld, kein Mehrfachtag) – Disziplinen stehen deshalb als Text, nicht als zusätzliche Filterkategorie. Eine echte Mehrfach-Kategorisierung wäre der nächste Schritt, falls mehr solcher Fälle dazukommen.
+
+**Ausgewählte Arbeiten & Arbeiten-Seite:** große Blöcke jetzt mit Projektnummer, Kunde, Disziplinen, Jahr, kurzem Kontextsatz und „View case ↗“ statt nur Bild und Titel. Auf der Arbeiten-Seite erscheinen Kategorie-Filter erst automatisch, wenn sie echten Nutzen bringen (mindestens zwei Kategorien mit je mindestens zwei Arbeiten, oder insgesamt sechs oder mehr Arbeiten) – bei zwei Projekten verschwinden die kleinen „(1)“-Zähler, die das Portfolio kleiner wirken ließen als nötig.
+
+**Founder-Positionierung:** „Founder & Creative Director“ statt „Founder & your direct contact“. Der Home-Teaser sagt jetzt, wofür er steht, statt nur, dass man ihn erreichen kann. Bewusst **nicht** auf durchgängige Ich-Form umgestellt (der Brief schlug das vor) – der Rest der Seite schreibt konsistent in der dritten Person, ein Wechsel mitten im Text hätte uneinheitlich gewirkt. Keine neuen Auszeichnungen oder Erfolge behauptet, nur vorhandene Fakten neu positioniert.
+
+**Studio-Seite redaktionell aufgewertet:** großes Eröffnungsstatement direkt unter dem Namen, „Stationen & Projekte“ heißt jetzt „A Creative Path“, Museum und Buch bekommen als stärkste Momente ein vollformatiges Bild statt der kleinen Randspalte. Neues Admin-Feld „Groß darstellen“ pro Station, damit du das künftig selbst steuern kannst.
+
+**Sticky-Header-Problem behoben:** Überschriften und Sprungmarken bekommen jetzt automatisch Abstand zur Kopfleiste (`scroll-margin-top`), damit nichts mehr dahinter verschwindet.
+
+**„Powered by Netlify“-Frage geklärt:** Im Quellcode und im gebauten Ergebnis taucht dieser Text nirgends auf. Das war die Netlify-Plattformoberfläche selbst (das Dashboard), kein Teil der Website.
+
+**Footer-Zeile:** von „Cologne · Working with businesses across Germany“ zu „Cologne · Remote-friendly worldwide“ – ein bewusster Mittelweg. „Germany · Available worldwide“ aus dem Brief hätte ein Ein-Personen-Studio mit Sitz in Köln überzeichnet; „remote-freundlich weltweit“ ist wahr und trotzdem offener als vorher.
+
+**Bewusst nicht umgesetzt in diesem Durchgang** (Priorität laut Brief selbst niedriger, siehe dessen Abschnitt 33):
+- Kontaktformular nicht live geschaltet. Es ist technisch vollständig bereit (Netlify Forms, Validierung, Spam-Schutz), aber es fehlt weiterhin die Datenschutzerklärung, und ob die Formularerkennung in Netlify aktiviert wurde, ist nicht bestätigt. Ohne Datenschutzerklärung wäre ein Livegang ein Rechtsverstoß, deshalb bewusst nicht angerührt – das ist die einzige Stelle, an der ich vom „einfach umsetzen“-Auftrag abgewichen bin.
+- Hover-Interaktion „Leistung → passendes Bild einblenden“ auf dem Desktop nicht gebaut (spürbarer Zusatzaufwand, Nutzen für eine Ein-Personen-Seite mit vier Leistungen gering).
+- Objects in Motion inhaltlich weiterhin mit MASON’S-Studiofotos als Platzhalter, keine echten freigestellten Produktaufnahmen. Optisch leicht aufgelockert (organischere Anordnung), aber echte Substanz kommt erst mit echtem Material.
+- Tablet-Breiten 768/820/1024 nur bei 768 geprüft, nicht alle drei einzeln.
+- Case-Study-Baukasten (Kontext → Prozess → Behind-the-Scenes als eigene Blöcke) nicht gebaut, nur Titelbild + Galerie wie zuvor.

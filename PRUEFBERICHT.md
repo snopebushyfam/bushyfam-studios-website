@@ -161,3 +161,18 @@ Getestet mit zwei Testpersonen (Model, DJ) und einer Person ohne Einwilligung, d
 | Formular, Filter, Besetzung, beide Filme | Regression bestanden, keine Fehler |
 
 **Nicht geprüft:** echte Objects-in-Motion-Fotos (nur Platzhalter getestet), Safari, echte Geräte.
+
+## Version 1.3 (25.09.2026) – V2-Verfeinerung
+
+| Prüfung | Ergebnis |
+|---|---|
+| Alle Hauptseiten | 30 Aufrufe bei 390/768/1440 px, je genau eine H1, kein Überlauf, keine Fehler |
+| Filter auf „Arbeiten“ | Bei 2 Projekten korrekt ausgeblendet |
+| Sticky-Header-Überdeckung | Anker „Services“ landet jetzt mit 196 px Abstand zur Kopfleiste (vorher konnte der Titel dahinter verschwinden) |
+| Museumsbild auf Studio-Seite | Läuft bei 1440 px über 1320 px Breite (fast randlos) |
+| MASON’S als ein Fall | 10 zusammengeführte Medien (7 Clips/Fotos + 3 Klon-Duplikate der Karussell-Logik entfallen hier, echte Anzahl: 7 Originalmedien) auf einer Seite |
+| Objects in Motion | bewegt sich weiterhin, Pause-Funktion unverändert korrekt |
+| Formular | Regression bestanden, weiterhin im ehrlichen Vorschau-Modus |
+| „Powered by Netlify“ | In Quellcode und `dist/` nicht vorhanden – bestätigt als reine Plattform-UI, nicht Teil der Website |
+
+**Nicht geprüft:** 820/1024 px einzeln, echte Geräte, Safari, Netlify Forms im Livebetrieb, echte Objects-in-Motion-Fotografie.

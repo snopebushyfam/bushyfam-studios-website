@@ -232,13 +232,18 @@ const metaLine = (p, lang) => [catLabel(p.category, lang), p.client, p.year].fil
 
 function featureBlock(p, lang, i) {
   const hasVideo = (p.media || []).some((m) => m.type === "video");
+  const disciplines = tr(p, "body", lang); // z. B. "Film · Photography · Social"
   return `<li class="feature">
     <a class="feature-link" href="${hrefFor(lang, "project", p.slug)}">
       <div class="feature-media">${img(p.cover.src, tr(p.cover, "alt", lang), { sizes: "100vw", lazy: i > 0 })}${hasVideo ? `<span class="play">${esc(T[lang].film)}</span>` : ""}</div>
       <div class="wrap feature-cap">
-        <span class="cat">${esc(catLabel(p.category, lang))}${p.year ? " · " + esc(p.year) : ""}</span>
-        <h3 class="feature-title">${esc(tr(p, "title", lang))} <span aria-hidden="true">→</span></h3>
-        <span class="client">${esc(p.client || "")}</span>
+        <span class="feature-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+        <div class="feature-cap-text">
+          <span class="cat">${esc(p.client || "")}${disciplines ? " — " + esc(disciplines) : ""}${p.year ? " · " + esc(p.year) : ""}</span>
+          <h3 class="feature-title">${esc(tr(p, "title", lang))}</h3>
+          ${tr(p, "summary", lang) ? `<p class="feature-summary">${esc(tr(p, "summary", lang))}</p>` : ""}
+          <span class="feature-view">${esc(T[lang].viewCase)} <span aria-hidden="true">↗</span></span>
+        </div>
       </div>
     </a>
   </li>`;
@@ -333,7 +338,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
       <h2 class="h2" id="h-about">${esc(STU.name)}</h2>
       <p class="role">${esc(tr(STU, "role", lang))}</p>
       <p class="body">${esc(tr(HOME, "aboutText", lang))}</p>
-      <p class="more"><a class="link-arrow" href="${R.studio}">${esc(t.moreAbout)} <span aria-hidden="true">→</span></a></p>
+      <p class="more"><a class="link-arrow" href="${R.studio}">${esc(t.discoverStory)} <span aria-hidden="true">→</span></a></p>
     </div>
   </div>
 </section>
@@ -369,6 +374,9 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
 function pageWork(lang) {
   const t = T[lang];
   const cats = CATEGORIES.map((c) => ({ ...c, n: PROJECTS.filter((p) => p.category === c.id).length })).filter((c) => c.n);
+  // Filter nur zeigen, wenn sie echten Nutzen bringen. Bei wenigen Projekten wirken einzelne "(1)"-Zähler
+  // kleiner als das Portfolio ist – dann lieber die kuratierte Liste ohne Filter zeigen.
+  const showFilters = cats.length > 1 && (PROJECTS.length >= 6 || cats.filter((c) => c.n >= 2).length >= 2);
   const body = `
 <section class="wrap page-head" aria-labelledby="h-work">
   <p class="eyebrow">${esc(t.portfolio)}</p>
@@ -376,13 +384,13 @@ function pageWork(lang) {
   <p class="lead">${esc(t.workLead)}</p>
 </section>
 <section class="wrap work-list" aria-labelledby="h-work">
-  ${cats.length > 1 ? `<div class="filters" role="group" aria-label="${esc(t.chooseCat)}" data-filters>
+  ${showFilters ? `<div class="filters" role="group" aria-label="${esc(t.chooseCat)}" data-filters>
     <button class="filter" type="button" data-cat="all" aria-pressed="true">${esc(t.all)}<span class="n">${PROJECTS.length}</span></button>
     ${cats.map((c) => `<button class="filter" type="button" data-cat="${c.id}" aria-pressed="false">${esc(c[lang])}<span class="n">${c.n}</span></button>`).join("\n    ")}
   </div>
   <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.filterStatus)}" data-tpl-one="${esc(t.filterStatusOne)}"></p>` : ""}
-  <ul class="grid" data-grid>
-    ${PROJECTS.map((p) => `<li data-cat="${esc(p.category)}">${projectCard(p, lang, { headingLevel: 2 })}</li>`).join("\n    ")}
+  <ul class="feature-list work-page-list" data-grid>
+    ${PROJECTS.map((p, i) => `<li data-cat="${esc(p.category)}">${featureBlock(p, lang, i)}</li>`).join("\n    ")}
   </ul>
 </section>`;
   return layout({ lang, key: "work", title: `${t.nav.work} – ${S.brandName}`, description: t.workLead, body, ogImage: PROJECTS[0]?.cover?.src });
@@ -508,17 +516,21 @@ function pageStudio(lang) {
 <section class="wrap page-head" aria-labelledby="h-studio">
   <p class="eyebrow">${esc(t.nav.studio)}</p>
   <h1 class="page-title" id="h-studio">${esc(STU.name)}</h1>
-  <p class="lead">${esc(tr(STU, "lead", lang))}</p>
+  <p class="role">${esc(tr(STU, "role", lang))}</p>
 </section>
+${tr(STU, "statement", lang) ? `<section class="wrap studio-statement"><p>${esc(tr(STU, "statement", lang))}</p></section>` : ""}
 <section class="wrap studio-top">
   ${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { sizes: "(min-width: 900px) 26rem, 92vw" })}
-  <div>${(STU.paragraphs || []).map((x) => `<p class="body">${esc(pick(x, lang))}</p>`).join("")}</div>
+  <div>
+    <p class="lead">${esc(tr(STU, "lead", lang))}</p>
+    ${(STU.paragraphs || []).map((x) => `<p class="body">${esc(pick(x, lang))}</p>`).join("")}
+  </div>
 </section>
 ${(STU.stations || []).length ? `<section class="section" aria-labelledby="h-st">
   <div class="wrap">
     <div class="head-row"><h2 class="h2" id="h-st">${esc(tr(STU, "stationsTitle", lang))}</h2></div>
     <ul class="stations">
-      ${STU.stations.map((s) => `<li><div>${s.category ? `<span class="tag station-tag">${esc(s.category)}</span>` : ""}${tr(s, "year", lang) ? `<p class="year">${esc(tr(s, "year", lang))}</p>` : ""}<h3>${esc(tr(s, "title", lang))}</h3><p class="t">${esc(tr(s, "text", lang))}</p>${s.link && s.link.url ? `<p class="st-link">${ext(s.link.url, esc(tr(s.link, "label", lang)), lang)}${tr(s.link, "note", lang) ? `<span class="note-link">${esc(tr(s.link, "note", lang))}</span>` : ""}</p>` : ""}</div>${s.image && s.image.src ? img(s.image.src, tr(s.image, "alt", lang), { sizes: "(min-width: 900px) 26rem, 92vw" }) : ""}</li>`).join("\n      ")}
+      ${STU.stations.map((s) => `<li class="${s.feature ? "station--feature" : ""}"><div>${s.category ? `<span class="tag station-tag">${esc(s.category)}</span>` : ""}${tr(s, "year", lang) ? `<p class="year">${esc(tr(s, "year", lang))}</p>` : ""}<h3>${esc(tr(s, "title", lang))}</h3><p class="t">${esc(tr(s, "text", lang))}</p>${s.link && s.link.url ? `<p class="st-link">${ext(s.link.url, esc(tr(s.link, "label", lang)), lang)}${tr(s.link, "note", lang) ? `<span class="note-link">${esc(tr(s.link, "note", lang))}</span>` : ""}</p>` : ""}</div>${s.image && s.image.src ? img(s.image.src, tr(s.image, "alt", lang), { sizes: s.feature ? "100vw" : "(min-width: 900px) 26rem, 92vw", lazy: !s.feature }) : ""}</li>`).join("\n      ")}
     </ul>
   </div>
 </section>` : ""}

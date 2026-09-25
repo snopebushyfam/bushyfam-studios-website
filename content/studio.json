@@ -1,9 +1,9 @@
 {
   "name": "Taha Gürsoy",
-  "role_de": "Gründer & direkter Ansprechpartner",
-  "role_en": "Founder & your direct contact",
-  "lead_de": "Gründer und direkter Ansprechpartner von BushyFam Studios in Köln.",
-  "lead_en": "Founder of BushyFam Studios in Cologne – and your direct contact.",
+  "role_de": "Gründer & Creative Director",
+  "role_en": "Founder & Creative Director",
+  "lead_de": "Zeichnen, Kunst, Logos, Fotografie, Filmarbeit, ein Buch und digitale Projekte – all das begann als einzelne Interessen. Mit der Zeit wurde daraus eine Arbeitsweise: mit einer Idee beginnen, das passende Medium dafür finden und die ganze Welt drumherum aufbauen.",
+  "lead_en": "Drawing, art, logos, photography, filmmaking, publishing and digital projects all started as separate interests. Over time they became one way of working: start with an idea, find the medium that serves it best, and build the whole world around it.",
   "portrait": {
     "src": "/assets/studio/taha-guersoy-1086.webp",
     "alt_de": "Taha Gürsoy in weißer Jacke in einem Sessel",
@@ -23,8 +23,8 @@
       "en": "You work with him directly, from the first idea to the final file – no detours through changing contacts. For Google and Instagram ads he works with a partner."
     }
   ],
-  "stationsTitle_de": "Stationen & Projekte",
-  "stationsTitle_en": "Milestones & projects",
+  "stationsTitle_de": "Ein kreativer Weg",
+  "stationsTitle_en": "A Creative Path",
   "stations": [
     {
       "year_de": "Januar 2025",
@@ -37,7 +37,8 @@
         "src": "/assets/studio/stationen/mfmk-beitrag-1280.webp",
         "alt_de": "Gerahmter Beitrag „Die letzte ‚Story‘ vor dem Ende“: ein UFO mit BushyFam-Schriftzug über einer nächtlichen Stadt, darunter der Hinweis, dass das Museum für Moderne Kunst München Snope Bushyfam präsentiert",
         "alt_en": "Framed piece “Die letzte ‚Story‘ vor dem Ende”: a UFO with BushyFam lettering above a city at night, with a note that the Museum für Moderne Kunst München presents Snope Bushyfam"
-      }
+      },
+      "feature": true
     },
     {
       "year_de": "Dezember 2024",
@@ -57,7 +58,8 @@
         "label_en": "View on Amazon",
         "note_de": "Werbelink",
         "note_en": "Affiliate link"
-      }
+      },
+      "feature": true
     },
     {
       "year_de": "",
@@ -103,5 +105,7 @@
       "text_de": "Auf Wunsch geht es weiter mit Social Media, Anpassungen und Anzeigen.",
       "text_en": "If you like, it continues with social media, updates and ads."
     }
-  ]
+  ],
+  "statement_en": "Before BushyFam Studios became a studio, it was a collection of experiments.",
+  "statement_de": "Bevor BushyFam Studios ein Studio wurde, war es eine Sammlung von Experimenten."
 }
