@@ -1,0 +1,37 @@
+{
+  "slug": "nelvie-tiafack-logos",
+  "order": 3,
+  "featured": true,
+  "category": "branding",
+  "client": "Nelvie Tiafack",
+  "year": "",
+  "title_de": "Logos für N.E.V",
+  "title_en": "Logos for N.E.V",
+  "summary_de": "Taha entwickelte zwei Logos, die Nelvie Tiafack für seine Brand verwendet.",
+  "summary_en": "Taha developed two logos that Nelvie Tiafack uses for his brand.",
+  "body_de": "NEV steht für „Never Ending Victory“ und greift zugleich seinen Vornamen auf. Die 3 ist seine Lieblingszahl – auch die drei Balken des E nehmen diese Zahl auf.\n\nDie Pyramide war ein ausdrücklicher Gestaltungswunsch.",
+  "body_en": "NEV stands for “Never Ending Victory” and also refers to his first name. 3 is his favourite number – the three bars of the E pick up this number as well.\n\nThe pyramid was an explicit design request.",
+  "cover": {
+    "src": "/assets/work/nelvie-tiafack/nev3-logo-gelb.png",
+    "alt_de": "Logo NEV mit einer 3 und einer Pyramide in einem schwarzen Rahmen auf gelbem Grund",
+    "alt_en": "NEV logo with a 3 and a pyramid in a black frame on a yellow background"
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "/assets/work/nelvie-tiafack/nev3-logo-gelb.png",
+      "alt_de": "Logo NEV mit einer 3 und einer Pyramide in einem schwarzen Rahmen auf gelbem Grund",
+      "alt_en": "NEV logo with a 3 and a pyramid in a black frame on a yellow background",
+      "caption_de": "NEV mit 3 und Pyramide",
+      "caption_en": "NEV with 3 and pyramid"
+    },
+    {
+      "type": "image",
+      "src": "/assets/work/nelvie-tiafack/nev-logo-lila.png",
+      "alt_de": "Logo N.E.V in schwarzen Buchstaben auf lila Verlauf; das E besteht aus drei Balken",
+      "alt_en": "N.E.V logo in black letters on a purple gradient; the E consists of three bars",
+      "caption_de": "Wortmarke N.E.V",
+      "caption_en": "N.E.V wordmark"
+    }
+  ]
+}
