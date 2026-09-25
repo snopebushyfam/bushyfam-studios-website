@@ -15,7 +15,7 @@ import { T, ROUTES, CATEGORIES } from "./i18n.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "dist");
-const LANGS = ["de", "en"];
+const LANGS = ["en", "de"];
 const ON_NETLIFY = process.env.NETLIFY === "true";
 const errors = [];
 
@@ -86,6 +86,7 @@ const LEGAL = readJson("content/legal.json");
 const PROJECTS = readDir("content/projects").sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 const CLIENTS = readDir("content/clients").sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 /* Besetzung: nur Personen mit vorliegender Einwilligung und Häkchen „sichtbar“ */
+const OBJECTS = readDir("content/objects").filter((o) => o.enabled !== false).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 const CAST = readDir("content/cast")
   .filter((p) => p.visible !== false && p.consent === true)
   .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
@@ -115,6 +116,7 @@ for (const p of CAST) {
   need(p.photos && p.photos.length && p.photos[0].src, `${where}: Mindestens ein Foto wird gebraucht.`);
   for (const ph of (p.photos || [])) need(assetExists(ph.src), `${where}: Foto nicht gefunden: ${ph.src}`);
 }
+for (const o of OBJECTS) need(assetExists(o.image), `Objekt „${o.title_de || o.__file}“: Bild nicht gefunden: ${o.image}`);
 for (const v of [S.hero?.video, S.ending?.video]) for (const s of (v?.sources || [])) need(assetExists(s.src), `Film-Datei nicht gefunden: ${s.src}`);
 if (errors.length) {
   console.error("\n✖ Build abgebrochen – bitte im Admin korrigieren:\n" + errors.map((e) => "  • " + e).join("\n") + "\n");
@@ -150,7 +152,7 @@ ${S.launch ? "" : '<meta name="robots" content="noindex, nofollow">\n'}<meta nam
 ${site ? `<link rel="canonical" href="${abs(here)}">
 <link rel="alternate" hreflang="${lang}" href="${abs(here)}">
 <link rel="alternate" hreflang="${other}" href="${abs(there)}">
-<link rel="alternate" hreflang="x-default" href="${abs(hrefFor("de", key, slug))}">
+<link rel="alternate" hreflang="x-default" href="${abs(hrefFor("en", key, slug))}">
 ` : ""}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brandName)}">
 <meta property="og:title" content="${esc(title)}">
@@ -228,6 +230,20 @@ function footer(lang) {
 const catLabel = (id, lang) => (CATEGORIES.find((c) => c.id === id) || {})[lang] || id;
 const metaLine = (p, lang) => [catLabel(p.category, lang), p.client, p.year].filter(Boolean).map(esc).join(" · ");
 
+function featureBlock(p, lang, i) {
+  const hasVideo = (p.media || []).some((m) => m.type === "video");
+  return `<li class="feature">
+    <a class="feature-link" href="${hrefFor(lang, "project", p.slug)}">
+      <div class="feature-media">${img(p.cover.src, tr(p.cover, "alt", lang), { sizes: "100vw", lazy: i > 0 })}${hasVideo ? `<span class="play">${esc(T[lang].film)}</span>` : ""}</div>
+      <div class="wrap feature-cap">
+        <span class="cat">${esc(catLabel(p.category, lang))}${p.year ? " · " + esc(p.year) : ""}</span>
+        <h3 class="feature-title">${esc(tr(p, "title", lang))} <span aria-hidden="true">→</span></h3>
+        <span class="client">${esc(p.client || "")}</span>
+      </div>
+    </a>
+  </li>`;
+}
+
 function projectCard(p, lang, { headingLevel = 3 } = {}) {
   const hasVideo = (p.media || []).some((m) => m.type === "video");
   return `<a class="card" href="${hrefFor(lang, "project", p.slug)}" data-cat="${esc(p.category)}">
@@ -264,16 +280,28 @@ function pageHome(lang) {
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
-${featured.length ? `<section class="section" aria-labelledby="h-picks">
-  <div class="wrap">
-    <div class="head-row">
-      <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
-      <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
+${featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
+  <div class="wrap head-row">
+    <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
+    <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
+  </div>
+  <ul class="feature-list">
+    ${featured.map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
+  </ul>
+  <p class="wrap picks-more"><a class="btn btn--ghost" href="${R.work}">${esc(t.seeAllWork)}</a></p>
+</section>` : ""}
+
+${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
+  <div class="wrap head-row"><div><p class="eyebrow" id="h-obj">${esc(t.objectsTitle)}</p><p class="lead">${esc(t.objectsLead)}</p></div>
+    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
+  </div>
+  <div class="marquee" data-marquee>
+    <div class="marquee-row marquee-row--back" data-marquee-row data-speed="14">
+      <ul class="marquee-track" data-marquee-track>${OBJECTS.filter((o, i) => i % 2 === 1).map((o) => objectTile(o, lang)).join("")}</ul>
     </div>
-    <ul class="picks">
-      ${featured.map((p) => `<li>${projectCard(p, lang)}</li>`).join("\n      ")}
-    </ul>
-    <p class="picks-more"><a class="btn btn--ghost" href="${R.work}">${esc(t.seeAllWork)}</a></p>
+    <div class="marquee-row marquee-row--front" data-marquee-row data-speed="22">
+      <ul class="marquee-track" data-marquee-track>${OBJECTS.filter((o, i) => i % 2 === 0).map((o) => objectTile(o, lang)).join("")}</ul>
+    </div>
   </div>
 </section>` : ""}
 
@@ -287,13 +315,13 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   </div>
 </section>` : ""}
 
-<section class="section" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
+<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
   <div class="wrap">
-    <p class="eyebrow" aria-hidden="true">${esc(t.nav.services)}</p>
-    <h2 class="vh" id="h-svc">${esc(t.nav.services)}</h2>
-    <ul class="acc" data-acc>
-      ${(SERV.items || []).map((s, i) => `<li><h3><button type="button" aria-expanded="false" aria-controls="svc-${i}">${esc(tr(s, "title", lang))}<span class="pm" aria-hidden="true"></span></button></h3><p id="svc-${i}" hidden>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
+    <p class="eyebrow" id="h-svc">${esc(t.nav.services)}</p>
+    <ul class="svc-rows">
+      ${(SERV.items || []).map((s) => `<li><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
     </ul>
+    ${tr(SERV, "note", lang) ? `<p class="svc-note">${esc(tr(SERV, "note", lang))}</p>` : ""}
   </div>
 </section>
 
@@ -399,6 +427,10 @@ ${ctaBlock(lang)}`;
     description: tr(p, "summary", lang) || t.workLead, body, scripts: (p.media || []).some((m) => m.type === "video") ? ["video-preview.js"] : [], ogImage: p.cover.src });
 }
 
+function objectTile(o, lang) {
+  return `<li class="obj-tile">${img(o.image, tr(o, "alt", lang) || o.title_de || "", { sizes: "320px" })}</li>`;
+}
+
 const ctaBlock = (lang) => `<section class="section cta" aria-labelledby="h-cta2">
   <div class="wrap"><h2 class="h2" id="h-cta2">${esc(T[lang].ctaSmall)}</h2><div class="btn-row"><a class="btn btn--primary" href="${ROUTES[lang].contact}">${esc(T[lang].cta)}</a></div></div>
 </section>`;
@@ -486,7 +518,7 @@ ${(STU.stations || []).length ? `<section class="section" aria-labelledby="h-st"
   <div class="wrap">
     <div class="head-row"><h2 class="h2" id="h-st">${esc(tr(STU, "stationsTitle", lang))}</h2></div>
     <ul class="stations">
-      ${STU.stations.map((s) => `<li><div>${tr(s, "year", lang) ? `<p class="year">${esc(tr(s, "year", lang))}</p>` : ""}<h3>${esc(tr(s, "title", lang))}</h3><p class="t">${esc(tr(s, "text", lang))}</p>${s.link && s.link.url ? `<p class="st-link">${ext(s.link.url, esc(tr(s.link, "label", lang)), lang)}${tr(s.link, "note", lang) ? `<span class="note-link">${esc(tr(s.link, "note", lang))}</span>` : ""}</p>` : ""}</div>${s.image && s.image.src ? img(s.image.src, tr(s.image, "alt", lang), { sizes: "(min-width: 900px) 26rem, 92vw" }) : ""}</li>`).join("\n      ")}
+      ${STU.stations.map((s) => `<li><div>${s.category ? `<span class="tag station-tag">${esc(s.category)}</span>` : ""}${tr(s, "year", lang) ? `<p class="year">${esc(tr(s, "year", lang))}</p>` : ""}<h3>${esc(tr(s, "title", lang))}</h3><p class="t">${esc(tr(s, "text", lang))}</p>${s.link && s.link.url ? `<p class="st-link">${ext(s.link.url, esc(tr(s.link, "label", lang)), lang)}${tr(s.link, "note", lang) ? `<span class="note-link">${esc(tr(s.link, "note", lang))}</span>` : ""}</p>` : ""}</div>${s.image && s.image.src ? img(s.image.src, tr(s.image, "alt", lang), { sizes: "(min-width: 900px) 26rem, 92vw" }) : ""}</li>`).join("\n      ")}
     </ul>
   </div>
 </section>` : ""}

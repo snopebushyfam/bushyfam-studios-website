@@ -52,6 +52,51 @@
     });
   });
 
+  /* ---------- Objects in Motion: automatische Bewegung, jederzeit anhaltbar ---------- */
+  var marquee = document.querySelector("[data-marquee]");
+  if (marquee) {
+    var rows = [].slice.call(marquee.querySelectorAll("[data-marquee-row]"));
+    var toggle = document.querySelector("[data-marquee-toggle]");
+    var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var reasons = { user: false, offscreen: true, hidden: false, focus: false, reduced: mqReduce.matches };
+
+    rows.forEach(function (row) {
+      row.style.setProperty("--speed", row.dataset.speed || 20);
+      // Kopie anhängen, damit die Endlosschleife (0% → -50%) nahtlos ist
+      var track = row.querySelector("[data-marquee-track]");
+      [].slice.call(track.children).forEach(function (li) {
+        var clone = li.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        clone.setAttribute("inert", "");
+        var img = clone.querySelector("img");
+        if (img) img.setAttribute("alt", "");
+        track.appendChild(clone);
+      });
+    });
+
+    function refresh() {
+      var paused = false;
+      for (var k in reasons) if (reasons[k]) paused = true;
+      marquee.setAttribute("data-paused", paused ? "true" : "false");
+      if (toggle) {
+        toggle.hidden = reasons.reduced;
+        toggle.setAttribute("data-state", reasons.user ? "paused" : "running");
+        var label = toggle.querySelector("[data-marquee-toggle-label]");
+        if (label) label.textContent = reasons.user ? toggle.dataset.resumeLabel : toggle.dataset.pauseLabel;
+      }
+    }
+    if (toggle) toggle.addEventListener("click", function () { reasons.user = !reasons.user; refresh(); });
+    marquee.addEventListener("focusin", function () { reasons.focus = true; refresh(); });
+    marquee.addEventListener("focusout", function () { reasons.focus = false; refresh(); });
+    document.addEventListener("visibilitychange", function () { reasons.hidden = document.hidden; refresh(); });
+    var onReduce = function (e) { reasons.reduced = e.matches; refresh(); };
+    mqReduce.addEventListener ? mqReduce.addEventListener("change", onReduce) : mqReduce.addListener(onReduce);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { reasons.offscreen = !entries[0].isIntersecting; refresh(); }, { threshold: 0.01 }).observe(marquee);
+    } else { reasons.offscreen = false; }
+    refresh();
+  }
+
   /* ---------- Arbeiten: Filter nach Kategorie (Adresse merkt sich die Wahl: #film) ---------- */
   var filters = document.querySelector("[data-filters]");
   var grid = document.querySelector("[data-grid]");

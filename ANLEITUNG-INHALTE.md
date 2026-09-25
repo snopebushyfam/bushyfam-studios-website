@@ -21,6 +21,13 @@ Nach **Publish** baut Netlify die Seite neu, das dauert ein bis zwei Minuten.
 iPhone-Aufnahmen (.mov/HEVC) spielen in Chrome sonst nicht ab.
 Richtwert: unter 25 MB pro Clip.
 
+## Objects in Motion (Produktgalerie)
+
+1. **Objects in Motion (Produktgalerie)** → **New Objekt**
+2. Bild hochladen (am besten freigestellt oder vor dunklem Grund), Bildbeschreibung eintragen, **Publish**.
+
+Die Bilder laufen automatisch in zwei Ebenen mit unterschiedlichem Tempo über die Startseite. Der Abschnitt erscheint nur, wenn mindestens ein Objekt eingetragen ist. Besucher können die Bewegung über den Knopf „Pause motion“ jederzeit anhalten; bei reduzierter Bewegung (Systemeinstellung) läuft sie von vornherein nicht.
+
 ## Besetzung (Models, DJs …)
 
 1. **Besetzung** → **New Person**

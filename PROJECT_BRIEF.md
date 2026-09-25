@@ -188,3 +188,20 @@ Neue Sammlung **Besetzung** für Menschen, mit denen das Studio arbeitet: Models
 - **Datenschutz:** Pflichtfeld „Schriftliche Einwilligung liegt vor“. Ohne Häkchen erscheint die Person nirgends – auch nicht in Sitemap oder Navigation. Vorlage für die Einwilligung liegt als `EINWILLIGUNG-VORLAGE.md` bei (juristisch prüfen lassen). Bei Minderjährigen zusätzlich Zustimmung der Sorgeberechtigten.
 - Die Datenschutzerklärung muss die Veröffentlichung von Personenfotos abdecken, bevor die Seite öffentlich geht.
 - Events und Festivals als Angebot sind bewusst noch nicht umgesetzt (zweitrangig laut Absprache).
+
+## Version 1.2 (25.09.2026) – Englisch als Hauptsprache, große Überarbeitung
+
+**Sprache getauscht:** Englisch liegt jetzt unter `/`, Deutsch unter `/de/` (vorher umgekehrt). Diese Entscheidung wurde bewusst noch einmal abgefragt und bestätigt, weil sie der ursprünglichen Festlegung „Deutsch bleibt Hauptsprache“ widerspricht. Alle Inhalte existieren weiterhin in beiden Sprachen, `hreflang` und `x-default` zeigen jetzt auf die englische Fassung.
+
+**Neu: Objects in Motion.** Zwei-Ebenen-Bilderstrom auf der Startseite (Produkte, Food, visuelle Experimente), scroll-unabhängig per CSS-Animation, mit denselben Bedienregeln wie das bisherige Karussell: pausierbar per Schaltfläche, Pause bei Tastaturfokus und außerhalb des Sichtbereichs, keine Bewegung bei reduzierter Bewegung. Eigene Admin-Sammlung, erscheint erst mit Inhalt. **Aktuell mit vier MASON’S-Produktfotos als Platzhalter befüllt** – das sind reguläre Studiofotos vor Schwarz, keine freigestellten Objekte, wie im Brief eigentlich vorgesehen. Bitte durch echtes Material ersetzen, sobald vorhanden.
+
+**Ausgewählte Arbeiten:** von drei kleinen Kacheln zu großen, fast randlosen Blöcken (Bild, Kategorie, großer Titel), passend zur „cinematic/editorial“-Vorgabe.
+
+**Leistungen:** von der Aufklapp-Variante zu immer sichtbaren, großen redaktionellen Zeilen – vier neue, breitere Gruppen (Film & Content, Photography, Brand & Design, Digital & Growth) statt der bisherigen sechs Einzelleistungen, mit Zusatzsatz „Need more than one? Good.“
+
+**Bewusst nicht übernommen aus dem neuen Brief:**
+- *„Germany · Available worldwide“* im Footer – bleibt bei der ehrlichen Standortangabe (Köln/deutschlandweit), das war eine bewusste frühere Entscheidung für ein Ein-Personen-Studio und wurde durch die aktuelle Freigabe nicht ausdrücklich aufgehoben.
+- *Eigener Mauszeiger-Hover „VIEW CASE ↗“* – wie beim vorherigen Brief: hilft mobil nicht und wurde bereits einmal bewusst verworfen.
+- *Vollflächige Case-Study-Hero-Bilder auf Projektseiten* – die bestehende Projektseite (Titel, Metadaten, Galerie) wurde nicht umgebaut, nur die Startseiten-Vorschau. Wäre der nächste sinnvolle Schritt, wenn gewünscht.
+
+**Weiterhin offen:** echte Objects-in-Motion-Fotos, E-Mail, Impressum/Datenschutz, Domain, Logo als SVG.

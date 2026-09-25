@@ -2,9 +2,11 @@
  * Feste Oberflächentexte (Navigation, Buttons, Formular) und Adressen je Sprache.
  * Inhalte wie Projekte, Leistungen und Studio-Texte kommen aus content/ (Admin).
  */
+// Englisch ist die Hauptsprache (Wurzel "/"), Deutsch liegt unter "/de/".
+export const DEFAULT_LANG = "en";
 export const ROUTES = {
-  de: { home: "/", work: "/arbeiten/", project: "/arbeiten/", cast: "/besetzung/", person: "/besetzung/", studio: "/studio/", contact: "/kontakt/", imprint: "/impressum/", privacy: "/datenschutz/" },
-  en: { home: "/en/", work: "/en/work/", project: "/en/work/", cast: "/en/cast/", person: "/en/cast/", studio: "/en/studio/", contact: "/en/contact/", imprint: "/en/imprint/", privacy: "/en/privacy/" }
+  en: { home: "/", work: "/work/", project: "/work/", cast: "/cast/", person: "/cast/", studio: "/studio/", contact: "/contact/", imprint: "/imprint/", privacy: "/privacy/" },
+  de: { home: "/de/", work: "/de/arbeiten/", project: "/de/arbeiten/", cast: "/de/besetzung/", person: "/de/besetzung/", studio: "/de/studio/", contact: "/de/kontakt/", imprint: "/de/impressum/", privacy: "/de/datenschutz/" }
 };
 
 /* Kategorien für Projekte – id wird im Admin gewählt */
@@ -25,6 +27,7 @@ export const T = {
     film: "Film", play: "Abspielen", withSound: "mit Ton", noSound: "ohne Ton", media: "Bilder und Filme",
     portfolio: "Portfolio", workLead: "Werbeclips, Fotografie und Markengestaltung für Unternehmen.",
     castLead: "Models und Talents, mit denen BushyFam Studios zusammenarbeitet. Sag einfach, wer zu deinem Projekt passt.",
+    objectsTitle: "Objekte in Bewegung", objectsLead: "Produkte, Food und visuelle Experimente.", pauseMotion: "Bewegung pausieren", resumeMotion: "Bewegung fortsetzen",
     chooseRole: "Rolle wählen", castStatus: "{n} Personen in {cat}", castStatusOne: "1 Person in {cat}",
     allCast: "Alle in der Besetzung", nextPerson: "Weiter in der Besetzung", bookThis: "Diese Person anfragen", photos: "Fotos",
     chooseCat: "Kategorie wählen", all: "Alle", filterStatus: "{n} Arbeiten in {cat}", filterStatusOne: "1 Arbeit in {cat}",
@@ -54,6 +57,7 @@ export const T = {
     film: "Film", play: "Play", withSound: "with sound", noSound: "no sound", media: "Images and films",
     portfolio: "Portfolio", workLead: "Commercials, photography and brand design for businesses.",
     castLead: "Models and talents BushyFam Studios works with. Just tell us who fits your project.",
+    objectsTitle: "Objects in Motion", objectsLead: "Products, food & visual experiments.", pauseMotion: "Pause motion", resumeMotion: "Resume motion",
     chooseRole: "Choose a role", castStatus: "{n} people in {cat}", castStatusOne: "1 person in {cat}",
     allCast: "All of the cast", nextPerson: "Next in the cast", bookThis: "Enquire about this person", photos: "Photos",
     chooseCat: "Choose a category", all: "All", filterStatus: "{n} projects in {cat}", filterStatusOne: "1 project in {cat}",

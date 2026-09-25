@@ -1,28 +1,30 @@
 {
   "items": [
     {
-      "title_de": "Marke",
-      "title_en": "Brand",
-      "text_de": "Name, Logo und ein visueller Auftritt, der überall wiedererkennbar ist.",
-      "text_en": "Name, logo and a visual identity that is recognisable everywhere."
+      "title_de": "Film & Content",
+      "title_en": "Film & Content",
+      "text_de": "Werbeclips, Social Content, Reels und Kampagnenfilme.",
+      "text_en": "Commercials, social content, reels and campaign films."
     },
     {
-      "title_de": "Film & Foto",
-      "title_en": "Film & photo",
-      "text_de": "Werbeclips, Social-Media-Videos und Fotografie – von der Idee bis zum Schnitt. Das ist der Schwerpunkt.",
-      "text_en": "Commercials, social media videos and photography – from the idea to the final cut. This is the studio's core focus."
+      "title_de": "Fotografie",
+      "title_en": "Photography",
+      "text_de": "Produkte, Kampagnen und Editorial.",
+      "text_en": "Products, campaigns and editorial."
     },
     {
-      "title_de": "Social Media",
-      "title_en": "Social media",
-      "text_de": "Planung, Veröffentlichung und laufende Betreuung deiner Kanäle.",
-      "text_en": "Planning, publishing and ongoing management of your channels."
+      "title_de": "Marke & Design",
+      "title_en": "Brand & Design",
+      "text_de": "Identität, Art Direction und Grafikdesign.",
+      "text_en": "Identity, art direction and graphic design."
     },
     {
-      "title_de": "Website & Ads",
-      "title_en": "Website & ads",
-      "text_de": "Websites sowie Kampagnen mit Google- und Instagram-Anzeigen.",
-      "text_en": "Websites plus campaigns with Google and Instagram ads."
+      "title_de": "Digital & Growth",
+      "title_en": "Digital & Growth",
+      "text_de": "Web-Erlebnisse, Social Media und Werbung.",
+      "text_en": "Web experiences, social media and advertising."
     }
-  ]
+  ],
+  "note_de": "Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.",
+  "note_en": "Need more than one? Good. We build the whole thing together."
 }

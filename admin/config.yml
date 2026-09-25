@@ -80,6 +80,27 @@ collections:
           - { label: "Bildunterschrift (DE)", name: caption_de, widget: string, required: false }
           - { label: "Bildunterschrift (EN)", name: caption_en, widget: string, required: false }
 
+  # ---------------------------------------------------------------- Objects in Motion
+  - name: "objekte"
+    label: "Objects in Motion (Produktgalerie)"
+    label_singular: "Objekt"
+    folder: "content/objects"
+    create: true
+    delete: true
+    format: "json"
+    identifier_field: title_de
+    summary: "{{title_de}}"
+    sortable_fields: ["order", "title_de"]
+    media_folder: "/assets/uploads/objekte"
+    public_folder: "/assets/uploads/objekte"
+    fields:
+      - { label: "Bild", name: image, widget: image, hint: "Am besten freigestellt oder vor dunklem Grund, quadratisch zugeschnitten wirkt am ruhigsten" }
+      - { label: "Titel (nur intern, DE)", name: title_de, widget: string, required: false }
+      - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string, required: false }
+      - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+      - { label: "Anzeigen", name: enabled, widget: boolean, default: true }
+      - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
+
   # ---------------------------------------------------------------- Besetzung
   - name: "besetzung"
     label: "Besetzung (Models, DJs …)"
@@ -252,6 +273,8 @@ collections:
               - { label: "Begriff (EN)", name: title_en, widget: string, required: false }
               - { label: "Erklärung (DE)", name: text_de, widget: text }
               - { label: "Erklärung (EN)", name: text_en, widget: text, required: false }
+          - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "z. B. „Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.“" }
+          - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
 
       - name: "studio"
         label: "Studio (Taha & Stationen)"
@@ -288,6 +311,11 @@ collections:
             fields:
               - { label: "Zeitangabe (DE)", name: year_de, widget: string, required: false }
               - { label: "Zeitangabe (EN)", name: year_en, widget: string, required: false }
+              - label: "Kategorie (optional)"
+                name: category
+                widget: select
+                required: false
+                options: ["Art", "Exhibition", "Publishing", "Film", "BushyFam"]
               - { label: "Titel (DE)", name: title_de, widget: string }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }

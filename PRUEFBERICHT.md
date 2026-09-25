@@ -148,3 +148,16 @@ Getestet mit zwei Testpersonen (Model, DJ) und einer Person ohne Einwilligung, d
 | Zweisprachig | `/en/cast/` mit englischen Bezeichnungen, `lang`-Attribut korrekt |
 | Navigation | „Besetzung“ erscheint nur, wenn mindestens eine Person freigegeben ist |
 | Überlauf / Fehler | Kein Überlauf bei 390 und 1440 px, keine Fehler, keine fehlenden Dateien |
+
+## Version 1.2 (25.09.2026) – Englisch primär, Objects in Motion
+
+| Prüfung | Ergebnis |
+|---|---|
+| Routen | Englisch an `/`, `/work/`, `/studio/`, `/contact/`, `/imprint/`; Deutsch unter `/de/…` – 20 Seitenaufrufe, alle mit genau einer H1, korrektem `lang`-Attribut, ohne Überlauf oder Fehler |
+| Objects in Motion | Zwei Ebenen bewegen sich unterschiedlich schnell, Endlosschleife nahtlos (Klone mit `aria-hidden`/`inert`), Pause-Schaltfläche funktioniert, Beschriftung wechselt (Pause/Resume) |
+| Reduzierte Bewegung | Objects in Motion bewegt sich nicht, Pause-Schaltfläche bleibt versteckt |
+| Ausgewählte Arbeiten | Große Blöcke verlinken korrekt auf die Projektseiten |
+| Leistungen | Vier Zeilen immer sichtbar, Zusatzsatz erscheint |
+| Formular, Filter, Besetzung, beide Filme | Regression bestanden, keine Fehler |
+
+**Nicht geprüft:** echte Objects-in-Motion-Fotos (nur Platzhalter getestet), Safari, echte Geräte.
