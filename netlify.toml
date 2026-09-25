@@ -1,0 +1,35 @@
+# Netlify-Konfiguration
+# Der Build erzeugt aus content/*.json fertige HTML-Seiten nach dist/.
+[build]
+  publish = "dist"
+  command = "node build/build.mjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Sicherheits-Header
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+
+# Medien, Schriften, CSS und JS dürfen lange zwischengespeichert werden
+# (Dateinamen ändern sich bei neuen Inhalten)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Seiten selbst immer frisch prüfen, damit Änderungen sofort sichtbar sind
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
