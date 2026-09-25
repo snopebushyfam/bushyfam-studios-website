@@ -309,11 +309,8 @@ ${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-o
     <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
   </div>
   <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--back" data-marquee-row data-speed="14">
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.filter((o, i) => i % 2 === 1).map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
-    <div class="marquee-row marquee-row--front" data-marquee-row data-speed="22">
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.filter((o, i) => i % 2 === 0).map((o) => objectTile(o, lang)).join("")}</ul>
+    <div class="marquee-row marquee-row--front" data-marquee-row>
+      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
     </div>
   </div>
 </section>` : ""}

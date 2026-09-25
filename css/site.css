@@ -375,15 +375,12 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .objects-motion .lead{margin-top:.5rem}
 .marquee{margin-top:clamp(2rem,4vw,3rem);display:grid;gap:1.25rem}
 .marquee-row{overflow:hidden}
-.marquee-track{display:flex;gap:1.25rem;width:max-content;animation:marquee linear infinite;animation-duration:calc(var(--speed,20) * 1s)}
-.marquee-row--back{opacity:.6}
-.marquee-row--back .obj-tile{height:clamp(120px,16vw,220px)}
+.marquee-track{display:flex;width:max-content;animation:marquee linear infinite;animation-duration:calc(var(--speed,20) * 1s)}
 .marquee-row--front .obj-tile{height:clamp(180px,24vw,340px)}
-.obj-tile{flex:none;aspect-ratio:1;background:var(--black);border-radius:2px;overflow:hidden;
+.obj-tile{flex:none;margin-right:1.25rem;aspect-ratio:1;background:var(--black);border-radius:2px;overflow:hidden;
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%)}
 .obj-tile img{width:100%;height:100%;object-fit:cover}
 .marquee-row--front .obj-tile:nth-child(4n+3){transform:scale(1.06)}
-.marquee-row--back .obj-tile:nth-child(4n+2){transform:scale(.92) translateY(8px)}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .marquee[data-paused="true"] .marquee-track{animation-play-state:paused}
 .marquee-toggle{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;padding:.5rem 1.1rem;border:1px solid var(--line-strong);border-radius:999px;background:none;cursor:pointer;font-size:.9375rem;font-weight:500}
