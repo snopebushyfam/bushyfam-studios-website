@@ -56,3 +56,11 @@ Poppins (Regular, Medium, Bold) von Indian Type Foundry, Lizenz **SIL Open Font 
 
 Hinweis: Im quadratischen Einstiegsvideo ist der Schriftzug „BUSHYFAM STUDIOS“ auf dem UFO-Rumpf am unteren Bildrand angeschnitten („STUDIOS“ fehlt). Liegt am Bildausschnitt der Datei.
 Nicht mehr verwendet und im Repository löschbar: `assets/hero/hero-ufo-scrub-540/720/1080.mp4`, `assets/hero/hero-ufo-poster.jpg`.
+
+## Nachtrag 25.09.2026 – Einstiegsvideo
+
+| Upload | Inhalt | Verwendung | Web-Dateien |
+|---|---|---|---|
+| `hf_20260925_143923_….mp4` (HEVC 10 Bit, 1080 × 1920, 24 fps, 7,05 s, mit Ton) | Frau im UFO-Cockpit, Schriftzug „BUSHYFAM STUDIOS“ vollständig sichtbar, Zoom bis in die Pupille, endet schwarz (ab ≈ 6,7 s) | Einstieg (ersetzt `hero-cockpit-sq`) | `assets/hero/hero-cockpit-hoch-540/720/1080.mp4` (540 × 960, 720 × 1280, 1080 × 1920; H.264, nur Keyframes, ohne Ton), Standbild `hero-cockpit-hoch-poster.jpg` (erstes Bild) |
+
+Die quadratischen Dateien `assets/hero/hero-cockpit-sq-*` wurden entfernt. Der Hinweis zum angeschnittenen Schriftzug oben gilt damit nicht mehr.

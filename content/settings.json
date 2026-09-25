@@ -27,22 +27,22 @@
     "video": {
       "sources": [
         {
-          "src": "/assets/hero/hero-cockpit-sq-540.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-540.mp4",
           "width": 540
         },
         {
-          "src": "/assets/hero/hero-cockpit-sq-720.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-720.mp4",
           "width": 720
         },
         {
-          "src": "/assets/hero/hero-cockpit-sq-1080.mp4",
+          "src": "/assets/hero/hero-cockpit-hoch-1080.mp4",
           "width": 1080,
           "desktopOnly": true
         }
       ],
-      "poster": "/assets/hero/hero-cockpit-sq-poster.jpg",
+      "poster": "/assets/hero/hero-cockpit-hoch-poster.jpg",
       "width": 1080,
-      "height": 1080,
+      "height": 1920,
       "description_de": "Kurzfilm: Eine Frau blickt aus einem UFO-Cockpit mit BushyFam-Schriftzug, die Kamera fährt bis in ihre Pupille.",
       "description_en": "Short film: a woman looks out of a UFO cockpit with the BushyFam lettering; the camera moves all the way into her pupil."
     }

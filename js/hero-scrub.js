@@ -14,7 +14,7 @@
   var copy = document.querySelector("[data-hero-copy]");
   var outro = document.querySelector("[data-hero-outro]");
   var VIDEO_END = 0.85;       // Anteil der Scrollstrecke, auf dem der Film läuft
-  var OUTRO_IN = [0.76, 0.88]; // Einblendung des Satzes (Film ist ab ≈ 6,4 s schwarz)
+  var OUTRO_IN = [0.78, 0.90]; // Einblendung des Satzes (Film ist ab ≈ 6,7 s schwarz)
   if (!hero || !track || !media) return;
 
   var video = media.querySelector("video");
