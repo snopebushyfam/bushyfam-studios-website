@@ -170,6 +170,7 @@ collections:
           - { label: "Einzugsgebiet (DE)", name: reach_de, widget: string }
           - { label: "Einzugsgebiet (EN)", name: reach_en, widget: string }
           - { label: "E-Mail", name: email, widget: string, required: false, hint: "Wird angezeigt, sobald sie eingetragen ist" }
+          - { label: "WhatsApp-Nummer", name: whatsapp, widget: string, required: false, hint: "Mit Ländervorwahl, z. B. +49 1514 4930658 – leer lassen, um WhatsApp auszublenden" }
           - { label: "Instagram-Adresse", name: instagramUrl, widget: string, required: false }
           - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
           - label: "Suchmaschinen-Text"

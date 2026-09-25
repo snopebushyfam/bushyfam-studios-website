@@ -78,6 +78,9 @@ const ext = (href, label, lang, cls = "link-arrow") =>
 
 /* ---------- Inhalte laden und prüfen ---------- */
 const S = readJson("content/settings.json");
+/* WhatsApp: angezeigte Nummer aus den Einstellungen, Link nur mit Ziffern (wa.me/491234…) */
+const WA_DIGITS = String(S.whatsapp || "").replace(/\D/g, "").replace(/^00/, "");
+const WA_URL = WA_DIGITS ? `https://wa.me/${WA_DIGITS}` : "";
 const HOME = readJson("content/home.json");
 const SERV = readJson("content/services.json");
 const STU = readJson("content/studio.json");
@@ -91,6 +94,7 @@ const CAST = readDir("content/cast")
   .filter((p) => p.visible !== false && p.consent === true)
   .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
+need(!S.whatsapp || (/^\+|^00/.test(String(S.whatsapp).trim()) && /^[1-9]\d{7,14}$/.test(WA_DIGITS)), `Einstellungen → WhatsApp-Nummer „${S.whatsapp}“: Bitte mit Ländervorwahl eintragen, z. B. +49 1514 4930658.`);
 need(S.hero && S.hero.video && Array.isArray(S.hero.video.sources) && S.hero.video.sources.length, "Einstellungen → Einstieg: Es ist kein Einstiegsfilm eingetragen.");
 const slugs = new Set();
 for (const p of PROJECTS) {
@@ -147,7 +151,7 @@ function layout({ lang, key, slug, title, description, body, scripts = [], ogIma
   const ld = {
     "@context": "https://schema.org", "@type": "ProfessionalService", name: S.brandName,
     address: { "@type": "PostalAddress", addressLocality: tr(S, "location", lang), addressCountry: "DE" },
-    areaServed: "DE", sameAs: [S.instagramUrl].filter(Boolean), ...(site ? { url: abs(ROUTES[lang].home) } : {})
+    areaServed: "DE", sameAs: [S.instagramUrl].filter(Boolean), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}), ...(site ? { url: abs(ROUTES[lang].home) } : {})
   };
   return `<!doctype html>
 <html lang="${lang}">
@@ -222,6 +226,7 @@ function footer(lang) {
         ${CAST.length ? `<li><a href="${R.cast}">${esc(t.nav.cast)}</a></li>` : ""}
         <li><a href="${R.studio}">${esc(t.nav.studio)}</a></li>
         <li><a href="${R.contact}">${esc(t.nav.contact)}</a></li>
+        ${WA_URL ? `<li><a href="${WA_URL}" target="_blank" rel="noopener noreferrer">WhatsApp<span class="vh"> ${esc(t.newTab)}</span></a></li>` : ""}
         ${S.instagramUrl ? `<li><a href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">Instagram<span class="vh"> ${esc(t.newTab)}</span></a></li>` : ""}
         ${S.email ? `<li><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></li>` : ""}
       </ul>
@@ -361,7 +366,7 @@ ${namedClients.length ? `<section class="section clients" aria-labelledby="h-cli
   <div class="wrap">
     <h2 class="h2" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
     <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
-    <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang) : ""}</div>
+    <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${WA_URL ? ext(WA_URL, "WhatsApp", lang) : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang) : ""}</div>
   </div>
 </section>
 
@@ -565,7 +570,9 @@ function pageContact(lang) {
 <section class="wrap contact-grid">
   <div>
     <p class="lead">${esc(tr(CON, "intro", lang))}</p>
-    ${S.instagramUrl ? `<p class="muted direct-label">${esc(t.direct)}</p><p>${ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "link-arrow link-big")}</p>` : ""}
+    ${WA_URL || S.instagramUrl ? `<p class="muted direct-label">${esc(t.direct)}</p>` : ""}
+    ${WA_URL ? `<p>${ext(WA_URL, `WhatsApp ${esc(S.whatsapp)}`, lang, "link-arrow link-big")}</p>` : ""}
+    ${S.instagramUrl ? `<p>${ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "link-arrow link-big")}</p>` : ""}
     ${S.email ? `<p><a class="link-arrow link-big" href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>` : ""}
   </div>
   <form class="form" name="kontakt" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate data-form data-live="${live}" data-lang="${lang}">

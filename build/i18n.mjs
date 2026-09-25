@@ -34,7 +34,7 @@ export const T = {
     chooseCat: "Kategorie wählen", all: "Alle", filterStatus: "{n} Arbeiten in {cat}", filterStatusOne: "1 Arbeit in {cat}",
     nextProject: "Nächstes Projekt", moreWork: "Weitere Arbeiten", clients: "Ausgewählte Kunden & Partner",
     process: "Zusammenarbeit", ending: "Abschluss", newTab: "(öffnet in neuem Tab)",
-    direct: "Lieber direkt? Schreib auf Instagram:",
+    direct: "Lieber direkt? Schreib uns:",
     imprint: "Impressum", privacy: "Datenschutz", inPreparation: "Diese Seite ist in Vorbereitung.",
     notFound: "Seite nicht gefunden", notFoundText: "Diese Adresse gibt es nicht (mehr).", backHome: "Zur Startseite",
     form: {
@@ -65,7 +65,7 @@ export const T = {
     chooseCat: "Choose a category", all: "All", filterStatus: "{n} projects in {cat}", filterStatusOne: "1 project in {cat}",
     nextProject: "Next project", moreWork: "More work", clients: "Selected clients & partners",
     process: "Working together", ending: "Finale", newTab: "(opens in a new tab)",
-    direct: "Prefer to go direct? Message on Instagram:",
+    direct: "Prefer to go direct? Message us:",
     imprint: "Imprint", privacy: "Privacy", inPreparation: "This page is being prepared.",
     notFound: "Page not found", notFoundText: "This address does not exist (anymore).", backHome: "Back to the homepage",
     form: {
