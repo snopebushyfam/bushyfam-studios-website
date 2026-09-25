@@ -104,7 +104,7 @@ Du musst dazu in Netlify nichts einstellen, die Datei hat Vorrang vor den Einste
 ### Einmalig in Netlify prüfen
 1. **Deploys** → nach dem Upload muss ein neuer Deploy mit „Published“ erscheinen. Scheitert er, steht der Grund im Log.
 2. **Forms** → **Formularerkennung aktivieren**, damit das Kontaktformular Anfragen entgegennimmt. Danach unter **Notifications** eine E-Mail-Benachrichtigung einrichten.
-3. Erst wenn beides steht **und** die Datenschutzerklärung fertig ist, im Admin unter *Allgemein → Kontaktformular* **„Formular freigeschaltet“** einschalten. Vorher sagt das Formular ehrlich, dass nichts gesendet wird.
+3. Das Formular sendet seit Version 3 immer an Netlify Forms (kein Vorschau-Schalter mehr). Ist die Formularerkennung aus, meldet das Formular beim Absenden einen Fehler und verweist auf WhatsApp – es behauptet nie fälschlich, die Anfrage sei angekommen. Nach dem Einschalten der Erkennung einmal neu veröffentlichen (Deploys → Trigger deploy), damit Netlify das Formular erfasst, und eine Testanfrage schicken.
 4. **Für Suchmaschinen freigeben** (im Admin unter *Allgemein*) erst einschalten, wenn Domain, Impressum und Datenschutz stehen. Solange bleibt die Seite auf `noindex`.
 
 ---
