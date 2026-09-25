@@ -34,7 +34,7 @@ export const T = {
     chooseCat: "Kategorie wählen", all: "Alle", filterStatus: "{n} Arbeiten in {cat}", filterStatusOne: "1 Arbeit in {cat}",
     nextProject: "Nächstes Projekt", factClient: "Kunde", factYear: "Jahr", factDisciplines: "Disziplinen", chFilm: "Filme", chPhoto: "Fotografie", chIdentity: "Zeichen", moreWork: "Weitere Arbeiten", clients: "Ausgewählte Kunden & Kooperationen", founder: "Gründer",
     process: "Zusammenarbeit", ending: "Abschluss", newTab: "(öffnet in neuem Tab)",
-    direct: "Kurze Frage? Schreib uns direkt.",
+    direct: "Lieber direkt? Schreib uns:",
     backToSite: "Zurück zur Startseite", imprint: "Impressum", privacy: "Datenschutz", inPreparation: "Diese Seite ist in Vorbereitung.",
     notFound: "Seite nicht gefunden", notFoundText: "Diese Adresse gibt es nicht (mehr).", backHome: "Zur Startseite",
     form: {
@@ -65,7 +65,7 @@ export const T = {
     chooseCat: "Choose a category", all: "All", filterStatus: "{n} projects in {cat}", filterStatusOne: "1 project in {cat}",
     nextProject: "Next project", factClient: "Client", factYear: "Year", factDisciplines: "Disciplines", chFilm: "Films", chPhoto: "Photography", chIdentity: "Marks", moreWork: "More work", clients: "Selected clients & collaborations", founder: "Founder",
     process: "Working together", ending: "Finale", newTab: "(opens in a new tab)",
-    direct: "Quick question? Message us directly.",
+    direct: "Prefer to go direct? Message us:",
     backToSite: "Back to the homepage", imprint: "Imprint", privacy: "Privacy", inPreparation: "This page is being prepared.",
     notFound: "Page not found", notFoundText: "This address does not exist (anymore).", backHome: "Back to the homepage",
     form: {

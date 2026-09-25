@@ -4,8 +4,8 @@
   "brandName": "BushyFam Studios",
   "location_de": "Köln",
   "location_en": "Cologne",
-  "reach_de": "Projekte deutschlandweit & international",
-  "reach_en": "Available worldwide",
+  "reach_de": "Remote-Zusammenarbeit weltweit möglich",
+  "reach_en": "Remote-friendly worldwide",
   "email": "",
   "whatsapp": "+49 1514 4930658",
   "instagramUrl": "https://www.instagram.com/bushyfamstudios/",
@@ -18,13 +18,13 @@
   },
   "hero": {
     "line1_de": "BushyFam Studios",
-    "line2_de": "",
+    "line2_de": "Film. Design. Digital.",
     "line1_en": "BushyFam Studios",
-    "line2_en": "",
-    "text_de": "Wir machen Dinge, die man nicht übersieht.",
-    "text_en": "We make things worth looking at.",
-    "outro_de": "Ein Kreativstudio für Film, Fotografie, Design und Digital.",
-    "outro_en": "A creative studio for film, photography, design and digital.",
+    "line2_en": "Film. Design. Digital.",
+    "text_de": "Wir schaffen Dinge, die es wert sind, angesehen zu werden.",
+    "text_en": "We create things worth looking at.",
+    "outro_de": "Ein Studio für Film, Fotografie und Design.",
+    "outro_en": "One studio for film, photography and design.",
     "video": {
       "sources": [
         {

@@ -5,24 +5,44 @@
   "intro_en": "Share a few words about your project. BushyFam Studios is based in Cologne and works with businesses across Germany.",
   "options": [
     {
-      "de": "Film & Content",
-      "en": "Film & Content"
+      "de": "Werbeclips",
+      "en": "Commercials"
+    },
+    {
+      "de": "Social-Media-Videos",
+      "en": "Social media videos"
+    },
+    {
+      "de": "Namensentwicklung",
+      "en": "Naming"
+    },
+    {
+      "de": "Logo",
+      "en": "Logo"
+    },
+    {
+      "de": "Visueller Markenauftritt",
+      "en": "Visual identity"
     },
     {
       "de": "Fotografie",
       "en": "Photography"
     },
     {
-      "de": "Marke & Design",
-      "en": "Brand & Design"
+      "de": "Grafikdesign",
+      "en": "Graphic design"
     },
     {
-      "de": "Digital & Growth",
-      "en": "Digital & Growth"
+      "de": "Social Media: Planung & Betreuung",
+      "en": "Social media management"
     },
     {
-      "de": "Noch unklar",
-      "en": "Not sure yet"
+      "de": "Website",
+      "en": "Website"
+    },
+    {
+      "de": "Google- & Instagram-Anzeigen",
+      "en": "Google & Instagram ads"
     }
   ]
 }

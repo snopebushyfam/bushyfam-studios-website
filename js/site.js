@@ -52,12 +52,39 @@
     });
   });
 
-  /* ---------- Objects in Motion: langsames Schweben (CSS), jederzeit anhaltbar ---------- */
+  /* ---------- Objects in Motion: automatische Bewegung, jederzeit anhaltbar ---------- */
   var marquee = document.querySelector("[data-marquee]");
   if (marquee) {
+    var rows = [].slice.call(marquee.querySelectorAll("[data-marquee-row]"));
     var toggle = document.querySelector("[data-marquee-toggle]");
     var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     var reasons = { user: false, offscreen: true, hidden: false, focus: false, reduced: mqReduce.matches };
+
+    rows.forEach(function (row) {
+      var track = row.querySelector("[data-marquee-track]");
+      var originals = [].slice.call(track.children);
+      if (!originals.length) return;
+      function appendCopies(items) {
+        items.forEach(function (li) {
+          var clone = li.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          clone.setAttribute("inert", "");
+          var img = clone.querySelector("img");
+          if (img) img.setAttribute("alt", "");
+          track.appendChild(clone);
+        });
+      }
+      // Ein Durchlauf muss breiter als der Bildschirm sein und eine durch 12 teilbare Zahl an
+      // Kacheln haben (die leichten Versätze wiederholen sich alle 3 bzw. 4 Kacheln) – sonst
+      // entsteht eine Lücke oder ein Sprung am Übergang.
+      var guard = 0;
+      while ((track.children.length % 12 || track.scrollWidth < window.innerWidth * 1.5) && guard++ < 50) appendCopies(originals);
+      var perSet = track.children.length;
+      // Zweiter, identischer Durchlauf: Endlosschleife 0% → -50% ist dann nahtlos
+      appendCopies([].slice.call(track.children));
+      // Tempo wie bisher: etwa 11 Sekunden pro Kachel, unabhängig von der Kachelzahl
+      row.style.setProperty("--speed", perSet * 11);
+    });
 
     function refresh() {
       var paused = false;
