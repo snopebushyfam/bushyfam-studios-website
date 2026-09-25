@@ -31,7 +31,7 @@ Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASO
 |---|---|---|
 | Bestätigter dunkler Website-Entwurf | nicht im Chat vorhanden | – |
 | BushyFam-Logo als SVG | fehlt (transparentes PNG liegt seit 25.09.2026 vor, siehe unten) | – |
-| Favicon / App-Icon in finaler Qualität (aus SVG) | fehlt | provisorisch: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Symbol aus dem Original-Logo ausgeschnitten, mittig auf Schwarz gesetzt, nur skaliert |
+| Favicon / App-Icon aus SVG | fehlt | seit 25.09.2026 aus dem transparenten Logo: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Planeten-Symbol mittig auf Schwarz, nur skaliert |
 | Kamera-Originale bzw. finale Exporte der MASON’S-Fotos | teilweise unklar | Uploads verwendet |
 | Social-Sharing-Bild (Open Graph) | fehlt | keins eingebunden |
 
@@ -71,4 +71,4 @@ Die quadratischen Dateien `assets/hero/hero-cockpit-sq-*` wurden entfernt. Der H
 |---|---|---|---|
 | `image.png` (PNG, 813 × 813, weiß auf transparent) | BushyFam-Studios-Logo | Header und Footer (ersetzt den CSS-Ausschnitt aus `bushyfam-logo-original.png`) | `assets/brand/bushyfam-logo-weiss.png` (664 × 362, nur leerer Rand abgeschnitten, sonst unverändert) |
 
-Die Favicons stammen weiterhin aus dem alten Ausschnitt.
+Die Favicons wurden daraus neu erzeugt (Planeten-Symbol auf Schwarz); die Links tragen `?v=2`, damit zwischengespeicherte alte Icons ersetzt werden.

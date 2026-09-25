@@ -170,9 +170,9 @@ ${site ? `<link rel="canonical" href="${abs(here)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${lang === "de" ? "de_DE" : "en_GB"}">
-${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png">
-<link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png">
+${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
+<link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
