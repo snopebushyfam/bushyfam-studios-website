@@ -43,23 +43,35 @@ collections:
           - { label: "Logos & Branding", value: "branding" }
           - { label: "Websites & Digital", value: "digital" }
       - { label: "Adresse der Projektseite", name: slug, widget: string, pattern: ['^[a-z0-9-]+$', "Nur Kleinbuchstaben, Zahlen und Bindestriche"], hint: "Erscheint in der Adresszeile, z. B. masons-clips" }
+      - { label: "Veröffentlicht", name: published, widget: boolean, default: true, required: false, hint: "Aus = Entwurf: erscheint nirgends auf der Website" }
       - { label: "Auf der Startseite zeigen", name: featured, widget: boolean, default: false, required: false }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10, hint: "Kleinere Zahl steht weiter vorne" }
       - label: "Titelbild"
         name: cover
         widget: object
         fields:
-          - { label: "Bild", name: src, widget: image, hint: "Am besten quadratisch oder hochformatig, max. 2000 px" }
+          - { label: "Bild", name: src, widget: image, hint: "Fotos und Filmstandbilder füllen die Fläche; max. 2000 px" }
+          - label: "Darstellung"
+            name: fit
+            widget: select
+            required: false
+            default: "cover"
+            options:
+              - { label: "Fläche füllen (Fotos, Filmstandbilder)", value: "cover" }
+              - { label: "Bild ganz zeigen (Logos, Grafiken)", value: "contain" }
           - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string }
           - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+      - { label: "Disziplinen (DE)", name: disciplines_de, widget: string, required: false, hint: "Kurze Zeile, z. B. Film · Fotografie · Social Media" }
+      - { label: "Disziplinen (EN)", name: disciplines_en, widget: string, required: false }
       - { label: "Kurzbeschreibung (DE)", name: summary_de, widget: text, required: false }
       - { label: "Kurzbeschreibung (EN)", name: summary_en, widget: text, required: false }
-      - { label: "Ausführlicher Text (DE)", name: body_de, widget: text, required: false, hint: "Leerzeile = neuer Absatz" }
+      - { label: "Ausführlicher Text (DE)", name: body_de, widget: text, required: false, hint: "Kontext zum Projekt. Leerzeile = neuer Absatz" }
       - { label: "Ausführlicher Text (EN)", name: body_en, widget: text, required: false }
       - label: "Bilder & Filme"
         name: media
         widget: list
         required: false
+        hint: "Filme und Bilder erscheinen automatisch als eigene Kapitel; Bilder in einem versetzten Raster (1. groß, 2. klein …)"
         summary: "{{type}}: {{title_de}}{{alt_de}}"
         fields:
           - label: "Art"
@@ -150,7 +162,7 @@ collections:
     public_folder: "/assets/uploads/kunden"
     fields:
       - { label: "Name", name: name, widget: string }
-      - { label: "Logo", name: logo, widget: image, required: false, hint: "Am besten weiß oder einfarbig auf transparentem Grund. Die Logoleiste erscheint ab fünf Logos." }
+      - { label: "Logo", name: logo, widget: image, required: false, hint: "Nur einfarbige Logos auf transparentem Grund (PNG/SVG). Ohne Logo erscheint der Name als Schriftzug." }
       - { label: "Website", name: url, widget: string, required: false }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
@@ -170,6 +182,7 @@ collections:
           - { label: "Einzugsgebiet (DE)", name: reach_de, widget: string }
           - { label: "Einzugsgebiet (EN)", name: reach_en, widget: string }
           - { label: "E-Mail", name: email, widget: string, required: false, hint: "Wird angezeigt, sobald sie eingetragen ist" }
+          - { label: "WhatsApp-Nummer", name: whatsapp, widget: string, required: false, hint: "Mit Ländervorwahl, z. B. +49 1514 4930658 – leer lassen, um WhatsApp auszublenden" }
           - { label: "Instagram-Adresse", name: instagramUrl, widget: string, required: false }
           - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
           - label: "Suchmaschinen-Text"
@@ -185,11 +198,11 @@ collections:
             widget: object
             fields:
               - { label: "Überschrift Zeile 1 (DE)", name: line1_de, widget: string }
-              - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string }
+              - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string, required: false, hint: "Optional – leer lassen für eine ruhigere erste Ansicht" }
               - { label: "Überschrift Zeile 1 (EN)", name: line1_en, widget: string }
-              - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string }
-              - { label: "Beschreibung (DE)", name: text_de, widget: text }
-              - { label: "Beschreibung (EN)", name: text_en, widget: text }
+              - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string, required: false }
+              - { label: "Aussage unter dem Namen (DE)", name: text_de, widget: text, hint: "Ein kurzer Satz" }
+              - { label: "Aussage unter dem Namen (EN)", name: text_en, widget: text }
               - { label: "Satz am Filmende (DE)", name: outro_de, widget: text, required: false }
               - { label: "Satz am Filmende (EN)", name: outro_en, widget: text, required: false }
               - label: "Film"
@@ -204,6 +217,16 @@ collections:
                       - { label: "Datei", name: src, widget: file }
                       - { label: "Breite (px)", name: width, widget: number, value_type: int }
                       - { label: "Nur Desktop", name: desktopOnly, widget: boolean, required: false, default: false }
+                  - label: "Einzelbilder fürs Handy"
+                    name: frames
+                    widget: object
+                    required: false
+                    collapsed: true
+                    hint: "Ruckelfreies Scrollen auf Telefonen. Werden automatisch nicht verwendet, sobald der Film ausgetauscht wird (dann läuft das Video)."
+                    fields:
+                      - { label: "Ordner", name: folder, widget: string, required: false }
+                      - { label: "Anzahl Bilder", name: count, widget: number, value_type: int, required: false }
+                      - { label: "Gehört zu Datei", name: forVideo, widget: string, required: false }
                   - { label: "Standbild", name: poster, widget: image }
                   - { label: "Breite (px)", name: width, widget: number, value_type: int }
                   - { label: "Höhe (px)", name: height, widget: number, value_type: int }
@@ -241,11 +264,6 @@ collections:
               - { label: "Länge", name: duration, widget: string, required: false, hint: "z. B. 00:45" }
               - { label: "Titel (DE)", name: title_de, widget: string, required: false }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
-          - label: "Kontaktformular"
-            name: form
-            widget: object
-            fields:
-              - { label: "Formular freigeschaltet", name: enabled, widget: boolean, default: false, hint: "Erst einschalten, wenn in Netlify die Formularerkennung aktiv ist und die Datenschutzerklärung steht" }
 
       - name: "home"
         label: "Startseite"
@@ -264,6 +282,8 @@ collections:
         label: "Leistungen"
         file: "content/services.json"
         fields:
+          - { label: "Überschrift (DE)", name: title_de, widget: string, required: false }
+          - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
           - label: "Leistungen"
             name: items
             widget: list
@@ -273,9 +293,8 @@ collections:
               - { label: "Begriff (EN)", name: title_en, widget: string, required: false }
               - { label: "Erklärung (DE)", name: text_de, widget: text }
               - { label: "Erklärung (EN)", name: text_en, widget: text, required: false }
-              - { label: "Bildbeispiel (optional)", name: image, widget: image, required: false, hint: "Echte Arbeit, die zu dieser Leistung passt – leer lassen, wenn noch keine passt" }
-              - { label: "Bildbeschreibung (DE)", name: imageAlt_de, widget: string, required: false }
-              - { label: "Bildbeschreibung (EN)", name: imageAlt_en, widget: string, required: false }
+              - { label: "Stichworte (DE)", name: tags_de, widget: string, required: false, hint: "z. B. Werbefilme · Reels · Schnitt" }
+              - { label: "Stichworte (EN)", name: tags_en, widget: string, required: false }
           - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "z. B. „Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.“" }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
 
@@ -321,7 +340,7 @@ collections:
                 widget: select
                 required: false
                 options: ["Art", "Exhibition", "Publishing", "Film", "BushyFam"]
-              - { label: "Groß darstellen", name: feature, widget: boolean, default: false, required: false, hint: "Bild über volle Breite statt klein neben dem Text – für die stärksten Momente wie das Museum" }
+              - { label: "Groß darstellen", name: feature, widget: boolean, default: false, required: false, hint: "Großes Bild mit Text daneben – für die stärksten Momente wie Museum und Buch. Ohne Häkchen: ruhige Textnotiz" }
               - { label: "Titel (DE)", name: title_de, widget: string }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }

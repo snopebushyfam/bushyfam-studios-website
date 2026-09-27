@@ -61,17 +61,29 @@
     var reasons = { user: false, offscreen: true, hidden: false, focus: false, reduced: mqReduce.matches };
 
     rows.forEach(function (row) {
-      row.style.setProperty("--speed", row.dataset.speed || 20);
-      // Kopie anhängen, damit die Endlosschleife (0% → -50%) nahtlos ist
       var track = row.querySelector("[data-marquee-track]");
-      [].slice.call(track.children).forEach(function (li) {
-        var clone = li.cloneNode(true);
-        clone.setAttribute("aria-hidden", "true");
-        clone.setAttribute("inert", "");
-        var img = clone.querySelector("img");
-        if (img) img.setAttribute("alt", "");
-        track.appendChild(clone);
-      });
+      var originals = [].slice.call(track.children);
+      if (!originals.length) return;
+      function appendCopies(items) {
+        items.forEach(function (li) {
+          var clone = li.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          clone.setAttribute("inert", "");
+          var img = clone.querySelector("img");
+          if (img) img.setAttribute("alt", "");
+          track.appendChild(clone);
+        });
+      }
+      // Ein Durchlauf muss breiter als der Bildschirm sein und eine durch 12 teilbare Zahl an
+      // Kacheln haben (die leichten Versätze wiederholen sich alle 3 bzw. 4 Kacheln) – sonst
+      // entsteht eine Lücke oder ein Sprung am Übergang.
+      var guard = 0;
+      while ((track.children.length % 12 || track.scrollWidth < window.innerWidth * 1.5) && guard++ < 50) appendCopies(originals);
+      var perSet = track.children.length;
+      // Zweiter, identischer Durchlauf: Endlosschleife 0% → -50% ist dann nahtlos
+      appendCopies([].slice.call(track.children));
+      // Tempo wie bisher: etwa 11 Sekunden pro Kachel, unabhängig von der Kachelzahl
+      row.style.setProperty("--speed", perSet * 11);
     });
 
     function refresh() {

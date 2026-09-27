@@ -9,8 +9,10 @@
   "title_en": "MASON’S",
   "summary_de": "Laufende visuelle Partnerschaft: Werbeclips, Social Content und Produktfotografie für MASON’S.",
   "summary_en": "An ongoing visual partnership — commercial films, social content and product photography for MASON’S.",
-  "body_de": "Film · Fotografie · Social",
-  "body_en": "Film · Photography · Social",
+  "disciplines_de": "Film · Fotografie · Social Media",
+  "disciplines_en": "Film · Photography · Social",
+  "body_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
+  "body_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
   "cover": {
     "src": "/assets/work/masons/videos/masons-lounge.jpg",
     "alt_de": "Standbild: Gäste in einer Lounge",
@@ -74,5 +76,6 @@
       "alt_de": "Roter Frozen-Drink mit Kiwischeibe im Martiniglas vor schwarzem Hintergrund",
       "alt_en": "Red frozen drink with a kiwi slice in a martini glass against a black background"
     }
-  ]
+  ],
+  "published": true
 }

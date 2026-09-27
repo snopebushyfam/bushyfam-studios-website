@@ -1,9 +1,9 @@
 /*
- * Kontaktformular.
+ * Kontaktformular → Netlify Forms.
  * - Prüft Eingaben und zeigt verständliche Fehler (mit Sprunglinks).
- * - Spam-Schutz ohne Drittanbieter: unsichtbares Feld + Mindestzeit.
- * - Versand erst, wenn im Admin „Formular freigeschaltet“ aktiv ist (data-live).
- *   Vorher wird nichts übertragen und das auch klar gesagt.
+ * - Spam-Schutz: unsichtbares Feld (netlify-honeypot) + Netlifys eigener Spamfilter.
+ * - Erfolg wird nur gemeldet, wenn Netlify die Anfrage angenommen hat (HTTP 2xx).
+ * - Ohne JavaScript schickt der Browser das Formular normal ab und landet auf der Danke-Seite.
  */
 (function () {
   "use strict";
@@ -12,12 +12,14 @@
   var t = {};
   try { t = JSON.parse(document.getElementById("form-i18n").textContent); } catch (e) { return; }
 
-  var live = form.getAttribute("data-live") === "true";
   var summary = form.querySelector("[data-summary]");
   var result = form.querySelector("[data-result]");
+  var submit = form.querySelector("[data-submit]");
+  var done = document.querySelector("[data-done]");
   var honeypot = form.querySelector('[name="bot-field"]');
-  var MIN_FILL_MS = 3000, firstInteraction = 0, sending = false;
-  form.addEventListener("focusin", function () { if (!firstInteraction) firstInteraction = Date.now(); });
+  var waUrl = form.getAttribute("data-wa");
+  var submitLabel = submit ? submit.textContent : "";
+  var sending = false;
 
   // Kommt man von einer Person aus der Besetzung, steht sie gleich in der Nachricht
   try {
@@ -48,12 +50,33 @@
     input.addEventListener("input", function () { if (input.getAttribute("aria-invalid") === "true") setError(input, r.check(input.value)); });
   });
 
-  function looksLikeSpam() {
-    if (honeypot && honeypot.value.trim() !== "") return "honeypot";
-    if (!firstInteraction || Date.now() - firstInteraction < MIN_FILL_MS) return "too-fast";
-    return "";
+  function show(text, cls, withWa) {
+    result.className = "result" + (cls ? " " + cls : "");
+    result.textContent = text;
+    if (withWa && waUrl) {
+      var a = document.createElement("a");
+      a.href = waUrl; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = "WhatsApp ↗";
+      result.appendChild(document.createTextNode(" "));
+      result.appendChild(a);
+    }
   }
-  function show(msg, cls) { result.textContent = msg; result.className = "result" + (cls ? " " + cls : ""); }
+  function setBusy(on) {
+    sending = on;
+    if (!submit) return;
+    submit.disabled = on;
+    submit.setAttribute("aria-busy", on ? "true" : "false");
+    submit.textContent = on ? t.sending : submitLabel;
+  }
+
+  // Feldwerte für Netlify: Mehrfachauswahl („leistungen“) als ein Feld, sonst käme nur ein Wert an
+  function payload() {
+    var data = new URLSearchParams(), services = [];
+    new FormData(form).forEach(function (v, k) {
+      if (k === "leistungen") services.push(v); else data.append(k, v);
+    });
+    data.append("leistungen", services.join(", "));
+    return data.toString();
+  }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -77,28 +100,40 @@
     }
     summary.hidden = true; summary.innerHTML = "";
 
-    var spam = looksLikeSpam();
-    form.setAttribute("data-spam-check", spam || "ok");
-    if (spam) return; // still verwerfen, kein Hinweis für Bots
+    // Bot hat das unsichtbare Feld ausgefüllt: nichts senden, nichts verraten
+    if (honeypot && honeypot.value.trim() !== "") return;
 
-    if (!live) { show(t.previewResult, "ok"); return; }
-
-    // Versand an Netlify Forms
-    sending = true; show(t.sending, "");
-    var data = new URLSearchParams();
-    new FormData(form).forEach(function (v, k) { if (k !== "bot-field") data.append(k, v); });
-    fetch(form.getAttribute("action") || location.pathname, {
+    setBusy(true);
+    show(t.sending, "");
+    fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: data.toString()
+      body: payload()
     }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       form.reset();
-      show(t.success, "ok");
+      show("", "");
+      if (done) {
+        form.hidden = true;
+        done.hidden = false;
+        done.focus();
+      } else {
+        show(t.successTitle + " " + t.success, "ok");
+      }
     }).catch(function () {
-      show(t.failure, "fail");
-    }).then(function () { sending = false; });
+      show(waUrl ? t.failure : t.failureNoWa, "fail", true);
+    }).then(function () { setBusy(false); });
   });
+
+  if (done) {
+    var again = done.querySelector("[data-again]");
+    if (again) again.addEventListener("click", function () {
+      done.hidden = true;
+      form.hidden = false;
+      var first = document.getElementById("f-name");
+      if (first) first.focus();
+    });
+  }
 
   summary.addEventListener("click", function (e) {
     var a = e.target.closest("a");
