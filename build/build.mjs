@@ -96,6 +96,9 @@ const CAST = readDir("content/cast")
   .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
 need(!S.whatsapp || (/^\+|^00/.test(String(S.whatsapp).trim()) && /^[1-9]\d{7,14}$/.test(WA_DIGITS)), `Einstellungen → WhatsApp-Nummer „${S.whatsapp}“: Bitte mit Ländervorwahl eintragen, z. B. +49 1514 4930658.`);
+need(assetExists(S.seo?.image), `Einstellungen → Vorschaubild zum Teilen nicht gefunden: ${S.seo?.image}`);
+/* Vor der Freigabe für Suchmaschinen dürfen Impressum und Datenschutz keine Platzhalter [ … ] mehr enthalten */
+if (S.launch) for (const k of ["imprint_de", "imprint_en", "privacy_de", "privacy_en"]) need(!/\[[^\]]*(ERGÄNZEN|ADD|BITTE|PLEASE)[^\]]*\]/i.test(LEGAL[k] || "") && (LEGAL[k] || "").trim(), `Impressum & Datenschutz: „${k}“ ist leer oder enthält noch Platzhalter – erst ausfüllen, dann für Suchmaschinen freigeben.`);
 need(S.hero && S.hero.video && Array.isArray(S.hero.video.sources) && S.hero.video.sources.length, "Einstellungen → Einstieg: Es ist kein Einstiegsfilm eingetragen.");
 const slugs = new Set();
 for (const p of PROJECTS) {
@@ -157,7 +160,7 @@ const hrefFor = (lang, key, slug) => {
   const r = ROUTES[lang][key];
   return slug ? `${r}${slug}/` : r;
 };
-function layout({ lang, key, slug, title, description, body, scripts = [], ogImage }) {
+function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
   const t = T[lang], other = lang === "de" ? "en" : "de";
   const site = (S.siteUrl || "").replace(/\/+$/, "");
   const here = hrefFor(lang, key, slug), there = key === "home404" ? ROUTES[other].home : hrefFor(other, key, slug);
@@ -188,7 +191,7 @@ ${site && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${lang === "de" ? "de_DE" : "en_GB"}">
 ${site && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
-${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
+${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n${imageSize(ogImage) ? `<meta property="og:image:width" content="${imageSize(ogImage).w}">\n<meta property="og:image:height" content="${imageSize(ogImage).h}">\n` : ""}` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
@@ -405,7 +408,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>` : ""}`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: V.poster });
+    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {

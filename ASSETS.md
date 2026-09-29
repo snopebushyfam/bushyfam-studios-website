@@ -33,7 +33,7 @@ Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASO
 | BushyFam-Logo als SVG | fehlt (transparentes PNG liegt seit 25.09.2026 vor, siehe unten) | – |
 | Favicon / App-Icon aus SVG | fehlt | seit 25.09.2026 aus dem transparenten Logo: `assets/brand/icons/favicon.ico` (16/32/48), `icon-32.png`, `icon-180.png`, `icon-192.png` – Planeten-Symbol mittig auf Schwarz, nur skaliert |
 | Kamera-Originale bzw. finale Exporte der MASON’S-Fotos | teilweise unklar | Uploads verwendet |
-| Social-Sharing-Bild (Open Graph) | fehlt | keins eingebunden |
+| Social-Sharing-Bild (Open Graph) | seit 29.09.2026: `assets/brand/og-bushyfam.jpg` (1200 × 630, Logo + Ausschnitt aus dem Einstiegsfilm-Standbild) | im Admin unter Allgemein → Suchmaschinen-Text austauschbar |
 
 ## Neue MASON’S-Clips einbinden
 
@@ -44,7 +44,7 @@ Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASO
 
 ## Schrift
 
-Poppins (Regular, Medium, Bold) von Indian Type Foundry, Lizenz **SIL Open Font License 1.1**. Selbst gehostet als WOFF-Teilmenge (Latein + deutsche Sonderzeichen) in `assets/fonts/`. Keine Anfrage an Google-Server. Lizenztext: https://openfontlicense.org – vor Livegang als `assets/fonts/OFL.txt` beilegen.
+Poppins (Regular, Medium, Bold) von Indian Type Foundry, Lizenz **SIL Open Font License 1.1**. Selbst gehostet als WOFF-Teilmenge (Latein + deutsche Sonderzeichen) in `assets/fonts/`. Keine Anfrage an Google-Server. Lizenztext liegt bei: `assets/fonts/OFL.txt`.
 
 ## Nachtrag 21.09.2026 – Videos
 
