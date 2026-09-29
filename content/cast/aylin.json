@@ -1,0 +1,13 @@
+{
+  "consent": true,
+  "visible": true,
+  "order": 10,
+  "name": "Aylin",
+  "role_de": "Model und Schauspielerin",
+  "photos": [
+    {
+      "src": "/assets/uploads/besetzung/img_1880.jpeg"
+    }
+  ],
+  "slug": "aylin"
+}
