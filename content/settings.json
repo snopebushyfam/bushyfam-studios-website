@@ -6,7 +6,7 @@
   "location_en": "Cologne",
   "reach_de": "Remote-Zusammenarbeit weltweit möglich",
   "reach_en": "Remote-friendly worldwide",
-  "email": "",
+  "email": "hello@bushyfam.studio",
   "whatsapp": "+49 1514 4930658",
   "instagramUrl": "https://www.instagram.com/bushyfamstudios/",
   "instagramHandle": "@bushyfamstudios",
@@ -14,7 +14,8 @@
     "title_de": "BushyFam Studios – Film, Fotografie & Markendesign",
     "title_en": "BushyFam Studios – Film, Photography & Brand Design",
     "description_de": "BushyFam Studios ist ein Kreativstudio für Film, Fotografie, Markenbildung und digitale Erlebnisse mit Sitz in Köln.",
-    "description_en": "BushyFam Studios is a creative studio for film, photography, branding and digital experiences, based in Cologne, Germany."
+    "description_en": "BushyFam Studios is a creative studio for film, photography, branding and digital experiences, based in Cologne, Germany.",
+    "image": "/assets/brand/og-bushyfam.jpg"
   },
   "hero": {
     "line1_de": "BushyFam Studios",
