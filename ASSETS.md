@@ -21,7 +21,7 @@ Alle gelieferten Originale liegen **unverändert** in `originals/` (bzw. bei Log
 
 Die Zuordnung der drei Clips zu MASON’S beruht auf dem „M“-Signet in den Videos. Die Web-Fassungen sind nur skaliert und nach H.264 umgewandelt (Bildrate, Schnitt und Ton unverändert); die stumme Tonspur von Clip 3 wurde entfernt. HEVC-Originale spielen in Chrome unter Windows nicht zuverlässig. Master-Dateien liegen beim Kunden.
 
-Die Zuordnung der Produktfotos zu MASON’S und die Motivbezeichnungen (z. B. „Eisbecher“) beruhen auf dem Bildinhalt. Namen der Drinks sind nicht bekannt und wurden nicht erfunden. Bitte bestätigen, dass alle vier Fotos zu MASON’S gehören.
+Die Zuordnung der Produktfotos zu MASON’S und die Motivbezeichnungen (z. B. „Eisbecher“) beruhen auf dem Bildinhalt. Namen der Drinks sind nicht bekannt und wurden nicht erfunden. Am 29.09.2026 bestätigt: Alle vier Fotos gehören zu MASON’S; weitere folgen.
 
 Reihenfolge und Alt-Texte des Karussells: Admin-Bereich → „Arbeiten – MASON’S“ → Produktkarussell (Datei: `content/work-masons.json`).
 
