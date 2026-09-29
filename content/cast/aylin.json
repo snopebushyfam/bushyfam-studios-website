@@ -6,8 +6,11 @@
   "role_de": "Model und Schauspielerin",
   "photos": [
     {
-      "src": "/assets/uploads/besetzung/img_1880.jpeg"
+      "src": "/assets/uploads/besetzung/img_1880.jpeg",
+      "alt_de": "Porträt von Aylin mit hochgestecktem Haar, die eine Dior-Lidschattenpalette an ihr Gesicht hält",
+      "alt_en": "Portrait of Aylin with her hair tied up, holding a Dior eyeshadow palette to her face"
     }
   ],
-  "slug": "aylin"
+  "slug": "aylin",
+  "role_en": "Model & Actress"
 }
