@@ -248,7 +248,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 /* Mobil, Hochformat-Film: Überschrift liegt über dem dunklen oberen Bildteil (Sternenhimmel, ≈ 40 % der Höhe).
    Auf niedrigen Bildschirmen rückt der Film so weit nach unten, dass Cockpit und Person unter der Überschrift bleiben. */
 @media (max-width:899.98px){
-  .hero--tall{--tall-off:max(0px,calc((276px + env(safe-area-inset-top,0px) - 42svh) / .58));--stage-h:min(calc(100svh - var(--tall-off)),calc(100vw / var(--ar,1)))}
+  .hero--tall{--tall-off:max(0px,calc((var(--copy-h,276px) + env(safe-area-inset-top,0px) - 42svh) / .58));--stage-h:min(calc(100svh - var(--tall-off)),calc(100vw / var(--ar,1)))}
   .hero--tall .hero-copy{position:absolute;top:0;left:0;right:0}
   .hero--tall .hero-scrub{margin-top:0}
   .hero--tall .hero-stage{top:var(--tall-off)}
@@ -574,4 +574,11 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .header-cta + .header-ig{margin-left:-.25rem}
 @media (max-width:359px){.header-ig{width:34px}.ig-icon{width:21px;height:21px}.header-cta{padding:.4rem .7rem}}
 @media (min-width:900px){.header-ig{display:none}}
+
+/* Hero mit Slogan als Überschrift: gleicher Stil, darf umbrechen */
+.hero-title--statement{max-width:12ch;text-wrap:balance;font-size:clamp(2.375rem,1rem + 6.6vw,4rem);line-height:.95}
+@media (min-width:900px){
+  .hero-title--statement{white-space:normal;max-width:13ch;font-size:clamp(4rem,1rem + 6vw,8.5rem)}
+  .hero-foot .btn-row{margin-left:auto}
+}
 
