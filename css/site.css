@@ -438,9 +438,10 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 /* Kunden & Kooperationen: zurückhaltende Wortmarken, wächst mit weiteren Einträgen */
 .clients{padding-block:clamp(3.5rem,2rem + 4vw,6rem)}
 .clients .eyebrow{margin-bottom:1.5rem}
-.client-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem clamp(2rem,5vw,4.5rem);border-top:1px solid var(--line);padding-top:1.75rem}
-.client-word{font-size:clamp(1.5rem,1.1rem + 2vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--muted)}
-.client-logo{max-height:clamp(32px,4vw,52px);width:auto;filter:grayscale(1) brightness(1.4);opacity:.75}
+.client-row{display:flex;flex-wrap:wrap;align-items:center;gap:1.75rem clamp(2rem,5vw,4.5rem);border-top:1px solid var(--line);padding-top:1.75rem}
+.client-word{font-size:clamp(1.25rem,1rem + 1vw,1.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--muted)}
+.client-logo{height:clamp(44px,5vw,64px);width:auto;max-width:clamp(150px,18vw,210px);object-fit:contain;filter:grayscale(1) brightness(1.35);opacity:.8;transition:filter .4s,opacity .4s}
+.client-row li:hover .client-logo{filter:none;opacity:1}
 .client-row a{text-decoration:none}
 .client-row a:hover .client-word,.client-row a:focus-visible .client-word{color:var(--white)}
 .client-row a:hover .client-logo{opacity:1}

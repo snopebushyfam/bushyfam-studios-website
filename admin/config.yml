@@ -162,7 +162,7 @@ collections:
     public_folder: "/assets/uploads/kunden"
     fields:
       - { label: "Name", name: name, widget: string }
-      - { label: "Logo", name: logo, widget: image, required: false, hint: "Nur einfarbige Logos auf transparentem Grund (PNG/SVG). Ohne Logo erscheint der Name als Schriftzug." }
+      - { label: "Logo", name: logo, widget: image, required: false, hint: "Logo auf transparentem Grund (PNG/WebP/SVG), ohne weißen Kasten. Erscheint in Graustufen, farbig beim Darüberfahren. Ohne Logo erscheint der Name als Schriftzug." }
       - { label: "Website", name: url, widget: string, required: false }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
