@@ -209,13 +209,13 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
     <nav class="nav" aria-label="${esc(t.mainNav)}">
       <ul>
         ${nav.map(([k, l]) => `<li><a href="${navHref(k)}"${cur(k)}>${esc(l)}</a></li>`).join("\n        ")}
-        ${S.instagramUrl ? `<li>${igLink(lang, "ig-link")}</li>` : ""}
         <li><a class="lang" href="${there}" hreflang="${other}" lang="${other}"><span aria-hidden="true">${other.toUpperCase()}</span><span class="vh">${esc(t.switchTo)}</span></a></li>
         <li><a class="btn btn--primary btn--nav" href="${ROUTES[lang].contact}"${cur("contact")}>${esc(t.cta)}</a></li>
+        ${S.instagramUrl ? `<li>${igLink(lang, "ig-link")}</li>` : ""}
       </ul>
     </nav>
-    ${igLink(lang, "ig-link header-ig")}
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
+    ${igLink(lang, "ig-link header-ig")}
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu" data-menu-btn><span class="menu-label">${esc(t.menu)}</span><span class="menu-lines" aria-hidden="true"></span></button>
   </div>
 </header>
