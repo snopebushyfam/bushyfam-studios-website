@@ -566,3 +566,13 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
   .hero--static .hero-copy-inner{min-height:100vh}
 }
 @media (prefers-reduced-motion:reduce){.hero-foot{animation:none}}
+
+/* Instagram im Header: mobil vor „Projekt anfragen“, am Desktop in der Navigation */
+.ig-link{display:inline-flex;flex:none;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;color:var(--white);text-decoration:none;transition:opacity .2s}
+.ig-link:hover{opacity:.7}
+.nav a.ig-link{display:inline-flex;padding:0;background:none}
+.header-ig{margin-left:auto}
+.header-ig + .header-cta{margin-left:0}
+@media (max-width:359px){.header-ig{width:34px}.ig-icon{width:21px;height:21px}.header-cta{padding:.4rem .7rem}}
+@media (min-width:900px){.header-ig{display:none}}
+

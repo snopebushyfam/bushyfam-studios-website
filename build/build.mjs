@@ -160,6 +160,9 @@ const hrefFor = (lang, key, slug) => {
   const r = ROUTES[lang][key];
   return slug ? `${r}${slug}/` : r;
 };
+/* Instagram-Symbol (Umriss, weiß über currentColor) für den Header */
+const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
+const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
 function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
   const t = T[lang], other = lang === "de" ? "en" : "de";
   const site = (S.siteUrl || "").replace(/\/+$/, "");
@@ -206,10 +209,12 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
     <nav class="nav" aria-label="${esc(t.mainNav)}">
       <ul>
         ${nav.map(([k, l]) => `<li><a href="${navHref(k)}"${cur(k)}>${esc(l)}</a></li>`).join("\n        ")}
+        ${S.instagramUrl ? `<li>${igLink(lang, "ig-link")}</li>` : ""}
         <li><a class="lang" href="${there}" hreflang="${other}" lang="${other}"><span aria-hidden="true">${other.toUpperCase()}</span><span class="vh">${esc(t.switchTo)}</span></a></li>
         <li><a class="btn btn--primary btn--nav" href="${ROUTES[lang].contact}"${cur("contact")}>${esc(t.cta)}</a></li>
       </ul>
     </nav>
+    ${igLink(lang, "ig-link header-ig")}
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu" data-menu-btn><span class="menu-label">${esc(t.menu)}</span><span class="menu-lines" aria-hidden="true"></span></button>
   </div>
