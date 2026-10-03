@@ -160,6 +160,9 @@ const hrefFor = (lang, key, slug) => {
   const r = ROUTES[lang][key];
   return slug ? `${r}${slug}/` : r;
 };
+/* Instagram-Symbol (Umriss, weiß über currentColor) für den Header */
+const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
+const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
 function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
   const t = T[lang], other = lang === "de" ? "en" : "de";
   const site = (S.siteUrl || "").replace(/\/+$/, "");
@@ -208,9 +211,11 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
         ${nav.map(([k, l]) => `<li><a href="${navHref(k)}"${cur(k)}>${esc(l)}</a></li>`).join("\n        ")}
         <li><a class="lang" href="${there}" hreflang="${other}" lang="${other}"><span aria-hidden="true">${other.toUpperCase()}</span><span class="vh">${esc(t.switchTo)}</span></a></li>
         <li><a class="btn btn--primary btn--nav" href="${ROUTES[lang].contact}"${cur("contact")}>${esc(t.cta)}</a></li>
+        ${S.instagramUrl ? `<li>${igLink(lang, "ig-link")}</li>` : ""}
       </ul>
     </nav>
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
+    ${igLink(lang, "ig-link header-ig")}
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu" data-menu-btn><span class="menu-label">${esc(t.menu)}</span><span class="menu-lines" aria-hidden="true"></span></button>
   </div>
 </header>
@@ -307,9 +312,9 @@ function pageHome(lang) {
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title" id="h-home"><span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
-        <p class="hero-text">${esc(tr(H, "text", lang))}</p>
+        ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
         <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
       </div>
     </div>
