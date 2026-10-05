@@ -330,7 +330,19 @@ function pageHome(lang) {
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
-${featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
+${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
+  <div class="wrap head-row">
+    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2><p class="lead">${esc(t.castLead)}</p></div>
+    <a class="link-arrow" href="${R.cast}">${esc(t.allCast)} <span aria-hidden="true">→</span></a>
+  </div>
+  <ul class="cast-row" aria-label="${esc(t.nav.cast)}">
+    ${CAST.map((p, i) => { const ph = p.photos[0]; return `<li class="cast-card"><a href="${hrefFor(lang, "person", p.slug)}">
+      <span class="cast-card-media">${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: "(min-width: 900px) 30vw, 74vw", lazy: i > 1 })}</span>
+      <span class="cast-card-cap"><span class="cast-card-name">${esc(p.name)}</span><span class="cast-card-role">${esc(tr(p, "role", lang))}</span></span>
+    </a></li>`; }).join("\n    ")}
+  </ul>
+</section>` : ""}
+${!CAST.length && featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
   <div class="wrap head-row">
     <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
     <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
