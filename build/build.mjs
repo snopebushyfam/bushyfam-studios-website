@@ -88,6 +88,12 @@ function svcCard(s, i, lang) {
       </div>
     </li>`;
 }
+/* Satz unter den Leistungen als große Zeile zum Kontakt: Frage leise, Antwort groß */
+function svcNote(note, href, t) {
+  const m = note.match(/^(.*?\?)\s+(.+)$/s);
+  const text = m ? `<span class="svc-note-q">${esc(m[1])}</span> <span class="svc-note-a">${esc(m[2])}</span>` : `<span class="svc-note-a">${esc(note)}</span>`;
+  return `<a class="svc-note" href="${href}"><span class="svc-note-text">${text}</span><span class="svc-note-go"><span class="svc-note-label">${esc(t.cta)}</span><span class="svc-note-arrow" aria-hidden="true">→</span></span></a>`;
+}
 const ext = (href, label, lang, cls = "link-arrow") =>
   `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span><span class="vh"> ${esc(T[lang].newTab)}</span></a>`;
 
@@ -397,7 +403,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
     ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
   </ul>
   <div class="wrap">
-    ${tr(SERV, "note", lang) ? `<p class="svc-note">${esc(tr(SERV, "note", lang))}</p>` : ""}
+    ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
   </div>
 </section>
 

@@ -302,7 +302,7 @@ collections:
               - { label: "Kachelvideo (optional)", name: video, widget: file, required: false, hint: "Kurzer stummer Clip als MP4, läuft in Schleife. Ohne Video wird das Bild gezeigt." }
               - { label: "Bildbeschreibung (DE)", name: imageAlt_de, widget: string, required: false }
               - { label: "Bildbeschreibung (EN)", name: imageAlt_en, widget: string, required: false }
-          - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "z. B. „Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.“" }
+          - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "Erscheint als große Zeile mit Pfeil zum Kontakt. Alles bis zum ersten Fragezeichen steht klein darüber, der Rest groß." }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
 
       - name: "studio"
