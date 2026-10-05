@@ -1,0 +1,16 @@
+{
+  "consent": true,
+  "visible": true,
+  "order": 30,
+  "name": "Ceyda",
+  "role_de": "Model",
+  "role_en": "Model",
+  "photos": [
+    {
+      "src": "/assets/uploads/besetzung/ceyda.jpg",
+      "alt_de": "Ceyda mit langen braunen Haaren in schwarzem Sportoutfit, auf dem Boden sitzend, neben zwei Padel-Schlägern und einem Ball vor hellem Studiohintergrund",
+      "alt_en": "Ceyda with long brown hair in a black sports outfit, sitting on the floor next to two padel rackets and a ball against a light studio backdrop"
+    }
+  ],
+  "slug": "ceyda"
+}
