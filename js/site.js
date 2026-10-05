@@ -174,6 +174,31 @@
     refresh();
   }
 
+  /* ---------- Leistungen: Kachel antippen klappt Text auf, Video läuft nur im Bild ---------- */
+  var svcList = document.querySelector(".svc-cards");
+  if (svcList) {
+    svcList.classList.add("js");
+    svcList.addEventListener("click", function (e) {
+      var b = e.target.closest(".svc-card-toggle");
+      if (!b) return;
+      var open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", open ? "true" : "false");
+      b.closest("[data-svc-card]").classList.toggle("is-open", open);
+    });
+    var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var vids = svcList.querySelectorAll("[data-svc-video]");
+    if (!still && vids.length && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var v = en.target;
+          if (en.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+          else v.pause();
+        });
+      }, { threshold: 0.35 });
+      [].forEach.call(vids, function (v) { io.observe(v); });
+    }
+  }
+
   /* ---------- Arbeiten: Filter nach Kategorie (Adresse merkt sich die Wahl: #film) ---------- */
   var filters = document.querySelector("[data-filters]");
   var grid = document.querySelector("[data-grid]");

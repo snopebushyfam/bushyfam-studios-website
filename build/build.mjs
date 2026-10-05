@@ -73,6 +73,21 @@ function img(src, alt, { sizes = "100vw", cls = "", lazy = true, widths = [480, 
   }
   return `<img${cls ? ` class="${cls}"` : ""} src="${esc(s)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
 }
+/* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
+function svcCard(s, i, lang) {
+  const id = `svc-more-${i + 1}`, alt = tr(s, "imageAlt", lang);
+  const media = s.video
+    ? `<video class="svc-card-img" muted loop playsinline preload="none"${s.image ? ` poster="${esc(url(s.image))}"` : ""} data-svc-video aria-hidden="true"><source src="${esc(url(s.video))}" type="video/mp4"></video>`
+    : s.image ? img(s.image, alt, { sizes: "(min-width: 900px) 25vw, 78vw", cls: "svc-card-img" }) : "";
+  return `<li class="svc-card" data-svc-card>
+      <div class="svc-card-media">${media}${s.video && alt ? `<span class="vh">${esc(alt)}</span>` : ""}</div>
+      <div class="svc-card-body">
+        <span class="svc-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+        <h3><button class="svc-card-toggle" type="button" aria-expanded="false" aria-controls="${id}">${esc(tr(s, "title", lang))}<span class="svc-card-plus" aria-hidden="true"></span></button></h3>
+        <div class="svc-card-more" id="${id}"><div><p>${esc(tr(s, "text", lang))}</p>${tr(s, "tags", lang) ? `<p class="svc-tags">${esc(tr(s, "tags", lang))}</p>` : ""}</div></div>
+      </div>
+    </li>`;
+}
 const ext = (href, label, lang, cls = "link-arrow") =>
   `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span><span class="vh"> ${esc(T[lang].newTab)}</span></a>`;
 
@@ -377,9 +392,11 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   <div class="wrap">
     <p class="eyebrow">${esc(t.nav.services)}</p>
     <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
-    <ol class="svc-rows">
-      ${(SERV.items || []).map((s, i) => `<li><span class="svc-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><div class="svc-text"><p>${esc(tr(s, "text", lang))}</p>${tr(s, "tags", lang) ? `<p class="svc-tags">${esc(tr(s, "tags", lang))}</p>` : ""}</div></li>`).join("\n      ")}
-    </ol>
+  </div>
+  <ul class="svc-cards">
+    ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
+  </ul>
+  <div class="wrap">
     ${tr(SERV, "note", lang) ? `<p class="svc-note">${esc(tr(SERV, "note", lang))}</p>` : ""}
   </div>
 </section>

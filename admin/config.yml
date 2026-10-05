@@ -282,6 +282,8 @@ collections:
       - name: "services"
         label: "Leistungen"
         file: "content/services.json"
+        media_folder: "/assets/uploads/services"
+        public_folder: "/assets/uploads/services"
         fields:
           - { label: "Überschrift (DE)", name: title_de, widget: string, required: false }
           - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
@@ -296,6 +298,10 @@ collections:
               - { label: "Erklärung (EN)", name: text_en, widget: text, required: false }
               - { label: "Stichworte (DE)", name: tags_de, widget: string, required: false, hint: "z. B. Werbefilme · Reels · Schnitt" }
               - { label: "Stichworte (EN)", name: tags_en, widget: string, required: false }
+              - { label: "Kachelbild", name: image, widget: image, required: false, hint: "Hochformat (3:4) wirkt am besten. Beim Video ist das Bild das Standbild." }
+              - { label: "Kachelvideo (optional)", name: video, widget: file, required: false, hint: "Kurzer stummer Clip als MP4, läuft in Schleife. Ohne Video wird das Bild gezeigt." }
+              - { label: "Bildbeschreibung (DE)", name: imageAlt_de, widget: string, required: false }
+              - { label: "Bildbeschreibung (EN)", name: imageAlt_en, widget: string, required: false }
           - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "z. B. „Mehrere Leistungen zusammen? Gerne – wir setzen es gemeinsam um.“" }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
 

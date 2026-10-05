@@ -8,7 +8,11 @@
       "text_de": "Konzept, Regie, Produktion und Postproduktion – für Werbefilme, Kampagnen und Filme, die für Social Media gemacht sind.",
       "text_en": "Concept, direction, production and post-production for commercials, campaigns and social-first films.",
       "tags_de": "Werbefilme · Reels · Kampagnenfilme · Schnitt · Creative Direction",
-      "tags_en": "Commercials · Reels · Campaign Films · Editing · Creative Direction"
+      "tags_en": "Commercials · Reels · Campaign Films · Editing · Creative Direction",
+      "image": "/assets/work/masons/videos/masons-drink-einschenken.jpg",
+      "video": "/assets/work/masons/videos/masons-drink-einschenken.mp4",
+      "imageAlt_de": "Ein Drink wird eingeschenkt – Clip aus dem Dreh für MASON’S",
+      "imageAlt_en": "A drink being poured – clip from the MASON’S shoot"
     },
     {
       "title_de": "Fotografie",
@@ -16,7 +20,10 @@
       "text_de": "Produkt- und Kampagnenfotografie, die auf Social Media, im Web, in Anzeigen und im Raum gleichermaßen trägt.",
       "text_en": "Product and campaign photography designed to live across social, web, advertising and physical spaces.",
       "tags_de": "Produkt · Food · Kampagne · Editorial · Social",
-      "tags_en": "Product · Food · Campaign · Editorial · Social"
+      "tags_en": "Product · Food · Campaign · Editorial · Social",
+      "image": "/assets/work/masons/photos/masons-longdrink-orange-800.webp",
+      "imageAlt_de": "Longdrink mit Orange – Produktfoto für MASON’S",
+      "imageAlt_en": "Long drink with orange – product photo for MASON’S"
     },
     {
       "title_de": "Marke & Design",
@@ -24,7 +31,10 @@
       "text_de": "Erscheinungsbilder, die einer Marke eine eigene, wiedererkennbare Bildsprache geben – vom Logo über die Typografie bis zum Kampagnendesign.",
       "text_en": "Identity systems that give brands a recognisable visual language – from logo and typography to campaign design.",
       "tags_de": "Identität · Art Direction · Logodesign · Grafikdesign",
-      "tags_en": "Identity · Art Direction · Logo Design · Graphic Design"
+      "tags_en": "Identity · Art Direction · Logo Design · Graphic Design",
+      "image": "/assets/services/brand-nev.webp",
+      "imageAlt_de": "Logo N.E.V. 3 auf Gelb – Logodesign für Nelvie Tiafack",
+      "imageAlt_en": "N.E.V. 3 logo on yellow – logo design for Nelvie Tiafack"
     },
     {
       "title_de": "Digital & Growth",
@@ -32,7 +42,10 @@
       "text_de": "Websites, Social-Media-Auftritte und bezahlte Kampagnen – als ein zusammenhängendes System gedacht, nicht als einzelne Bausteine.",
       "text_en": "Web experiences, social rollouts and paid campaigns built as one connected system rather than separate services.",
       "tags_de": "Web · Social Media · Werbung · Kampagnen",
-      "tags_en": "Web · Social Media · Advertising · Campaigns"
+      "tags_en": "Web · Social Media · Advertising · Campaigns",
+      "image": "/assets/services/digital-website.webp",
+      "imageAlt_de": "Die BushyFam-Website auf einem Smartphone",
+      "imageAlt_en": "The BushyFam website on a smartphone"
     }
   ],
   "note_de": "Mehr als eins davon? Umso besser. Dann bauen wir das Ganze zusammen.",
