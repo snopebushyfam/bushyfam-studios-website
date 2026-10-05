@@ -60,6 +60,71 @@
     var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     var reasons = { user: false, offscreen: true, hidden: false, focus: false, reduced: mqReduce.matches };
 
+    /* Bewegung per JavaScript statt CSS-Animation: läuft von selbst, lässt sich aber mit
+       Finger oder Maus greifen und anschubsen (schneller, langsamer, rückwärts) – danach
+       gleitet das Tempo sanft zurück zur Grundgeschwindigkeit. */
+    var motions = [];
+    function makeMotion(row, track, perSet) {
+      var x = 0, v = 0, half = 0, base = 0, last = 0, raf = 0;
+      var drag = null;
+      function measure() { half = track.scrollWidth / 2; base = half / (perSet * 11); }
+      measure();
+      window.addEventListener("resize", measure, { passive: true });
+      v = isPaused() ? 0 : base;
+      // Trackpad: seitliches Wischen schiebt mit, senkrechtes scrollt weiter die Seite
+      row.addEventListener("wheel", function (e) {
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault();
+        x += e.deltaX; v = Math.max(-4000, Math.min(4000, e.deltaX * 8)); apply(); wake();
+      }, { passive: false });
+      function apply() {
+        if (half) { x = ((x % half) + half) % half; }
+        track.style.transform = "translate3d(" + (-x).toFixed(2) + "px,0,0)";
+      }
+      function frame(t) {
+        raf = 0;
+        var dt = last ? Math.min(0.05, (t - last) / 1000) : 0;
+        last = t;
+        if (!drag) {
+          var target = isPaused() ? 0 : base;
+          v += (target - v) * (1 - Math.exp(-dt * 1.2));
+          x += v * dt;
+          apply();
+        }
+        if (drag || Math.abs(v) > 0.5 || !isPaused()) raf = requestAnimationFrame(frame);
+        else last = 0;
+      }
+      function wake() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
+      row.addEventListener("pointerdown", function (e) {
+        if (e.button !== undefined && e.button !== 0) return;
+        drag = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), vx: 0, active: false };
+        wake();
+      });
+      row.addEventListener("pointermove", function (e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        var dx = e.clientX - drag.x, now = performance.now();
+        if (!drag.active) {
+          if (Math.abs(dx) < 6) return;
+          if (Math.abs(e.clientY - drag.y) > Math.abs(dx)) { drag = null; return; } // senkrecht = Seite scrollen
+          drag.active = true; row.setPointerCapture(e.pointerId); row.classList.add("is-dragging");
+        }
+        var dt = Math.max(1, now - drag.t) / 1000;
+        drag.vx = drag.vx * 0.6 + (dx / dt) * 0.4;
+        x -= dx; apply();
+        drag.x = e.clientX; drag.t = now;
+      });
+      function end(e) {
+        if (!drag || (e && e.pointerId !== drag.id)) return;
+        if (drag.active) v = Math.max(-4000, Math.min(4000, -drag.vx));
+        drag = null; row.classList.remove("is-dragging"); wake();
+      }
+      row.addEventListener("pointerup", end);
+      row.addEventListener("pointercancel", end);
+      row.addEventListener("lostpointercapture", end);
+      return { wake: wake };
+    }
+    function isPaused() { for (var k in reasons) if (reasons[k]) return true; return false; }
+
     rows.forEach(function (row) {
       var track = row.querySelector("[data-marquee-track]");
       var originals = [].slice.call(track.children);
@@ -80,16 +145,16 @@
       var guard = 0;
       while ((track.children.length % 12 || track.scrollWidth < window.innerWidth * 1.5) && guard++ < 50) appendCopies(originals);
       var perSet = track.children.length;
-      // Zweiter, identischer Durchlauf: Endlosschleife 0% → -50% ist dann nahtlos
+      // Zweiter, identischer Durchlauf: Endlosschleife ist dann nahtlos
       appendCopies([].slice.call(track.children));
-      // Tempo wie bisher: etwa 11 Sekunden pro Kachel, unabhängig von der Kachelzahl
-      row.style.setProperty("--speed", perSet * 11);
+      [].forEach.call(track.querySelectorAll("img"), function (im) { im.draggable = false; });
+      motions.push(makeMotion(row, track, perSet));
     });
-
     function refresh() {
       var paused = false;
       for (var k in reasons) if (reasons[k]) paused = true;
       marquee.setAttribute("data-paused", paused ? "true" : "false");
+      motions.forEach(function (m) { m.wake(); });
       if (toggle) {
         toggle.hidden = reasons.reduced;
         toggle.setAttribute("data-state", reasons.user ? "paused" : "running");
