@@ -1,0 +1,16 @@
+{
+  "consent": true,
+  "visible": true,
+  "order": 20,
+  "name": "Grace",
+  "role_de": "Model",
+  "role_en": "Model",
+  "photos": [
+    {
+      "src": "/assets/uploads/besetzung/grace.jpg",
+      "alt_de": "Ganzkörperporträt von Grace mit langen blonden Zöpfen in schwarzem Outfit und Schnürsandalen vor grauem Studiohintergrund",
+      "alt_en": "Full-length portrait of Grace with long blonde braids in a black outfit and lace-up heels against a grey studio backdrop"
+    }
+  ],
+  "slug": "grace"
+}

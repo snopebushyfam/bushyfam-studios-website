@@ -162,7 +162,7 @@ collections:
     public_folder: "/assets/uploads/kunden"
     fields:
       - { label: "Name", name: name, widget: string }
-      - { label: "Logo", name: logo, widget: image, required: false, hint: "Nur einfarbige Logos auf transparentem Grund (PNG/SVG). Ohne Logo erscheint der Name als Schriftzug." }
+      - { label: "Logo", name: logo, widget: image, required: false, hint: "Logo auf transparentem Grund (PNG/WebP/SVG), ohne weißen Kasten. Erscheint in Graustufen, farbig beim Darüberfahren. Ohne Logo erscheint der Name als Schriftzug." }
       - { label: "Website", name: url, widget: string, required: false }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
@@ -198,12 +198,12 @@ collections:
             name: hero
             widget: object
             fields:
-              - { label: "Überschrift Zeile 1 (DE)", name: line1_de, widget: string }
+              - { label: "Überschrift Zeile 1 (DE)", name: line1_de, widget: string, hint: "Große Überschrift über dem Film, z. B. der Slogan. Das Logo oben links trägt den Namen." }
               - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string, required: false, hint: "Optional – leer lassen für eine ruhigere erste Ansicht" }
               - { label: "Überschrift Zeile 1 (EN)", name: line1_en, widget: string }
               - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string, required: false }
-              - { label: "Aussage unter dem Namen (DE)", name: text_de, widget: text, hint: "Ein kurzer Satz" }
-              - { label: "Aussage unter dem Namen (EN)", name: text_en, widget: text }
+              - { label: "Kleine Zeile darunter (DE)", name: text_de, widget: text, required: false, hint: "Optional – leer lassen, wenn die Überschrift schon der Slogan ist" }
+              - { label: "Kleine Zeile darunter (EN)", name: text_en, widget: text, required: false }
               - { label: "Satz am Filmende (DE)", name: outro_de, widget: text, required: false }
               - { label: "Satz am Filmende (EN)", name: outro_en, widget: text, required: false }
               - label: "Film"

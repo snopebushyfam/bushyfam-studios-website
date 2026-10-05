@@ -248,7 +248,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 /* Mobil, Hochformat-Film: Überschrift liegt über dem dunklen oberen Bildteil (Sternenhimmel, ≈ 40 % der Höhe).
    Auf niedrigen Bildschirmen rückt der Film so weit nach unten, dass Cockpit und Person unter der Überschrift bleiben. */
 @media (max-width:899.98px){
-  .hero--tall{--tall-off:max(0px,calc((276px + env(safe-area-inset-top,0px) - 42svh) / .58));--stage-h:min(calc(100svh - var(--tall-off)),calc(100vw / var(--ar,1)))}
+  .hero--tall{--tall-off:max(0px,calc((var(--copy-h,276px) + env(safe-area-inset-top,0px) - 42svh) / .58));--stage-h:min(calc(100svh - var(--tall-off)),calc(100vw / var(--ar,1)))}
   .hero--tall .hero-copy{position:absolute;top:0;left:0;right:0}
   .hero--tall .hero-scrub{margin-top:0}
   .hero--tall .hero-stage{top:var(--tall-off)}
@@ -438,9 +438,10 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 /* Kunden & Kooperationen: zurückhaltende Wortmarken, wächst mit weiteren Einträgen */
 .clients{padding-block:clamp(3.5rem,2rem + 4vw,6rem)}
 .clients .eyebrow{margin-bottom:1.5rem}
-.client-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem clamp(2rem,5vw,4.5rem);border-top:1px solid var(--line);padding-top:1.75rem}
-.client-word{font-size:clamp(1.5rem,1.1rem + 2vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--muted)}
-.client-logo{max-height:clamp(32px,4vw,52px);width:auto;filter:grayscale(1) brightness(1.4);opacity:.75}
+.client-row{display:flex;flex-wrap:wrap;align-items:center;gap:1.75rem clamp(2rem,5vw,4.5rem);border-top:1px solid var(--line);padding-top:1.75rem}
+.client-word{font-size:clamp(1.25rem,1rem + 1vw,1.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--muted)}
+.client-logo{height:clamp(44px,5vw,64px);width:auto;max-width:clamp(150px,18vw,210px);object-fit:contain;filter:grayscale(1) brightness(1.35);opacity:.8;transition:filter .4s,opacity .4s}
+.client-row li:hover .client-logo{filter:none;opacity:1}
 .client-row a{text-decoration:none}
 .client-row a:hover .client-word,.client-row a:focus-visible .client-word{color:var(--white)}
 .client-row a:hover .client-logo{opacity:1}
@@ -566,3 +567,19 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
   .hero--static .hero-copy-inner{min-height:100vh}
 }
 @media (prefers-reduced-motion:reduce){.hero-foot{animation:none}}
+
+/* Instagram im Header: mobil vor „Projekt anfragen“, am Desktop in der Navigation */
+.ig-link{display:inline-flex;flex:none;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;color:var(--white);text-decoration:none;transition:opacity .2s}
+.ig-link:hover{opacity:.7}
+.nav a.ig-link{display:inline-flex;padding:0;background:none}
+.header-cta + .header-ig{margin-left:-.25rem}
+@media (max-width:359px){.header-ig{width:34px}.ig-icon{width:21px;height:21px}.header-cta{padding:.4rem .7rem}}
+@media (min-width:900px){.header-ig{display:none}}
+
+/* Hero mit Slogan als Überschrift: gleicher Stil, darf umbrechen */
+.hero-title--statement{max-width:12ch;text-wrap:balance;font-size:clamp(2.375rem,1rem + 6.6vw,4rem);line-height:.95}
+@media (min-width:900px){
+  .hero-title--statement{white-space:normal;max-width:13ch;font-size:clamp(4rem,1rem + 6vw,8.5rem)}
+  .hero-foot .btn-row{margin-left:auto}
+}
+

@@ -20,6 +20,12 @@
   var OUTRO_IN = [0.78, 0.90]; // Einblendung des Satzes (Film ist ab ≈ 6,7 s schwarz)
   if (!hero || !track || !media) return;
 
+  // Mobil liegt die Überschrift über dem Film: Ihre Höhe bestimmt, wie weit der Film nach unten rückt
+  function measureCopy() { if (copy) hero.style.setProperty("--copy-h", (copy.offsetHeight + 12) + "px"); }
+  measureCopy();
+  window.addEventListener("resize", measureCopy, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureCopy);
+
   var video = media.querySelector("video");
   var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var mqDesktop = window.matchMedia("(min-width: 900px)");
