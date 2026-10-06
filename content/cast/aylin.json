@@ -3,14 +3,16 @@
   "visible": true,
   "order": 10,
   "name": "Aylin",
-  "role_de": "Model und Schauspielerin",
+  "role_de": "Model & Schauspielerin",
   "photos": [
     {
       "src": "/assets/uploads/besetzung/img_1880.jpeg",
       "alt_de": "Porträt von Aylin mit hochgestecktem Haar, die eine Dior-Lidschattenpalette an ihr Gesicht hält",
-      "alt_en": "Portrait of Aylin with her hair tied up, holding a Dior eyeshadow palette to her face"
+      "alt_en": "Portrait of Aylin with her hair tied up, holding a Dior eyeshadow palette to her face",
+      "alt_tr": "Saçlarını topuz yapmış Aylin, yüzüne bir Dior far paleti tutarken"
     }
   ],
   "slug": "aylin",
-  "role_en": "Model & Actress"
+  "role_en": "Model & Actress",
+  "role_tr": "Model & Oyuncu"
 }

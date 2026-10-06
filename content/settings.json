@@ -1,11 +1,13 @@
 {
-  "launch": false,
+  "launch": true,
   "siteUrl": "https://bushyfam.studio",
   "brandName": "BushyFam Studios",
   "location_de": "Köln",
   "location_en": "Cologne",
-  "reach_de": "Remote-Zusammenarbeit weltweit möglich",
-  "reach_en": "Remote-friendly worldwide",
+  "location_tr": "Köln",
+  "reach_de": "Projekte deutschlandweit & international",
+  "reach_en": "Available worldwide",
+  "reach_tr": "Almanya genelinde ve uluslararası projeler",
   "email": "hello@bushyfam.studio",
   "whatsapp": "+49 1514 4930658",
   "instagramUrl": "https://www.instagram.com/bushyfamstudios/",
@@ -13,19 +15,23 @@
   "seo": {
     "title_de": "BushyFam Studios – Film, Fotografie & Markendesign",
     "title_en": "BushyFam Studios – Film, Photography & Brand Design",
+    "title_tr": "BushyFam Studios – Film, Fotoğraf & Marka Tasarımı",
     "description_de": "BushyFam Studios ist ein Kreativstudio für Film, Fotografie, Markenbildung und digitale Erlebnisse mit Sitz in Köln.",
     "description_en": "BushyFam Studios is a creative studio for film, photography, branding and digital experiences, based in Cologne, Germany.",
+    "description_tr": "BushyFam Studios, Köln merkezli film, fotoğraf, marka ve dijital deneyimler için bir yaratıcı stüdyodur.",
     "image": "/assets/brand/og-bushyfam.jpg"
   },
   "hero": {
     "line1_de": "Wir machen Dinge, die man nicht übersieht.",
     "line2_de": "",
     "line1_en": "We make things worth looking at.",
+    "line1_tr": "Bakmaya değer şeyler yapıyoruz.",
     "line2_en": "",
     "text_de": "",
     "text_en": "",
     "outro_de": "Ein Kreativstudio für Film, Fotografie, Design und Digital.",
     "outro_en": "A creative studio for film, photography, design and digital.",
+    "outro_tr": "Film, fotoğraf, tasarım ve dijital için bir yaratıcı stüdyo.",
     "video": {
       "sources": [
         {
@@ -51,7 +57,8 @@
       "width": 1080,
       "height": 1920,
       "description_de": "Kurzfilm: Eine Frau blickt aus einem UFO-Cockpit mit BushyFam-Schriftzug, die Kamera fährt bis in ihre Pupille.",
-      "description_en": "Short film: a woman looks out of a UFO cockpit with the BushyFam lettering; the camera moves all the way into her pupil."
+      "description_en": "Short film: a woman looks out of a UFO cockpit with the BushyFam lettering; the camera moves all the way into her pupil.",
+      "description_tr": "Kısa film: bir kadın BushyFam yazılı bir UFO kokpitinden dışarı bakıyor; kamera onun gözbebeğinin içine kadar ilerliyor."
     }
   },
   "ending": {
@@ -76,7 +83,8 @@
       "width": 1080,
       "height": 1080,
       "description_de": "Kurzfilm: Die Kamera zoomt aus einer Pupille heraus bis zu einer Frau im UFO-Bullauge.",
-      "description_en": "Short film: the camera pulls back out of a pupil to reveal a woman in the UFO porthole."
+      "description_en": "Short film: the camera pulls back out of a pupil to reveal a woman in the UFO porthole.",
+      "description_tr": "Kısa film: kamera bir gözbebeğinden geri çekilerek UFO lombozundaki bir kadını gösteriyor."
     }
   },
   "showreel": {
@@ -85,6 +93,7 @@
     "poster": "",
     "duration": "",
     "title_de": "Showreel",
-    "title_en": "Showreel"
+    "title_en": "Showreel",
+    "title_tr": "Showreel"
   }
 }

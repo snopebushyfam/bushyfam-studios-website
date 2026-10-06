@@ -1,40 +1,71 @@
 {
   "title_de": "Was wir machen",
   "title_en": "What we make",
+  "title_tr": "Neler yapıyoruz",
   "items": [
     {
       "title_de": "Film & Content",
       "title_en": "Film & Content",
+      "title_tr": "Film & İçerik",
       "text_de": "Konzept, Regie, Produktion und Postproduktion – für Werbefilme, Kampagnen und Filme, die für Social Media gemacht sind.",
       "text_en": "Concept, direction, production and post-production for commercials, campaigns and social-first films.",
+      "text_tr": "Reklam filmleri, kampanyalar ve sosyal medya için çekilen filmlerde konsept, yönetmenlik, prodüksiyon ve post prodüksiyon.",
       "tags_de": "Werbefilme · Reels · Kampagnenfilme · Schnitt · Creative Direction",
-      "tags_en": "Commercials · Reels · Campaign Films · Editing · Creative Direction"
+      "tags_en": "Commercials · Reels · Campaign Films · Editing · Creative Direction",
+      "tags_tr": "Reklam filmleri · Reels · Kampanya filmleri · Kurgu · Kreatif yönetim",
+      "image": "/assets/work/masons/videos/masons-drink-einschenken.jpg",
+      "video": "/assets/work/masons/videos/masons-drink-einschenken.mp4",
+      "imageAlt_de": "Ein Drink wird eingeschenkt – Clip aus dem Dreh für MASON’S",
+      "imageAlt_en": "A drink being poured – clip from the MASON’S shoot",
+      "imageAlt_tr": "Bir içecek dökülüyor – MASON’S çekiminden klip"
     },
     {
       "title_de": "Fotografie",
       "title_en": "Photography",
+      "title_tr": "Fotoğraf",
       "text_de": "Produkt- und Kampagnenfotografie, die auf Social Media, im Web, in Anzeigen und im Raum gleichermaßen trägt.",
       "text_en": "Product and campaign photography designed to live across social, web, advertising and physical spaces.",
+      "text_tr": "Sosyal medyada, web’de, reklamlarda ve mekânda aynı güçle duran ürün ve kampanya fotoğrafçılığı.",
       "tags_de": "Produkt · Food · Kampagne · Editorial · Social",
-      "tags_en": "Product · Food · Campaign · Editorial · Social"
+      "tags_en": "Product · Food · Campaign · Editorial · Social",
+      "tags_tr": "Ürün · Yemek · Kampanya · Editoryal · Sosyal medya",
+      "image": "/assets/work/masons/photos/masons-longdrink-orange-800.webp",
+      "imageAlt_de": "Longdrink mit Orange – Produktfoto für MASON’S",
+      "imageAlt_en": "Long drink with orange – product photo for MASON’S",
+      "imageAlt_tr": "Portakallı longdrink – MASON’S için ürün fotoğrafı"
     },
     {
       "title_de": "Marke & Design",
       "title_en": "Brand & Design",
+      "title_tr": "Marka & Tasarım",
       "text_de": "Erscheinungsbilder, die einer Marke eine eigene, wiedererkennbare Bildsprache geben – vom Logo über die Typografie bis zum Kampagnendesign.",
       "text_en": "Identity systems that give brands a recognisable visual language – from logo and typography to campaign design.",
+      "text_tr": "Markalara tanınır bir görsel dil kazandıran kimlik sistemleri – logodan tipografiye, kampanya tasarımına kadar.",
       "tags_de": "Identität · Art Direction · Logodesign · Grafikdesign",
-      "tags_en": "Identity · Art Direction · Logo Design · Graphic Design"
+      "tags_en": "Identity · Art Direction · Logo Design · Graphic Design",
+      "tags_tr": "Kimlik · Sanat yönetimi · Logo tasarımı · Grafik tasarım",
+      "image": "/assets/services/brand-nev.webp",
+      "imageAlt_de": "Logo N.E.V. 3 auf Gelb – Logodesign für Nelvie Tiafack",
+      "imageAlt_en": "N.E.V. 3 logo on yellow – logo design for Nelvie Tiafack",
+      "imageAlt_tr": "Sarı üzerinde N.E.V. 3 logosu – Nelvie Tiafack için logo tasarımı"
     },
     {
       "title_de": "Digital & Growth",
       "title_en": "Digital & Growth",
+      "title_tr": "Dijital & Büyüme",
       "text_de": "Websites, Social-Media-Auftritte und bezahlte Kampagnen – als ein zusammenhängendes System gedacht, nicht als einzelne Bausteine.",
       "text_en": "Web experiences, social rollouts and paid campaigns built as one connected system rather than separate services.",
+      "text_tr": "Ayrı ayrı hizmetler olarak değil, birbirine bağlı tek bir sistem olarak kurulan web siteleri, sosyal medya çalışmaları ve ücretli kampanyalar.",
       "tags_de": "Web · Social Media · Werbung · Kampagnen",
-      "tags_en": "Web · Social Media · Advertising · Campaigns"
+      "tags_en": "Web · Social Media · Advertising · Campaigns",
+      "tags_tr": "Web · Sosyal medya · Reklam · Kampanyalar",
+      "image": "/assets/services/digital-website.webp",
+      "imageAlt_de": "Die BushyFam-Website auf einem Smartphone",
+      "imageAlt_en": "The BushyFam website on a smartphone",
+      "imageAlt_tr": "Akıllı telefonda BushyFam web sitesi"
     }
   ],
   "note_de": "Mehr als eins davon? Umso besser. Dann bauen wir das Ganze zusammen.",
-  "note_en": "Need more than one? Good. We build the whole thing together."
+  "note_en": "Need more than one? Good. We build the whole thing together.",
+  "note_tr": "Birden fazlası mı? Daha iyi. O zaman hepsini birlikte kuralım."
 }

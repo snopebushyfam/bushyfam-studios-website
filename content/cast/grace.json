@@ -3,13 +3,15 @@
   "visible": true,
   "order": 20,
   "name": "Grace",
-  "role_de": "Model",
-  "role_en": "Model",
+  "role_de": "Model & Schauspielerin",
+  "role_en": "Model & Actress",
+  "role_tr": "Model & Oyuncu",
   "photos": [
     {
       "src": "/assets/uploads/besetzung/grace.jpg",
       "alt_de": "Ganzkörperporträt von Grace mit langen blonden Zöpfen in schwarzem Outfit und Schnürsandalen vor grauem Studiohintergrund",
-      "alt_en": "Full-length portrait of Grace with long blonde braids in a black outfit and lace-up heels against a grey studio backdrop"
+      "alt_en": "Full-length portrait of Grace with long blonde braids in a black outfit and lace-up heels against a grey studio backdrop",
+      "alt_tr": "Uzun sarı örgülü Grace, siyah kıyafet ve bağcıklı topuklularla gri stüdyo fonunun önünde boy portresi"
     }
   ],
   "slug": "grace"

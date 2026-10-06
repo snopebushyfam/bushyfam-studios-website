@@ -1,48 +1,41 @@
 {
   "title_de": "Was hast du vor?",
   "title_en": "What are you planning?",
+  "title_tr": "Ne planlıyorsun?",
   "intro_de": "Erzähl kurz von deinem Vorhaben. BushyFam Studios sitzt in Köln und arbeitet mit Unternehmen in ganz Deutschland.",
   "intro_en": "Share a few words about your project. BushyFam Studios is based in Cologne and works with businesses across Germany.",
+  "intro_tr": "Projeni birkaç cümleyle anlat. BushyFam Studios Köln’de bulunuyor ve Almanya’nın dört bir yanındaki işletmelerle çalışıyor.",
   "options": [
     {
-      "de": "Werbeclips",
-      "en": "Commercials"
-    },
-    {
-      "de": "Social-Media-Videos",
-      "en": "Social media videos"
-    },
-    {
-      "de": "Namensentwicklung",
-      "en": "Naming"
-    },
-    {
-      "de": "Logo",
-      "en": "Logo"
-    },
-    {
-      "de": "Visueller Markenauftritt",
-      "en": "Visual identity"
+      "de": "Film & Content",
+      "en": "Film & Content",
+      "tr": "Film & İçerik"
     },
     {
       "de": "Fotografie",
-      "en": "Photography"
+      "en": "Photography",
+      "tr": "Fotoğraf"
     },
     {
-      "de": "Grafikdesign",
-      "en": "Graphic design"
+      "de": "Marke & Design",
+      "en": "Brand & Design",
+      "tr": "Marka & Tasarım"
     },
     {
-      "de": "Social Media: Planung & Betreuung",
-      "en": "Social media management"
+      "de": "Digital & Growth",
+      "en": "Digital & Growth",
+      "tr": "Dijital & Büyüme"
     },
     {
-      "de": "Website",
-      "en": "Website"
+      "de": "Besetzung / Talent",
+      "en": "Cast / Talent",
+      "tr": "Kadro / Yetenek",
+      "cast": true
     },
     {
-      "de": "Google- & Instagram-Anzeigen",
-      "en": "Google & Instagram ads"
+      "de": "Noch offen",
+      "en": "Not sure yet",
+      "tr": "Henüz belli değil"
     }
   ]
 }

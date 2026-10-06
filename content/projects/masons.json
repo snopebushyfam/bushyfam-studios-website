@@ -7,16 +7,21 @@
   "year": "2026",
   "title_de": "MASON’S",
   "title_en": "MASON’S",
+  "title_tr": "MASON’S",
   "summary_de": "Laufende visuelle Partnerschaft: Werbeclips, Social Content und Produktfotografie für MASON’S.",
   "summary_en": "An ongoing visual partnership — commercial films, social content and product photography for MASON’S.",
+  "summary_tr": "Süregelen bir görsel ortaklık — MASON’S için reklam filmleri, sosyal medya içerikleri ve ürün fotoğrafları.",
   "disciplines_de": "Film · Fotografie · Social Media",
   "disciplines_en": "Film · Photography · Social",
+  "disciplines_tr": "Film · Fotoğraf · Sosyal Medya",
   "body_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
   "body_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
+  "body_tr": "Tek seferlik bir iş değil, süregelen bir iş birliği. Filmler lounge’da ve barda çekiliyor, dikey ve sosyal medyaya uygun izlenmek üzere kurgulanıyor. Fotoğraflar her içeceği ve tatlıyı başlı başına bir ürün olarak ele alıyor – siyah fon üzerinde dekupe.",
   "cover": {
     "src": "/assets/work/masons/masons-cover-einschenken.jpg",
     "alt_de": "Standbild aus dem MASON’S-Drink-Clip: Ein gelber Drink fließt in ein kopfüber gehaltenes Martiniglas, vor rotem Licht",
-    "alt_en": "Still from the MASON’S drink clip: a yellow drink pours into an upside-down martini glass against red light"
+    "alt_en": "Still from the MASON’S drink clip: a yellow drink pours into an upside-down martini glass against red light",
+    "alt_tr": "MASON’S içecek klibinden bir kare: kırmızı ışık önünde sarı bir içecek ters çevrilmiş martini kadehine dökülüyor"
   },
   "media": [
     {
@@ -25,6 +30,7 @@
       "poster": "/assets/work/masons/videos/masons-lounge.jpg",
       "title_de": "Lounge-Clip",
       "title_en": "Lounge clip",
+      "title_tr": "Lounge klibi",
       "duration": "29 s",
       "audio": true,
       "alt_de": "",
@@ -36,6 +42,7 @@
       "poster": "/assets/work/masons/videos/masons-drink-einschenken.jpg",
       "title_de": "Drink-Clip „Einschenken“",
       "title_en": "Drink clip “Pouring”",
+      "title_tr": "İçecek klibi “Dökme”",
       "duration": "7 s",
       "audio": true,
       "alt_de": "",
@@ -47,6 +54,7 @@
       "poster": "/assets/work/masons/videos/masons-drink-bar.jpg",
       "title_de": "Drink-Clip „Bar“",
       "title_en": "Drink clip “Bar”",
+      "title_tr": "İçecek klibi “Bar”",
       "duration": "7 s",
       "audio": false,
       "alt_de": "",
@@ -56,25 +64,29 @@
       "type": "image",
       "src": "/assets/work/masons/photos/masons-longdrink-orange-800.webp",
       "alt_de": "Rot-oranger Longdrink mit Orangenscheiben in einem geschliffenen Glas vor schwarzem Hintergrund",
-      "alt_en": "Red-orange long drink with orange slices in a cut-crystal glass against a black background"
+      "alt_en": "Red-orange long drink with orange slices in a cut-crystal glass against a black background",
+      "alt_tr": "Siyah fon önünde, kesme kristal bardakta portakal dilimli kırmızı-turuncu longdrink"
     },
     {
       "type": "image",
       "src": "/assets/work/masons/photos/masons-eisbecher-800.webp",
       "alt_de": "Eisbecher mit Vanilleeis, Schokoladensauce und Keksen vor schwarzem Hintergrund",
-      "alt_en": "Sundae with vanilla ice cream, chocolate sauce and biscuits against a black background"
+      "alt_en": "Sundae with vanilla ice cream, chocolate sauce and biscuits against a black background",
+      "alt_tr": "Siyah fon önünde vanilyalı dondurma, çikolata sosu ve bisküvili dondurma kupası"
     },
     {
       "type": "image",
       "src": "/assets/work/masons/photos/masons-cocktail-melone-800.webp",
       "alt_de": "Roter Cocktail mit Sahnehaube und Melonenscheibe im Hurricane-Glas vor schwarzem Hintergrund",
-      "alt_en": "Red cocktail with whipped cream and a melon slice in a hurricane glass against a black background"
+      "alt_en": "Red cocktail with whipped cream and a melon slice in a hurricane glass against a black background",
+      "alt_tr": "Siyah fon önünde, hurricane kadehinde krem şanti ve kavun dilimli kırmızı kokteyl"
     },
     {
       "type": "image",
       "src": "/assets/work/masons/photos/masons-martini-kiwi-800.webp",
       "alt_de": "Roter Frozen-Drink mit Kiwischeibe im Martiniglas vor schwarzem Hintergrund",
-      "alt_en": "Red frozen drink with a kiwi slice in a martini glass against a black background"
+      "alt_en": "Red frozen drink with a kiwi slice in a martini glass against a black background",
+      "alt_tr": "Siyah fon önünde, martini kadehinde kivi dilimli kırmızı frozen içecek"
     }
   ],
   "published": true

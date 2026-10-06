@@ -1,0 +1,18 @@
+{
+  "consent": true,
+  "visible": true,
+  "order": 40,
+  "name": "Mayada",
+  "slug": "mayada",
+  "role_de": "Model & Schauspielerin",
+  "role_en": "Model & Actress",
+  "role_tr": "Model & Oyuncu",
+  "photos": [
+    {
+      "src": "/assets/uploads/besetzung/mayada.jpg",
+      "alt_de": "Ganzkörperporträt von Mayada mit langen dunklen Locken in weißem Crop-Top, Jeans-Minirock und schwarzen Stiefeln vor grauem Studiohintergrund",
+      "alt_en": "Full-length portrait of Mayada with long dark curls in a white crop top, denim mini skirt and black boots against a grey studio backdrop",
+      "alt_tr": "Uzun koyu dalgalı saçlı Mayada, beyaz crop top, kot mini etek ve siyah çizmelerle gri stüdyo fonunun önünde boy portresi"
+    }
+  ]
+}
