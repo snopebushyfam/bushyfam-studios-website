@@ -369,6 +369,19 @@ function pageHome(lang) {
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
+<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
+  <div class="wrap">
+    <p class="eyebrow">${esc(t.nav.services)}</p>
+    <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
+  </div>
+  <ul class="svc-cards">
+    ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
+  </ul>
+  <div class="wrap">
+    ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
+  </div>
+</section>
+
 ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
   <div class="wrap cast-head">
     <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
@@ -409,18 +422,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   </div>
 </section>` : ""}
 
-<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
-  <div class="wrap">
-    <p class="eyebrow">${esc(t.nav.services)}</p>
-    <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
-  </div>
-  <ul class="svc-cards">
-    ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
-  </ul>
-  <div class="wrap">
-    ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
-  </div>
-</section>
+
 
 <section class="section founder" aria-labelledby="h-about">
   <div class="wrap about">
