@@ -388,7 +388,8 @@ ${!CAST.length && featured.length ? `<section class="section work-feature" aria-
 </section>` : ""}
 
 ${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <div class="wrap head-row"><div><h2 class="eyebrow" id="h-obj">${esc(t.objectsTitle)}</h2><p class="lead">${esc(t.objectsLead)}</p></div>
+  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
+  <div class="wrap objects-ctrl">
     <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
   </div>
   <div class="marquee" data-marquee>

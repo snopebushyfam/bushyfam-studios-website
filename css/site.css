@@ -406,10 +406,13 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 
 /* Objects in Motion: Produkte schweben durch den schwarzen Raum – Kanten laufen in alle Richtungen aus */
 .objects-motion{overflow:hidden}
-.objects-motion .head-row{align-items:end}
-.objects-motion h2.eyebrow{margin-bottom:.75rem}
-.objects-motion .lead{color:var(--white)}
-.marquee{margin-top:clamp(1.5rem,3vw,2.5rem)}
+/* Ohne Überschrift: die Objekte sprechen für sich. Der Pause-Knopf bleibt für Tastatur und Screenreader
+   erreichbar und erscheint erst, wenn er den Fokus bekommt. */
+.objects-motion{padding-block:clamp(2rem,5vw,4rem)}
+.objects-ctrl{position:relative;height:0}
+.objects-ctrl .marquee-toggle{position:absolute;right:var(--gutter);top:0;z-index:5;opacity:0;pointer-events:none}
+.objects-ctrl .marquee-toggle:focus-visible{opacity:1;pointer-events:auto;outline:2px solid var(--white);outline-offset:2px;color:var(--white)}
+.marquee{margin-top:0}
 .marquee-row{overflow:hidden;padding-block:1.5rem}
 .marquee-track{display:flex;align-items:center;width:max-content;will-change:transform}
 .marquee-row{cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
