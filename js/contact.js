@@ -21,12 +21,27 @@
   var submitLabel = submit ? submit.textContent : "";
   var sending = false;
 
-  // Kommt man von einer Person aus der Besetzung, steht sie gleich in der Nachricht
+  // Besetzung: Feld „Person“ erscheint, sobald „Besetzung / Talent“ gewählt ist.
+  // Kommt man über „Diese Person anfragen“, ist beides schon ausgefüllt.
+  var castOption = form.querySelector("[data-cast-option]");
+  var talentField = form.querySelector("[data-talent-field]");
+  var talentInput = document.getElementById("f-talent");
+  function syncTalent() {
+    if (!talentField) return;
+    talentField.hidden = !((castOption && castOption.checked) || (talentInput && talentInput.value));
+  }
   try {
-    var who = new URLSearchParams(location.search).get("person");
-    var msg = document.getElementById("f-nachricht");
-    if (who && msg && !msg.value) msg.value = (t.aboutPerson || "Anfrage zu") + ": " + who + "\n\n";
+    var who = (new URLSearchParams(location.search).get("person") || "").trim().slice(0, 80);
+    if (who && talentInput) {
+      talentInput.value = who;
+      if (castOption) castOption.checked = true;
+    }
   } catch (e) {}
+  if (castOption) castOption.addEventListener("change", function () {
+    syncTalent();
+    if (castOption.checked && talentInput && !talentInput.value) talentInput.focus();
+  });
+  syncTalent();
 
   var rules = [
     { id: "f-name", check: function (v) { return v.trim() ? "" : t.errName; } },
@@ -111,7 +126,7 @@
       body: payload()
     }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
-      form.reset();
+      form.reset(); syncTalent();
       show("", "");
       if (done) {
         form.hidden = true;

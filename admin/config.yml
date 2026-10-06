@@ -137,6 +137,24 @@ collections:
       - { label: "Kurztext (EN)", name: text_en, widget: text, required: false }
       - { label: "Instagram-Adresse", name: instagram, widget: string, required: false }
       - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
+      - label: "Weitere Angaben (optional)"
+        name: facts
+        widget: list
+        required: false
+        summary: "{{label_de}}: {{value}}"
+        hint: "Nur echte, mit der Person abgesprochene Angaben – z. B. Größe, Sprachen. Leere Einträge werden nicht gezeigt."
+        fields:
+          - { label: "Bezeichnung (DE)", name: label_de, widget: string, hint: "z. B. Größe" }
+          - { label: "Bezeichnung (EN)", name: label_en, widget: string, required: false, hint: "z. B. Height" }
+          - { label: "Wert", name: value, widget: string, hint: "z. B. 172 cm" }
+      - label: "Showreel / Video (optional)"
+        name: video
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Video (MP4)", name: src, widget: file, required: false }
+          - { label: "Vorschaubild", name: poster, widget: image, required: false }
       - label: "Fotos"
         name: photos
         widget: list
@@ -390,13 +408,14 @@ collections:
           - { label: "Überschrift (EN)", name: title_en, widget: string }
           - { label: "Einleitung (DE)", name: intro_de, widget: text }
           - { label: "Einleitung (EN)", name: intro_en, widget: text }
-          - label: "Auswahl „Was brauchst du?“"
+          - label: "Auswahl „Worum geht es?“"
             name: options
             widget: list
             summary: "{{de}}"
             fields:
               - { label: "Bezeichnung (DE)", name: de, widget: string }
               - { label: "Bezeichnung (EN)", name: en, widget: string, required: false }
+              - { label: "Steht für Besetzung/Talent", name: cast, widget: boolean, required: false, default: false, hint: "Wird automatisch ausgewählt, wenn jemand über „Diese Person anfragen“ kommt." }
 
       - name: "legal"
         label: "Impressum & Datenschutz"

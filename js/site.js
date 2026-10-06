@@ -65,9 +65,16 @@
        gleitet das Tempo sanft zurück zur Grundgeschwindigkeit. */
     var motions = [];
     function makeMotion(row, track, perSet) {
-      var x = 0, v = 0, half = 0, base = 0, last = 0, raf = 0;
+      var x = 0, v = 0, half = 0, base = 0, last = 0, raf = 0, vw = 0;
       var drag = null;
-      function measure() { half = track.scrollWidth / 2; base = half / (perSet * 11); }
+      /* Tiefe: vordere Objekte ziehen etwas schneller vorbei, hintere langsamer (Muster wie im CSS: 3n+1 vorn, 3n Mitte, 3n+2 hinten) */
+      var items = [].slice.call(track.children).map(function (el, i) { return { el: el, k: [0.1, -0.12, 0][i % 3], left: 0, w: 0 }; });
+      function measure() {
+        half = track.scrollWidth / 2; vw = window.innerWidth;
+        var narrow = vw < 900;
+        base = half / (perSet * (narrow ? 13 : 16));
+        items.forEach(function (it) { it.left = it.el.offsetLeft; it.w = it.el.offsetWidth; it.f = narrow ? 0.5 : 1; });
+      }
       measure();
       window.addEventListener("resize", measure, { passive: true });
       v = isPaused() ? 0 : base;
@@ -80,6 +87,13 @@
       function apply() {
         if (half) { x = ((x % half) + half) % half; }
         track.style.transform = "translate3d(" + (-x).toFixed(2) + "px,0,0)";
+        if (reasons.reduced) return;
+        for (var i = 0; i < items.length; i++) {
+          var it = items[i]; if (!it.k) continue;
+          var c = it.left + it.w / 2 - x;
+          if (c < -it.w * 2 || c > vw + it.w * 2) continue;
+          it.el.style.transform = "translate3d(" + ((c - vw / 2) * it.k * it.f).toFixed(1) + "px,0,0)";
+        }
       }
       function frame(t) {
         raf = 0;

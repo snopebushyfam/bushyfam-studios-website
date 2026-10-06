@@ -94,6 +94,16 @@ function svcNote(note, href, t) {
   const text = m ? `<span class="svc-note-q">${esc(m[1])}</span> <span class="svc-note-a">${esc(m[2])}</span>` : `<span class="svc-note-a">${esc(note)}</span>`;
   return `<a class="svc-note" href="${href}"><span class="svc-note-text">${text}</span><span class="svc-note-go"><span class="svc-note-label">${esc(t.cta)}</span><span class="svc-note-arrow" aria-hidden="true">→</span></span></a>`;
 }
+/* Besetzung als Casting-Buch (Startseite und Übersicht): Formate und Höhen wechseln im Dreierrhythmus */
+function castRow(lang, { page = false } = {}) {
+  const t = T[lang];
+  return `<ul class="cast-row${page ? " cast-row--page" : ""}" aria-label="${esc(t.nav.cast)}"${page ? " data-grid" : ""}>
+    ${CAST.map((p, i) => { const ph = p.photos[0]; return `<li class="cast-card"${page ? ` data-cat="${esc(roleKey(p))}"` : ""}><a href="${hrefFor(lang, "person", p.slug)}">
+      <span class="cast-card-media">${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: i % 3 === 0 ? "(min-width: 900px) 42vw, 80vw" : "(min-width: 900px) 25vw, 66vw", lazy: i > 1 })}</span>
+      <span class="cast-card-cap"><span class="cast-card-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>${page ? `<h2 class="cast-card-name">${esc(p.name)}</h2>` : `<span class="cast-card-name">${esc(p.name)}</span>`}<span class="cast-card-role">${esc(tr(p, "role", lang))}</span></span>
+    </a></li>`; }).join("\n    ")}
+  </ul>`;
+}
 const ext = (href, label, lang, cls = "link-arrow") =>
   `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span><span class="vh"> ${esc(T[lang].newTab)}</span></a>`;
 
@@ -152,6 +162,8 @@ for (const p of CAST) {
   need(tr(p, "role", "de"), `${where}: Rolle (DE) fehlt.`);
   need(p.photos && p.photos.length && p.photos[0].src, `${where}: Mindestens ein Foto wird gebraucht.`);
   for (const ph of (p.photos || [])) need(assetExists(ph.src), `${where}: Foto nicht gefunden: ${ph.src}`);
+  if (p.video && p.video.src) need(assetExists(p.video.src), `${where}: Video nicht gefunden: ${p.video.src}`);
+  if (p.video && p.video.poster) need(assetExists(p.video.poster), `${where}: Vorschaubild zum Video nicht gefunden: ${p.video.poster}`);
 }
 for (const o of OBJECTS) need(assetExists(o.image), `Objekt „${o.title_de || o.__file}“: Bild nicht gefunden: ${o.image}`);
 for (const v of [S.hero?.video, S.ending?.video]) for (const s of (v?.sources || [])) need(assetExists(s.src), `Film-Datei nicht gefunden: ${s.src}`);
@@ -352,16 +364,12 @@ function pageHome(lang) {
 </section>
 
 ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
-  <div class="wrap head-row">
-    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2><p class="lead">${esc(t.castLead)}</p></div>
-    <a class="link-arrow" href="${R.cast}">${esc(t.allCast)} <span aria-hidden="true">→</span></a>
+  <div class="wrap cast-head">
+    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
+    <p class="lead">${esc(t.castLead)}</p>
   </div>
-  <ul class="cast-row" aria-label="${esc(t.nav.cast)}">
-    ${CAST.map((p, i) => { const ph = p.photos[0]; return `<li class="cast-card"><a href="${hrefFor(lang, "person", p.slug)}">
-      <span class="cast-card-media">${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: "(min-width: 900px) 30vw, 74vw", lazy: i > 1 })}</span>
-      <span class="cast-card-cap"><span class="cast-card-name">${esc(p.name)}</span><span class="cast-card-role">${esc(tr(p, "role", lang))}</span></span>
-    </a></li>`; }).join("\n    ")}
-  </ul>
+  ${castRow(lang)}
+  <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
 </section>` : ""}
 ${!CAST.length && featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
   <div class="wrap head-row">
@@ -421,7 +429,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
 </section>
 
 ${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
-  <div class="wrap"><h2 class="eyebrow" id="h-clients">${esc(t.clients)}</h2>
+  <div class="wrap"><h2 class="clients-title" id="h-clients">${esc(t.clients)}</h2>
     <ul class="client-row">${namedClients.map((c) => {
       const mark = c.logo ? img(c.logo, c.name, { cls: "client-logo", sizes: "200px" }) : `<span class="client-word">${esc(c.name)}</span>`;
       return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
@@ -551,13 +559,6 @@ const ctaBlock = (lang) => `<section class="section cta" aria-labelledby="h-cta2
   <div class="wrap"><h2 class="h2" id="h-cta2">${esc(T[lang].ctaSmall)}</h2><div class="btn-row"><a class="btn btn--primary" href="${ROUTES[lang].contact}">${esc(T[lang].cta)}</a></div></div>
 </section>`;
 
-function personCard(p, lang, headingLevel = 3) {
-  const ph = p.photos[0];
-  return `<a class="card" href="${hrefFor(lang, "person", p.slug)}" data-cat="${esc(roleKey(p))}">
-      <div class="tile cover">${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: "(min-width: 900px) 24vw, 45vw" })}</div>
-      <div class="cap"><span class="cat">${esc(tr(p, "role", lang))}</span><h${headingLevel} class="ttl">${esc(p.name)}</h${headingLevel}>${p.city ? `<span class="client">${esc(p.city)}</span>` : ""}</div>
-    </a>`;
-}
 const roleKey = (p) => (tr(p, "role", "de") || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 function pageCast(lang) {
@@ -580,9 +581,9 @@ function pageCast(lang) {
     ${roles.map((r) => `<button class="filter" type="button" data-cat="${esc(r.id)}" aria-pressed="false">${esc(r.label)}<span class="n">${r.n}</span></button>`).join("\n    ")}
   </div>
   <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>` : ""}
-  <ul class="grid grid--cast" data-grid>
-    ${CAST.map((p) => `<li data-cat="${esc(roleKey(p))}">${personCard(p, lang, 2)}</li>`).join("\n    ")}
-  </ul>
+</section>
+<section class="cast-page">
+  ${castRow(lang, { page: true })}
 </section>
 ${ctaBlock(lang)}`;
   return layout({ lang, key: "cast", title: `${t.nav.cast} – ${S.brandName}`, description: t.castLead, body, ogImage: CAST[0]?.photos?.[0]?.src });
@@ -591,31 +592,48 @@ ${ctaBlock(lang)}`;
 function pagePerson(p, lang, i) {
   const t = T[lang], R = ROUTES[lang];
   const next = CAST[(i + 1) % CAST.length];
-  const gallery = (p.photos || []).slice(1).map((ph) => `<li class="m m--image"><figure>${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: "(min-width: 900px) 45vw, 92vw" })}</figure></li>`).join("\n      ");
+  const [first, ...rest] = p.photos;
+  const photo = (ph, k, eager) => `<li class="pf-photo pf-photo--${k % 3}"><figure>${img(ph.src, tr(ph, "alt", lang) || p.name, { sizes: "(min-width: 900px) 55vw, 100vw", lazy: !eager })}</figure></li>`;
+  /* Showreel: nur wenn ein Video eingetragen ist – Klick startet es (gleiches Verhalten wie bei Projekten) */
+  const V = p.video && p.video.src ? p.video : null;
+  const reel = V ? `<li class="pf-reel"><div class="clip-frame" style="--ar:${(() => { const d = V.poster ? imageSize(V.poster) : null; return d ? (d.w / d.h).toFixed(4) : "0.5625"; })()}" data-clip data-src="${esc(url(V.src))}">
+        ${V.poster ? img(V.poster, "", { sizes: "(min-width: 900px) 55vw, 100vw" }) : ""}
+        <button class="clip-play" type="button" data-clip-play data-title="${esc(p.name)} – ${esc(t.showreel)}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.showreel)}</span><span class="vh">: ${esc(p.name)}</span></button>
+      </div></li>` : "";
+  /* Angaben nur, wenn sie im Admin eingetragen sind – nichts wird ergänzt oder geschätzt */
+  const facts = [...(p.city ? [[t.factCity, p.city]] : []), ...(p.facts || []).filter((f) => f && f.value && tr(f, "label", lang)).map((f) => [tr(f, "label", lang), f.value])];
+  const enquire = `${R.contact}?person=${encodeURIComponent(p.name)}`;
   const body = `
-<article>
-  <header class="wrap page-head person-head">
-    <p class="eyebrow"><a class="crumb" href="${R.cast}">${esc(t.nav.cast)}</a> · ${esc(tr(p, "role", lang))}${p.city ? " · " + esc(p.city) : ""}</p>
-    <h1 class="page-title">${esc(p.name)}</h1>
-    ${tr(p, "text", lang) ? `<p class="lead">${esc(tr(p, "text", lang))}</p>` : ""}
-    <div class="btn-row person-actions">
-      <a class="btn btn--primary" href="${R.contact}?person=${encodeURIComponent(p.name)}">${esc(t.bookThis)}</a>
-      ${p.instagram ? ext(p.instagram, esc(p.instagramHandle || "Instagram"), lang) : ""}
-    </div>
-  </header>
-  <section class="wrap project-media" aria-label="${esc(t.photos)}">
-    <ul class="media-grid">
-      <li class="m m--image"><figure>${img(p.photos[0].src, tr(p.photos[0], "alt", lang) || p.name, { sizes: "(min-width: 900px) 45vw, 92vw", lazy: false })}</figure></li>
-      ${gallery}
+<article class="profile">
+  <div class="wrap profile-grid">
+    <header class="profile-info">
+      <p class="eyebrow"><a class="crumb" href="${R.cast}">${esc(t.nav.cast)}</a> · ${esc(tr(p, "role", lang))}</p>
+      <h1 class="profile-name">${esc(p.name)}</h1>
+      ${tr(p, "text", lang) ? `<p class="lead">${esc(tr(p, "text", lang))}</p>` : ""}
+      ${facts.length ? `<dl class="profile-facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+      <div class="btn-row profile-actions">
+        <a class="btn btn--primary" href="${enquire}">${esc(t.bookThis)}</a>
+        ${p.instagram ? ext(p.instagram, esc(p.instagramHandle || "Instagram"), lang) : ""}
+      </div>
+    </header>
+    <ul class="profile-media" aria-label="${esc(t.photos)}">
+      ${photo(first, 0, true)}
+      ${reel}
+      ${rest.map((ph, k) => photo(ph, k + 1, false)).join("\n      ")}
     </ul>
-  </section>
-  <nav class="wrap project-next" aria-label="${esc(t.nav.cast)}">
-    ${next && next.slug !== p.slug ? `<a class="next-link" href="${hrefFor(lang, "person", next.slug)}"><span class="eyebrow">${esc(t.nextPerson)}</span><span class="next-title">${esc(next.name)} <span aria-hidden="true">→</span></span><span class="client">${esc(tr(next, "role", lang))}</span></a>` : ""}
-    <a class="link-arrow" href="${R.cast}">${esc(t.allCast)} <span aria-hidden="true">→</span></a>
+  </div>
+  <nav class="profile-next" aria-label="${esc(t.nav.cast)}">
+    <div class="wrap profile-next-inner">
+      ${next && next.slug !== p.slug ? `<a class="profile-next-link" href="${hrefFor(lang, "person", next.slug)}">
+        <span class="profile-next-media">${img(next.photos[0].src, "", { sizes: "160px" })}</span>
+        <span><span class="eyebrow">${esc(t.nextPerson)}</span><span class="next-title">${esc(next.name)}&nbsp;<span aria-hidden="true">→</span></span></span>
+      </a>` : ""}
+      <a class="link-arrow" href="${R.cast}">${esc(t.allCast)} <span aria-hidden="true">→</span></a>
+    </div>
   </nav>
 </article>`;
   return layout({ lang, key: "person", slug: p.slug, title: `${p.name} – ${tr(p, "role", lang)} – ${S.brandName}`,
-    description: tr(p, "text", lang) || `${p.name} – ${tr(p, "role", lang)}`, body, ogImage: p.photos[0].src });
+    description: tr(p, "text", lang) || `${p.name} – ${tr(p, "role", lang)}`, body, scripts: V ? ["video-preview.js"] : [], ogImage: first.src });
 }
 
 function pageStudio(lang) {
@@ -669,10 +687,14 @@ function pageContact(lang) {
 <section class="wrap contact-grid">
   <div>
     <p class="lead">${esc(tr(CON, "intro", lang))}</p>
-    ${WA_URL || S.instagramUrl ? `<p class="muted direct-label">${esc(t.direct)}</p>` : ""}
-    ${WA_URL ? `<p>${ext(WA_URL, `WhatsApp ${esc(S.whatsapp)}`, lang, "link-arrow link-big")}</p>` : ""}
-    ${S.instagramUrl ? `<p>${ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "link-arrow link-big")}</p>` : ""}
-    ${S.email ? `<p><a class="link-arrow link-big" href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>` : ""}
+    ${WA_URL || S.instagramUrl || S.email ? `<div class="direct">
+      <p class="direct-label">${esc(t.direct)}</p>
+      <ul class="direct-list">
+        ${S.email ? `<li><a class="link-arrow" href="mailto:${esc(S.email)}">${esc(S.email)}</a></li>` : ""}
+        ${WA_URL ? `<li>${ext(WA_URL, "WhatsApp", lang)}</li>` : ""}
+        ${S.instagramUrl ? `<li>${ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang)}</li>` : ""}
+      </ul>
+    </div>` : ""}
   </div>
   <form class="form" name="kontakt" method="POST" action="${ROUTES[lang].thanks}" data-netlify="true" netlify-honeypot="bot-field" novalidate data-form data-lang="${lang}"${WA_URL ? ` data-wa="${WA_URL}"` : ""}>
     <input type="hidden" name="form-name" value="kontakt">
@@ -683,8 +705,9 @@ function pageContact(lang) {
     ${field("email", f.email, "email", true, ' autocomplete="email" inputmode="email"')}
     ${field("unternehmen", f.company, "text", false, ' autocomplete="organization"')}
     <fieldset class="field"><legend>${esc(f.services)} <span class="opt">(${esc(f.optional)})</span></legend><div class="chips">
-      ${(CON.options || []).map((o) => `<label class="chip"><input type="checkbox" name="leistungen" value="${esc(o.de)}"><span class="box" aria-hidden="true"></span>${esc(pick(o, lang))}</label>`).join("\n      ")}
+      ${(CON.options || []).map((o) => `<label class="chip"><input type="checkbox" name="leistungen" value="${esc(o.de)}"${o.cast ? " data-cast-option" : ""}><span class="box" aria-hidden="true"></span>${esc(pick(o, lang))}</label>`).join("\n      ")}
     </div></fieldset>
+    <div class="field field--talent" data-talent-field hidden><label for="f-talent">${esc(f.talent)} <span class="opt">(${esc(f.optional)})</span></label><input id="f-talent" name="talent" type="text" autocomplete="off" aria-describedby="e-talent"><p class="err" id="e-talent" hidden></p></div>
     ${field("nachricht", f.message, "textarea", true)}
     <div class="field-row">${field("zeitraum", f.timeframe, "text", false)}${field("budget", f.budget, "text", false)}</div>
     <p class="pv">${esc(f.privacyNote)} <a href="${ROUTES[lang].privacy}">${esc(t.privacy)}</a>.</p>
