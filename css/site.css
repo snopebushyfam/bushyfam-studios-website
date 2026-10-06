@@ -682,6 +682,11 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
   .cast-card:nth-child(3n+2){grid-column:13/19;margin-top:clamp(7rem,14vw,13rem)}
   .cast-card:nth-child(3n){grid-column:20/25;margin-top:clamp(2rem,4vw,4rem)}
   .cast-card:nth-child(3n+1) .cast-card-name{font-size:clamp(3rem,1rem + 3.6vw,4.75rem)}
+  /* Jede zweite Dreiergruppe gespiegelt: groß rechts, die kleineren links – ergibt ein Zickzack statt Lücken */
+  .cast-row{grid-auto-flow:row dense}
+  .cast-card:nth-child(6n+4){grid-column:15/25;margin-top:0}
+  .cast-card:nth-child(6n+5){grid-column:1/7;margin-top:clamp(2rem,4vw,4rem)}
+  .cast-card:nth-child(6n){grid-column:8/14;margin-top:clamp(7rem,14vw,13rem)}
 }
 /* Übersichtsseite: mobil untereinander, versetzt links/rechts statt Wischreihe */
 .cast-page{padding-bottom:clamp(4rem,8vw,7rem)}
