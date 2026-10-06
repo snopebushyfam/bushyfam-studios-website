@@ -2,62 +2,79 @@
   "name": "Taha Gürsoy",
   "role_de": "Gründer & Creative Director",
   "role_en": "Founder & Creative Director",
+  "role_tr": "Kurucu & Kreatif Direktör",
   "lead_de": "Zeichnen, Kunst, Logos, Fotografie, Filmarbeit, ein Buch und digitale Projekte – all das begann als einzelne Interessen. Mit der Zeit wurde daraus eine Arbeitsweise: mit einer Idee beginnen, das passende Medium dafür finden und die ganze Welt drumherum aufbauen.",
   "lead_en": "Drawing, art, logos, photography, filmmaking, publishing and digital projects all started as separate interests. Over time they became one way of working: start with an idea, find the medium that serves it best, and build the whole world around it.",
+  "lead_tr": "Çizim, sanat, logolar, fotoğraf, film yapımı, yayıncılık ve dijital projeler başta ayrı ilgi alanlarıydı. Zamanla tek bir çalışma biçimine dönüştüler: bir fikirle başla, ona en iyi hizmet eden aracı bul ve bütün dünyayı onun etrafında kur.",
   "portrait": {
     "src": "/assets/studio/taha-guersoy-1086.webp",
     "alt_de": "Taha Gürsoy in weißer Jacke in einem Sessel",
-    "alt_en": "Taha Gürsoy in a white jacket, seated in an armchair"
+    "alt_en": "Taha Gürsoy in a white jacket, seated in an armchair",
+    "alt_tr": "Beyaz ceketli Taha Gürsoy bir koltukta oturuyor"
   },
   "paragraphs": [
     {
       "de": "Am Anfang standen das Zeichnen und das Gestalten von Logos, dann kam die Kamera. Später folgten eine Arbeit, die das Museum für Moderne Kunst München präsentiert hat, ein eigenes Buch und digitale Projekte. In BushyFam Studios laufen diese Fäden zusammen.",
-      "en": "It began with drawing and logo design, then the camera. Later came a work presented by the Museum für Moderne Kunst München, a published book and digital projects. BushyFam Studios is where those threads meet."
+      "en": "It began with drawing and logo design, then the camera. Later came a work presented by the Museum für Moderne Kunst München, a published book and digital projects. BushyFam Studios is where those threads meet.",
+      "tr": "Her şey çizim ve logo tasarımıyla, ardından kamerayla başladı. Sonra Museum für Moderne Kunst München’in sunduğu bir eser, yayımlanmış bir kitap ve dijital projeler geldi. BushyFam Studios bu iplerin buluştuğu yer."
     },
     {
       "de": "Weil Idee, Bild und Gestaltung aus einer Hand kommen, geht zwischen Abteilungen nichts verloren. Du sprichst direkt mit Taha – vom ersten Gespräch bis zur fertigen Datei.",
-      "en": "Because the idea, the images and the design come from one hand, nothing gets lost between departments. You talk to Taha directly – from the first conversation to the final file."
+      "en": "Because the idea, the images and the design come from one hand, nothing gets lost between departments. You talk to Taha directly – from the first conversation to the final file.",
+      "tr": "Fikir, görüntüler ve tasarım tek elden çıktığı için departmanlar arasında hiçbir şey kaybolmaz. İlk konuşmadan son dosyaya kadar doğrudan Taha ile konuşursun."
     },
     {
       "de": "Bei Google- und Instagram-Anzeigen arbeitet Taha mit einem Partner zusammen.",
-      "en": "For Google and Instagram ads, Taha works with a partner."
+      "en": "For Google and Instagram ads, Taha works with a partner.",
+      "tr": "Google ve Instagram reklamları için Taha bir partnerle çalışıyor."
     }
   ],
   "stationsTitle_de": "Ein kreativer Weg",
   "stationsTitle_en": "A Creative Path",
+  "stationsTitle_tr": "Yaratıcı Bir Yol",
   "stations": [
     {
       "year_de": "Januar 2025",
       "year_en": "January 2025",
+      "year_tr": "Ocak 2025",
       "title_de": "Museum für Moderne Kunst München",
       "title_en": "Museum für Moderne Kunst München",
+      "title_tr": "Museum für Moderne Kunst München",
       "text_de": "Das Museum für Moderne Kunst München präsentierte das Werk „Die letzte ‚Story‘ vor dem Ende“ von Snope Bushyfam – dem Namen, unter dem Taha seine künstlerischen Arbeiten veröffentlicht. Das Museum ist selbst eine künstlerische Arbeit von Hans-Peter Porzner, der es 1991 als imaginäres Museum gegründet hat: ein Museum ohne Gebäude, dessen Ausstellungen Teil der Kunst sind.",
       "text_en": "The Museum für Moderne Kunst München presented the work “Die letzte ‚Story‘ vor dem Ende” by Snope Bushyfam – the name under which Taha publishes his artistic work. The museum is itself an artwork by Hans-Peter Porzner, who founded it in 1991 as an imaginary museum: a museum without a building, whose exhibitions are part of the art.",
+      "text_tr": "Museum für Moderne Kunst München, Snope Bushyfam’ın – Taha’nın sanatsal çalışmalarını yayımladığı isim – “Die letzte ‚Story‘ vor dem Ende” adlı eserini sundu. Müzenin kendisi de bir sanat eseri: Hans-Peter Porzner tarafından 1991’de hayali bir müze olarak kuruldu – binası olmayan, sergileri sanatın bir parçası olan bir müze.",
       "image": {
         "src": "/assets/studio/stationen/mfmk-beitrag-1280.webp",
         "alt_de": "Gerahmter Beitrag „Die letzte ‚Story‘ vor dem Ende“: ein UFO mit BushyFam-Schriftzug über einer nächtlichen Stadt, darunter der Hinweis, dass das Museum für Moderne Kunst München Snope Bushyfam präsentiert",
-        "alt_en": "Framed piece “Die letzte ‚Story‘ vor dem Ende”: a UFO with BushyFam lettering above a city at night, with a note that the Museum für Moderne Kunst München presents Snope Bushyfam"
+        "alt_en": "Framed piece “Die letzte ‚Story‘ vor dem Ende”: a UFO with BushyFam lettering above a city at night, with a note that the Museum für Moderne Kunst München presents Snope Bushyfam",
+        "alt_tr": "Çerçeveli eser “Die letzte ‚Story‘ vor dem Ende”: gece bir şehrin üzerinde BushyFam yazılı bir UFO ve Museum für Moderne Kunst München’in Snope Bushyfam’ı sunduğuna dair bir not"
       },
       "feature": true
     },
     {
       "year_de": "Dezember 2024",
       "year_en": "December 2024",
+      "year_tr": "Aralık 2024",
       "title_de": "Buch: Der Pfad durch den Sturm",
       "title_en": "Book: Der Pfad durch den Sturm",
+      "title_tr": "Kitap: Der Pfad durch den Sturm",
       "text_de": "„Eine Reise zu den Wurzeln unserer Ängste“: neun Geschichten über Tiere, die im Wald ihrer eigenen Angst begegnen – vom ängstlichen Hasen bis zum brüllenden Löwen. Erschienen unter dem Namen Snope Bushyfam.",
       "text_en": "“Eine Reise zu den Wurzeln unserer Ängste” – a journey to the roots of our fears: nine stories about animals who face their own fears in the forest, from the anxious hare to the roaring lion. Published in German under the name Snope Bushyfam.",
+      "text_tr": "“Eine Reise zu den Wurzeln unserer Ängste” – korkularımızın köklerine bir yolculuk: ormanda kendi korkularıyla yüzleşen hayvanlar hakkında, ürkek tavşandan kükreyen aslana dokuz hikâye. Snope Bushyfam adıyla Almanca yayımlandı.",
       "image": {
         "src": "/assets/studio/stationen/buch-pfad-durch-den-sturm-1280.webp",
         "alt_de": "Das Buch „Der Pfad durch den Sturm“ mit grünem Einband auf einem Tisch neben einer Tasse Kaffee",
-        "alt_en": "The book “Der Pfad durch den Sturm” with a green cover on a table next to a cup of coffee"
+        "alt_en": "The book “Der Pfad durch den Sturm” with a green cover on a table next to a cup of coffee",
+        "alt_tr": "Yeşil kapaklı “Der Pfad durch den Sturm” kitabı, bir masada kahve fincanının yanında"
       },
       "link": {
         "url": "https://amzn.eu/d/01c6ntI2",
         "label_de": "Bei Amazon ansehen",
         "label_en": "View on Amazon",
+        "label_tr": "Amazon’da gör",
         "note_de": "Werbelink",
-        "note_en": "Affiliate link"
+        "note_en": "Affiliate link",
+        "note_tr": "Ortaklık bağlantısı"
       },
       "feature": true
     },
@@ -66,46 +83,60 @@
       "year_en": "",
       "title_de": "Zusammenarbeit mit Hans-Peter Porzner",
       "title_en": "Collaboration with Hans-Peter Porzner",
+      "title_tr": "Hans-Peter Porzner ile iş birliği",
       "text_de": "Über das Museum für Moderne Kunst München arbeitete Taha mit dem Künstler Hans-Peter Porzner zusammen. Gemeinsam boten sie Werke als Poster über die Posterseite des Museums an.",
-      "text_en": "Through the Museum für Moderne Kunst München, Taha worked with the artist Hans-Peter Porzner. Together they offered works as posters via the museum's poster page."
+      "text_en": "Through the Museum für Moderne Kunst München, Taha worked with the artist Hans-Peter Porzner. Together they offered works as posters via the museum's poster page.",
+      "text_tr": "Taha, Museum für Moderne Kunst München aracılığıyla sanatçı Hans-Peter Porzner ile çalıştı. Birlikte eserleri müzenin poster sayfası üzerinden poster olarak sundular."
     },
     {
       "year_de": "",
       "year_en": "",
       "title_de": "Unterricht und Charity-Projekt mit Olaf Neumann",
       "title_en": "Lessons and a charity project with Olaf Neumann",
+      "title_tr": "Olaf Neumann ile dersler ve bir yardım projesi",
       "text_de": "Hans-Peter Porzner stellte den Kontakt zum Künstler Olaf Neumann her, bei dem Taha Unterricht im realistischen Zeichnen bekam. Später organisierte Taha eine Charity-Veranstaltung: Olaf Neumann gestaltete dort gemeinsam mit den geladenen Gästen eine lebensgroße Spider-Man-Figur aus einer Filmausstellung künstlerisch um. Die Figur wurde anschließend in einem Museum verkauft, der Erlös gespendet.",
-      "text_en": "Hans-Peter Porzner introduced Taha to the artist Olaf Neumann, who taught him realistic drawing. Taha later organised a charity event at which Olaf Neumann and the invited guests artistically reworked a life-size Spider-Man figure from a film exhibition. The figure was later sold at a museum and the proceeds were donated."
+      "text_en": "Hans-Peter Porzner introduced Taha to the artist Olaf Neumann, who taught him realistic drawing. Taha later organised a charity event at which Olaf Neumann and the invited guests artistically reworked a life-size Spider-Man figure from a film exhibition. The figure was later sold at a museum and the proceeds were donated.",
+      "text_tr": "Hans-Peter Porzner, Taha’yı ona gerçekçi çizim öğreten sanatçı Olaf Neumann ile tanıştırdı. Taha daha sonra, Olaf Neumann ve davetli konukların bir film sergisinden gelen gerçek boyutlu bir Spider-Man figürünü sanatsal olarak yeniden işlediği bir yardım etkinliği düzenledi. Figür daha sonra bir müzede satıldı ve gelir bağışlandı."
     }
   ],
   "processTitle_de": "Verstehen. Entwickeln. Umsetzen. Begleiten.",
   "processTitle_en": "Understand. Develop. Produce. Support.",
+  "processTitle_tr": "Anlamak. Geliştirmek. Üretmek. Destek olmak.",
   "process": [
     {
       "title_de": "Verstehen",
       "title_en": "Understand",
+      "title_tr": "Anlamak",
       "text_de": "Ein Gespräch über dein Unternehmen, deine Zielgruppe und dein Ziel.",
-      "text_en": "A conversation about your business, your audience and your goal."
+      "text_en": "A conversation about your business, your audience and your goal.",
+      "text_tr": "İşin, hedef kitlen ve hedefin üzerine bir konuşma."
     },
     {
       "title_de": "Entwickeln",
       "title_en": "Develop",
+      "title_tr": "Geliştirmek",
       "text_de": "Konzept und Gestaltung – du siehst Entwürfe, bevor umgesetzt wird.",
-      "text_en": "Concept and design – you see drafts before anything is produced."
+      "text_en": "Concept and design – you see drafts before anything is produced.",
+      "text_tr": "Konsept ve tasarım – bir şey üretilmeden önce taslakları görürsün."
     },
     {
       "title_de": "Umsetzen",
       "title_en": "Produce",
+      "title_tr": "Üretmek",
       "text_de": "Dreh, Fotografie, Design oder Website – persönlich von Taha.",
-      "text_en": "Shoot, photography, design or website – personally by Taha."
+      "text_en": "Shoot, photography, design or website – personally by Taha.",
+      "text_tr": "Çekim, fotoğraf, tasarım ya da web sitesi – bizzat Taha tarafından."
     },
     {
       "title_de": "Begleiten",
       "title_en": "Support",
+      "title_tr": "Destek olmak",
       "text_de": "Auf Wunsch geht es weiter mit Social Media, Anpassungen und Anzeigen.",
-      "text_en": "If you like, it continues with social media, updates and ads."
+      "text_en": "If you like, it continues with social media, updates and ads.",
+      "text_tr": "İstersen sosyal medya, güncellemeler ve reklamlarla devam ederiz."
     }
   ],
   "statement_en": "Before BushyFam Studios became a studio, it was a collection of experiments.",
+  "statement_tr": "BushyFam Studios bir stüdyo olmadan önce, bir deneyler koleksiyonuydu.",
   "statement_de": "Bevor BushyFam Studios ein Studio wurde, war es eine Sammlung von Experimenten."
 }

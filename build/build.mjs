@@ -11,11 +11,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { T, ROUTES, CATEGORIES } from "./i18n.mjs";
+import { T, ROUTES, CATEGORIES, LANG_NAMES } from "./i18n.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "dist");
-const LANGS = ["en", "de"];
+const LANGS = ["en", "de", "tr"];
 const ON_NETLIFY = process.env.NETLIFY === "true";
 const errors = [];
 
@@ -34,8 +34,9 @@ const readDir = (rel) => {
 export const esc = (v) => String(v ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 /** Feld in der gewünschten Sprache, sonst Deutsch als Rückfall */
-const tr = (obj, key, lang) => (obj && (obj[`${key}_${lang}`] || obj[`${key}_de`])) || "";
-const pick = (obj, lang) => (obj && (obj[lang] || obj.de)) || "";
+/* Fehlt ein Text in der gewählten Sprache: Türkisch fällt auf Englisch zurück, sonst auf Deutsch */
+const tr = (obj, key, lang) => (obj && (obj[`${key}_${lang}`] || (lang === "tr" && obj[`${key}_en`]) || obj[`${key}_de`])) || "";
+const pick = (obj, lang) => (obj && (obj[lang] || (lang === "tr" && obj.en) || obj.de)) || "";
 const url = (p) => (!p ? "" : /^https?:\/\//.test(p) ? p : "/" + String(p).replace(/^\/+/, ""));
 const assetExists = (p) => !p || /^https?:\/\//.test(p) || fs.existsSync(path.join(ROOT, url(p)));
 const paras = (text) => String(text || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
@@ -197,10 +198,15 @@ const hrefFor = (lang, key, slug) => {
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
 function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
-  const t = T[lang], other = lang === "de" ? "en" : "de";
+  const t = T[lang], others = LANGS.filter((l) => l !== lang);
   const site = (S.siteUrl || "").replace(/\/+$/, "");
-  const here = hrefFor(lang, key, slug), there = key === "home404" ? ROUTES[other].home : hrefFor(other, key, slug);
+  const here = hrefFor(lang, key, slug), hrefIn = (l) => (key === "home404" ? ROUTES[l].home : hrefFor(l, key, slug));
   const abs = (p) => site + p;
+  /* Sprachauswahl: kleiner Knopf mit dem aktuellen Kürzel, darunter die Sprachen (funktioniert auch ohne JavaScript) */
+  const langSwitch = (where) => `<details class="lang-switch lang-switch--${where}" data-lang-switch>
+      <summary class="lang"><span aria-hidden="true">${lang.toUpperCase()}</span><span class="vh">${esc(t.switchTo)} – ${LANG_NAMES[lang]}</span></summary>
+      <ul class="lang-menu">${LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
+    </details>`;
   const nav = [["work", t.nav.work], ...(CAST.length ? [["cast", t.nav.cast]] : []), ["services", t.nav.services], ["studio", t.nav.studio]];
   const navHref = (k) => (k === "services" ? ROUTES[lang].home + "#" + t.servicesId : ROUTES[lang][k]);
   const cur = (k) => (k === key || (k === "work" && key === "project") || (k === "cast" && key === "person") ? ' aria-current="page"' : "");
@@ -218,14 +224,13 @@ function layout({ lang, key, slug, title, description, body, scripts = [], ogIma
 <meta name="description" content="${esc(description)}">
 ${S.launch ? "" : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#000000">
 ${site && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
-<link rel="alternate" hreflang="${lang}" href="${abs(here)}">
-<link rel="alternate" hreflang="${other}" href="${abs(there)}">
+${LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
 <link rel="alternate" hreflang="x-default" href="${abs(hrefFor("en", key, slug))}">
 ` : ""}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brandName)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:locale" content="${lang === "de" ? "de_DE" : "en_GB"}">
+<meta property="og:locale" content="${{ de: "de_DE", en: "en_GB", tr: "tr_TR" }[lang]}">
 ${site && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
 ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n${imageSize(ogImage) ? `<meta property="og:image:width" content="${imageSize(ogImage).w}">\n<meta property="og:image:height" content="${imageSize(ogImage).h}">\n` : ""}` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
@@ -242,13 +247,14 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
     <nav class="nav" aria-label="${esc(t.mainNav)}">
       <ul>
         ${nav.map(([k, l]) => `<li><a href="${navHref(k)}"${cur(k)}>${esc(l)}</a></li>`).join("\n        ")}
-        <li><a class="lang" href="${there}" hreflang="${other}" lang="${other}"><span aria-hidden="true">${other.toUpperCase()}</span><span class="vh">${esc(t.switchTo)}</span></a></li>
         <li><a class="btn btn--primary btn--nav" href="${ROUTES[lang].contact}"${cur("contact")}>${esc(t.cta)}</a></li>
         ${S.instagramUrl ? `<li>${igLink(lang, "ig-link")}</li>` : ""}
+        <li>${langSwitch("nav")}</li>
       </ul>
     </nav>
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
     ${igLink(lang, "ig-link header-ig")}
+    ${langSwitch("header")}
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu" data-menu-btn><span class="menu-label">${esc(t.menu)}</span><span class="menu-lines" aria-hidden="true"></span></button>
   </div>
 </header>
@@ -257,7 +263,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
     <li><a href="${ROUTES[lang].home}">${esc(t.nav.home)}</a></li>
     ${nav.map(([k, l]) => `<li><a href="${navHref(k)}">${esc(l)}</a></li>`).join("\n    ")}
     <li><a href="${ROUTES[lang].contact}">${esc(t.cta)}</a></li>
-    <li class="mm-lang"><a href="${there}" hreflang="${other}" lang="${other}">${esc(t.switchTo)}</a></li>
+    ${others.map((l) => `<li class="mm-lang"><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}">${LANG_NAMES[l]}</a></li>`).join("\n    ")}
   </ul></nav>
 </div>
 <main id="main" tabindex="-1">
@@ -743,12 +749,15 @@ function pageThanks(lang) {
 function pageLegal(lang, key) {
   const t = T[lang], field = key === "imprint" ? "imprint" : "privacy";
   const text = tr(LEGAL, field, lang);
+  /* Rechtstexte gibt es verbindlich auf Deutsch und Englisch; ohne eigene türkische Fassung erscheint die englische mit Hinweis */
+  const fallback = lang === "tr" && !LEGAL[`${field}_tr`];
   const blocks = paras(text).map((b) => b.startsWith("## ") ? `<h2>${esc(b.slice(3))}</h2>` : `<p>${esc(b).replace(/\n/g, "<br>")}</p>`).join("\n");
   const body = `
 <section class="wrap page-head" aria-labelledby="h-legal">
   <h1 class="page-title page-title--sm" id="h-legal">${esc(t[field])}</h1>
 </section>
-<section class="wrap legal">${blocks || `<p class="lead">${esc(t.inPreparation)}</p>`}</section>`;
+${fallback && blocks ? `<p class="wrap legal-note muted">${esc(t.legalInEnglish)}</p>` : ""}
+<section class="wrap legal"${fallback ? ' lang="en"' : ""}>${blocks || `<p class="lead">${esc(t.inPreparation)}</p>`}</section>`;
   return layout({ lang, key, title: `${t[field]} – ${S.brandName}`, description: `${t[field]} – ${S.brandName}`, body });
 }
 
@@ -760,7 +769,8 @@ function page404() {
   <h1 class="page-title" id="h-404">${esc(T.en.notFound)}</h1>
   <p class="lead">${esc(T.en.notFoundText)}</p>
   <p class="lead" lang="de">${esc(T.de.notFound)} – ${esc(T.de.notFoundText)}</p>
-  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.en.home}">${esc(T.en.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.de.home}" hreflang="de" lang="de">${esc(T.de.backHome)}</a></div>
+  <p class="lead" lang="tr">${esc(T.tr.notFound)} – ${esc(T.tr.notFoundText)}</p>
+  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.en.home}">${esc(T.en.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.de.home}" hreflang="de" lang="de">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.tr.home}" hreflang="tr" lang="tr">${esc(T.tr.backHome)}</a></div>
 </section>`;
   return layout({ lang: "en", key: "home404", title: `404 – ${S.brandName}`, description: T.en.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
 }
@@ -775,7 +785,7 @@ const write = (route, html) => {
   fs.writeFileSync(file, html);
   written.push(route);
 };
-ROUTES.de.home404 = ROUTES.en.home404 = "/404.html";
+ROUTES.de.home404 = ROUTES.en.home404 = ROUTES.tr.home404 = "/404.html";
 for (const lang of LANGS) {
   const R = ROUTES[lang];
   write(R.home, pageHome(lang));

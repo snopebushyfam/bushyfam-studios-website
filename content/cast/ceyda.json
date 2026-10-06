@@ -5,11 +5,13 @@
   "name": "Ceyda",
   "role_de": "Model & Schauspielerin",
   "role_en": "Model & Actress",
+  "role_tr": "Model & Oyuncu",
   "photos": [
     {
       "src": "/assets/uploads/besetzung/ceyda.jpg",
       "alt_de": "Ceyda mit langen braunen Haaren in schwarzem Sportoutfit, auf dem Boden sitzend, neben zwei Padel-Schlägern und einem Ball vor hellem Studiohintergrund",
-      "alt_en": "Ceyda with long brown hair in a black sports outfit, sitting on the floor next to two padel rackets and a ball against a light studio backdrop"
+      "alt_en": "Ceyda with long brown hair in a black sports outfit, sitting on the floor next to two padel rackets and a ball against a light studio backdrop",
+      "alt_tr": "Uzun kahverengi saçlı Ceyda, siyah spor kıyafetiyle iki padel raketi ve bir topun yanında, açık renk stüdyo fonunun önünde yerde oturuyor"
     }
   ],
   "slug": "ceyda"

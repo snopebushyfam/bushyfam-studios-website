@@ -1,33 +1,41 @@
 {
   "title_de": "Was hast du vor?",
   "title_en": "What are you planning?",
+  "title_tr": "Ne planlıyorsun?",
   "intro_de": "Erzähl kurz von deinem Vorhaben. BushyFam Studios sitzt in Köln und arbeitet mit Unternehmen in ganz Deutschland.",
   "intro_en": "Share a few words about your project. BushyFam Studios is based in Cologne and works with businesses across Germany.",
+  "intro_tr": "Projeni birkaç cümleyle anlat. BushyFam Studios Köln’de bulunuyor ve Almanya’nın dört bir yanındaki işletmelerle çalışıyor.",
   "options": [
     {
       "de": "Film & Content",
-      "en": "Film & Content"
+      "en": "Film & Content",
+      "tr": "Film & İçerik"
     },
     {
       "de": "Fotografie",
-      "en": "Photography"
+      "en": "Photography",
+      "tr": "Fotoğraf"
     },
     {
       "de": "Marke & Design",
-      "en": "Brand & Design"
+      "en": "Brand & Design",
+      "tr": "Marka & Tasarım"
     },
     {
       "de": "Digital & Growth",
-      "en": "Digital & Growth"
+      "en": "Digital & Growth",
+      "tr": "Dijital & Büyüme"
     },
     {
       "de": "Besetzung / Talent",
       "en": "Cast / Talent",
+      "tr": "Kadro / Yetenek",
       "cast": true
     },
     {
       "de": "Noch offen",
-      "en": "Not sure yet"
+      "en": "Not sure yet",
+      "tr": "Henüz belli değil"
     }
   ]
 }

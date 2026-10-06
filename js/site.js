@@ -52,6 +52,18 @@
     });
   });
 
+  /* ---------- Sprachauswahl: schließt bei Klick daneben oder mit Escape ---------- */
+  var switches = [].slice.call(document.querySelectorAll("[data-lang-switch]"));
+  if (switches.length) {
+    document.addEventListener("click", function (e) {
+      switches.forEach(function (d) { if (d.open && !d.contains(e.target)) d.open = false; });
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      switches.forEach(function (d) { if (d.open) { d.open = false; d.querySelector("summary").focus(); } });
+    });
+  }
+
   /* ---------- Objects in Motion: automatische Bewegung, jederzeit anhaltbar ---------- */
   var marquee = document.querySelector("[data-marquee]");
   if (marquee) {

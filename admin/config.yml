@@ -32,6 +32,7 @@ collections:
     fields:
       - { label: "Titel (DE)", name: title_de, widget: string }
       - { label: "Titel (EN)", name: title_en, widget: string, required: false, hint: "Leer lassen = deutscher Text wird angezeigt" }
+      - { label: "Titel (TR)", name: title_tr, widget: string, required: false }
       - { label: "Kunde", name: client, widget: string, required: false }
       - { label: "Jahr", name: year, widget: string, required: false, hint: "z. B. 2026 – leer lassen, wenn unbekannt" }
       - label: "Kategorie"
@@ -61,12 +62,16 @@ collections:
               - { label: "Bild ganz zeigen (Logos, Grafiken)", value: "contain" }
           - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string }
           - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+          - { label: "Bildbeschreibung (TR)", name: alt_tr, widget: string, required: false }
       - { label: "Disziplinen (DE)", name: disciplines_de, widget: string, required: false, hint: "Kurze Zeile, z. B. Film · Fotografie · Social Media" }
       - { label: "Disziplinen (EN)", name: disciplines_en, widget: string, required: false }
+      - { label: "Disziplinen (TR)", name: disciplines_tr, widget: string, required: false }
       - { label: "Kurzbeschreibung (DE)", name: summary_de, widget: text, required: false }
       - { label: "Kurzbeschreibung (EN)", name: summary_en, widget: text, required: false }
+      - { label: "Kurzbeschreibung (TR)", name: summary_tr, widget: text, required: false }
       - { label: "Ausführlicher Text (DE)", name: body_de, widget: text, required: false, hint: "Kontext zum Projekt. Leerzeile = neuer Absatz" }
       - { label: "Ausführlicher Text (EN)", name: body_en, widget: text, required: false }
+      - { label: "Ausführlicher Text (TR)", name: body_tr, widget: text, required: false }
       - label: "Bilder & Filme"
         name: media
         widget: list
@@ -85,12 +90,15 @@ collections:
           - { label: "Vorschaubild (nur für Filme)", name: poster, widget: image, required: false }
           - { label: "Titel (DE) – nur für Filme", name: title_de, widget: string, required: false }
           - { label: "Titel (EN) – nur für Filme", name: title_en, widget: string, required: false }
+          - { label: "Titel (TR) – nur für Filme", name: title_tr, widget: string, required: false }
           - { label: "Länge – nur für Filme", name: duration, widget: string, required: false, hint: "z. B. 29 s" }
           - { label: "Hat Ton", name: audio, widget: boolean, required: false, default: false }
           - { label: "Bildbeschreibung (DE) – nur für Bilder", name: alt_de, widget: string, required: false }
           - { label: "Bildbeschreibung (EN) – nur für Bilder", name: alt_en, widget: string, required: false }
+          - { label: "Bildbeschreibung (TR) – nur für Bilder", name: alt_tr, widget: string, required: false }
           - { label: "Bildunterschrift (DE)", name: caption_de, widget: string, required: false }
           - { label: "Bildunterschrift (EN)", name: caption_en, widget: string, required: false }
+          - { label: "Bildunterschrift (TR)", name: caption_tr, widget: string, required: false }
 
   # ---------------------------------------------------------------- Objects in Motion
   - name: "objekte"
@@ -110,6 +118,7 @@ collections:
       - { label: "Titel (nur intern, DE)", name: title_de, widget: string, required: false }
       - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string, required: false }
       - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+      - { label: "Bildbeschreibung (TR)", name: alt_tr, widget: string, required: false }
       - { label: "Anzeigen", name: enabled, widget: boolean, default: true }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
@@ -132,9 +141,11 @@ collections:
       - { label: "Adresse der Seite", name: slug, widget: string, pattern: ['^[a-z0-9-]+$', "Nur Kleinbuchstaben, Zahlen und Bindestriche"], hint: "z. B. lena oder dj-nova" }
       - { label: "Rolle (DE)", name: role_de, widget: string, hint: "z. B. Model, DJ, Host – gleiche Schreibweise ergibt eine gemeinsame Kategorie" }
       - { label: "Rolle (EN)", name: role_en, widget: string, required: false }
+      - { label: "Rolle (TR)", name: role_tr, widget: string, required: false }
       - { label: "Stadt", name: city, widget: string, required: false }
       - { label: "Kurztext (DE)", name: text_de, widget: text, required: false }
       - { label: "Kurztext (EN)", name: text_en, widget: text, required: false }
+      - { label: "Kurztext (TR)", name: text_tr, widget: text, required: false }
       - { label: "Instagram-Adresse", name: instagram, widget: string, required: false }
       - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
       - label: "Weitere Angaben (optional)"
@@ -146,6 +157,7 @@ collections:
         fields:
           - { label: "Bezeichnung (DE)", name: label_de, widget: string, hint: "z. B. Größe" }
           - { label: "Bezeichnung (EN)", name: label_en, widget: string, required: false, hint: "z. B. Height" }
+          - { label: "Bezeichnung (TR)", name: label_tr, widget: string, required: false }
           - { label: "Wert", name: value, widget: string, hint: "z. B. 172 cm" }
       - label: "Showreel / Video (optional)"
         name: video
@@ -163,6 +175,7 @@ collections:
           - { label: "Foto", name: src, widget: image }
           - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string, required: false }
           - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+          - { label: "Bildbeschreibung (TR)", name: alt_tr, widget: string, required: false }
       - { label: "Schriftliche Einwilligung liegt vor", name: consent, widget: boolean, default: false, hint: "Pflicht. Ohne Häkchen erscheint die Person nirgends auf der Website." }
       - { label: "Sichtbar", name: visible, widget: boolean, default: true }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
@@ -197,8 +210,10 @@ collections:
           - { label: "Studioname", name: brandName, widget: string }
           - { label: "Ort (DE)", name: location_de, widget: string }
           - { label: "Ort (EN)", name: location_en, widget: string }
+          - { label: "Ort (TR)", name: location_tr, widget: string, required: false }
           - { label: "Einzugsgebiet (DE)", name: reach_de, widget: string }
           - { label: "Einzugsgebiet (EN)", name: reach_en, widget: string }
+          - { label: "Einzugsgebiet (TR)", name: reach_tr, widget: string, required: false }
           - { label: "E-Mail", name: email, widget: string, required: false, hint: "Wird angezeigt, sobald sie eingetragen ist" }
           - { label: "WhatsApp-Nummer", name: whatsapp, widget: string, required: false, hint: "Mit Ländervorwahl, z. B. +49 1514 4930658 – leer lassen, um WhatsApp auszublenden" }
           - { label: "Instagram-Adresse", name: instagramUrl, widget: string, required: false }
@@ -209,8 +224,10 @@ collections:
             fields:
               - { label: "Seitentitel (DE)", name: title_de, widget: string }
               - { label: "Seitentitel (EN)", name: title_en, widget: string }
+              - { label: "Seitentitel (TR)", name: title_tr, widget: string, required: false }
               - { label: "Beschreibung (DE)", name: description_de, widget: text, hint: "ca. 150–160 Zeichen" }
               - { label: "Beschreibung (EN)", name: description_en, widget: text }
+              - { label: "Beschreibung (TR)", name: description_tr, widget: text, required: false }
               - { label: "Vorschaubild zum Teilen", name: image, widget: image, required: false, hint: "Erscheint, wenn jemand die Seite auf WhatsApp, Instagram usw. teilt. Am besten 1200 × 630 px" }
           - label: "Einstieg"
             name: hero
@@ -219,11 +236,15 @@ collections:
               - { label: "Überschrift Zeile 1 (DE)", name: line1_de, widget: string, hint: "Große Überschrift über dem Film, z. B. der Slogan. Das Logo oben links trägt den Namen." }
               - { label: "Überschrift Zeile 2 (DE)", name: line2_de, widget: string, required: false, hint: "Optional – leer lassen für eine ruhigere erste Ansicht" }
               - { label: "Überschrift Zeile 1 (EN)", name: line1_en, widget: string }
+              - { label: "Überschrift Zeile 1 (TR)", name: line1_tr, widget: string, required: false }
               - { label: "Überschrift Zeile 2 (EN)", name: line2_en, widget: string, required: false }
+              - { label: "Überschrift Zeile 2 (TR)", name: line2_tr, widget: string, required: false }
               - { label: "Kleine Zeile darunter (DE)", name: text_de, widget: text, required: false, hint: "Optional – leer lassen, wenn die Überschrift schon der Slogan ist" }
               - { label: "Kleine Zeile darunter (EN)", name: text_en, widget: text, required: false }
+              - { label: "Kleine Zeile darunter (TR)", name: text_tr, widget: text, required: false }
               - { label: "Satz am Filmende (DE)", name: outro_de, widget: text, required: false }
               - { label: "Satz am Filmende (EN)", name: outro_en, widget: text, required: false }
+              - { label: "Satz am Filmende (TR)", name: outro_tr, widget: text, required: false }
               - label: "Film"
                 name: video
                 widget: object
@@ -251,6 +272,7 @@ collections:
                   - { label: "Höhe (px)", name: height, widget: number, value_type: int }
                   - { label: "Filmbeschreibung (DE)", name: description_de, widget: text }
                   - { label: "Filmbeschreibung (EN)", name: description_en, widget: text }
+                  - { label: "Filmbeschreibung (TR)", name: description_tr, widget: text, required: false }
           - label: "Abschlussfilm"
             name: ending
             widget: object
@@ -272,6 +294,7 @@ collections:
                   - { label: "Höhe (px)", name: height, widget: number, value_type: int }
                   - { label: "Filmbeschreibung (DE)", name: description_de, widget: text }
                   - { label: "Filmbeschreibung (EN)", name: description_en, widget: text }
+                  - { label: "Filmbeschreibung (TR)", name: description_tr, widget: text, required: false }
           - label: "Showreel"
             name: showreel
             widget: object
@@ -283,6 +306,7 @@ collections:
               - { label: "Länge", name: duration, widget: string, required: false, hint: "z. B. 00:45" }
               - { label: "Titel (DE)", name: title_de, widget: string, required: false }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
+              - { label: "Titel (TR)", name: title_tr, widget: string, required: false }
 
       - name: "home"
         label: "Startseite"
@@ -290,12 +314,16 @@ collections:
         fields:
           - { label: "Überschrift Arbeiten (DE)", name: workTitle_de, widget: string }
           - { label: "Überschrift Arbeiten (EN)", name: workTitle_en, widget: string }
+          - { label: "Überschrift Arbeiten (TR)", name: workTitle_tr, widget: string, required: false }
           - { label: "Kurztext über Taha (DE)", name: aboutText_de, widget: text }
           - { label: "Kurztext über Taha (EN)", name: aboutText_en, widget: text }
+          - { label: "Kurztext über Taha (TR)", name: aboutText_tr, widget: text, required: false }
           - { label: "Abschluss-Überschrift (DE)", name: ctaTitle_de, widget: string }
           - { label: "Abschluss-Überschrift (EN)", name: ctaTitle_en, widget: string }
+          - { label: "Abschluss-Überschrift (TR)", name: ctaTitle_tr, widget: string, required: false }
           - { label: "Abschlusstext (DE)", name: ctaText_de, widget: text }
           - { label: "Abschlusstext (EN)", name: ctaText_en, widget: text }
+          - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
 
       - name: "services"
         label: "Leistungen"
@@ -305,6 +333,7 @@ collections:
         fields:
           - { label: "Überschrift (DE)", name: title_de, widget: string, required: false }
           - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
+          - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
           - label: "Leistungen"
             name: items
             widget: list
@@ -312,16 +341,21 @@ collections:
             fields:
               - { label: "Begriff (DE)", name: title_de, widget: string }
               - { label: "Begriff (EN)", name: title_en, widget: string, required: false }
+              - { label: "Begriff (TR)", name: title_tr, widget: string, required: false }
               - { label: "Erklärung (DE)", name: text_de, widget: text }
               - { label: "Erklärung (EN)", name: text_en, widget: text, required: false }
+              - { label: "Erklärung (TR)", name: text_tr, widget: text, required: false }
               - { label: "Stichworte (DE)", name: tags_de, widget: string, required: false, hint: "z. B. Werbefilme · Reels · Schnitt" }
               - { label: "Stichworte (EN)", name: tags_en, widget: string, required: false }
+              - { label: "Stichworte (TR)", name: tags_tr, widget: string, required: false }
               - { label: "Kachelbild", name: image, widget: image, required: false, hint: "Hochformat (3:4) wirkt am besten. Beim Video ist das Bild das Standbild." }
               - { label: "Kachelvideo (optional)", name: video, widget: file, required: false, hint: "Kurzer stummer Clip als MP4, läuft in Schleife. Ohne Video wird das Bild gezeigt." }
               - { label: "Bildbeschreibung (DE)", name: imageAlt_de, widget: string, required: false }
               - { label: "Bildbeschreibung (EN)", name: imageAlt_en, widget: string, required: false }
+              - { label: "Bildbeschreibung (TR)", name: imageAlt_tr, widget: string, required: false }
           - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "Erscheint als große Zeile mit Pfeil zum Kontakt. Alles bis zum ersten Fragezeichen steht klein darüber, der Rest groß." }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
+          - { label: "Zusatzsatz unter den Leistungen (TR)", name: note_tr, widget: text, required: false }
 
       - name: "studio"
         label: "Studio (Taha & Stationen)"
@@ -332,10 +366,13 @@ collections:
           - { label: "Name", name: name, widget: string }
           - { label: "Rolle (DE)", name: role_de, widget: string }
           - { label: "Rolle (EN)", name: role_en, widget: string }
+          - { label: "Rolle (TR)", name: role_tr, widget: string, required: false }
           - { label: "Großes Statement ganz oben (DE)", name: statement_de, widget: text, required: false, hint: "Ein großer, kurzer Satz – erscheint sehr groß direkt unter dem Namen" }
           - { label: "Großes Statement ganz oben (EN)", name: statement_en, widget: text, required: false }
+          - { label: "Großes Statement ganz oben (TR)", name: statement_tr, widget: text, required: false }
           - { label: "Einleitung (DE)", name: lead_de, widget: text }
           - { label: "Einleitung (EN)", name: lead_en, widget: text }
+          - { label: "Einleitung (TR)", name: lead_tr, widget: text, required: false }
           - label: "Porträt"
             name: portrait
             widget: object
@@ -343,6 +380,7 @@ collections:
               - { label: "Bild", name: src, widget: image }
               - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string }
               - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+              - { label: "Bildbeschreibung (TR)", name: alt_tr, widget: string, required: false }
           - label: "Absätze"
             name: paragraphs
             widget: list
@@ -350,8 +388,10 @@ collections:
             fields:
               - { label: "Text (DE)", name: de, widget: text }
               - { label: "Text (EN)", name: en, widget: text, required: false }
+              - { label: "Text (TR)", name: tr, widget: text, required: false }
           - { label: "Überschrift Stationen (DE)", name: stationsTitle_de, widget: string }
           - { label: "Überschrift Stationen (EN)", name: stationsTitle_en, widget: string }
+          - { label: "Überschrift Stationen (TR)", name: stationsTitle_tr, widget: string, required: false }
           - label: "Stationen & Projekte"
             name: stations
             widget: list
@@ -360,6 +400,7 @@ collections:
             fields:
               - { label: "Zeitangabe (DE)", name: year_de, widget: string, required: false }
               - { label: "Zeitangabe (EN)", name: year_en, widget: string, required: false }
+              - { label: "Zeitangabe (TR)", name: year_tr, widget: string, required: false }
               - label: "Kategorie (optional)"
                 name: category
                 widget: select
@@ -368,8 +409,10 @@ collections:
               - { label: "Groß darstellen", name: feature, widget: boolean, default: false, required: false, hint: "Großes Bild mit Text daneben – für die stärksten Momente wie Museum und Buch. Ohne Häkchen: ruhige Textnotiz" }
               - { label: "Titel (DE)", name: title_de, widget: string }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
+              - { label: "Titel (TR)", name: title_tr, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }
               - { label: "Text (EN)", name: text_en, widget: text, required: false }
+              - { label: "Text (TR)", name: text_tr, widget: text, required: false }
               - label: "Bild"
                 name: image
                 widget: object
@@ -378,6 +421,7 @@ collections:
                   - { label: "Bild", name: src, widget: image, required: false }
                   - { label: "Bildbeschreibung (DE)", name: alt_de, widget: string, required: false }
                   - { label: "Bildbeschreibung (EN)", name: alt_en, widget: string, required: false }
+                  - { label: "Bildbeschreibung (TR)", name: alt_tr, widget: string, required: false }
               - label: "Link"
                 name: link
                 widget: object
@@ -386,10 +430,13 @@ collections:
                   - { label: "Adresse", name: url, widget: string, required: false }
                   - { label: "Beschriftung (DE)", name: label_de, widget: string, required: false }
                   - { label: "Beschriftung (EN)", name: label_en, widget: string, required: false }
+                  - { label: "Beschriftung (TR)", name: label_tr, widget: string, required: false }
                   - { label: "Hinweis (DE)", name: note_de, widget: string, required: false, hint: "z. B. Werbelink – bei Affiliate-Links Pflicht" }
                   - { label: "Hinweis (EN)", name: note_en, widget: string, required: false }
+                  - { label: "Hinweis (TR)", name: note_tr, widget: string, required: false }
           - { label: "Überschrift Zusammenarbeit (DE)", name: processTitle_de, widget: string }
           - { label: "Überschrift Zusammenarbeit (EN)", name: processTitle_en, widget: string }
+          - { label: "Überschrift Zusammenarbeit (TR)", name: processTitle_tr, widget: string, required: false }
           - label: "Schritte der Zusammenarbeit"
             name: process
             widget: list
@@ -397,8 +444,10 @@ collections:
             fields:
               - { label: "Titel (DE)", name: title_de, widget: string }
               - { label: "Titel (EN)", name: title_en, widget: string, required: false }
+              - { label: "Titel (TR)", name: title_tr, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }
               - { label: "Text (EN)", name: text_en, widget: text, required: false }
+              - { label: "Text (TR)", name: text_tr, widget: text, required: false }
 
       - name: "contact"
         label: "Kontaktseite"
@@ -406,8 +455,10 @@ collections:
         fields:
           - { label: "Überschrift (DE)", name: title_de, widget: string }
           - { label: "Überschrift (EN)", name: title_en, widget: string }
+          - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
           - { label: "Einleitung (DE)", name: intro_de, widget: text }
           - { label: "Einleitung (EN)", name: intro_en, widget: text }
+          - { label: "Einleitung (TR)", name: intro_tr, widget: text, required: false }
           - label: "Auswahl „Worum geht es?“"
             name: options
             widget: list
@@ -415,6 +466,7 @@ collections:
             fields:
               - { label: "Bezeichnung (DE)", name: de, widget: string }
               - { label: "Bezeichnung (EN)", name: en, widget: string, required: false }
+              - { label: "Bezeichnung (TR)", name: tr, widget: string, required: false }
               - { label: "Steht für Besetzung/Talent", name: cast, widget: boolean, required: false, default: false, hint: "Wird automatisch ausgewählt, wenn jemand über „Diese Person anfragen“ kommt." }
 
       - name: "legal"
@@ -423,5 +475,7 @@ collections:
         fields:
           - { label: "Impressum (DE)", name: imprint_de, widget: text, required: false, hint: "Leerzeile = neuer Absatz. Eine Zeile, die mit ## beginnt, wird zur Zwischenüberschrift." }
           - { label: "Impressum (EN)", name: imprint_en, widget: text, required: false }
+          - { label: "Impressum (TR)", name: imprint_tr, widget: text, required: false }
           - { label: "Datenschutz (DE)", name: privacy_de, widget: text, required: false }
           - { label: "Datenschutz (EN)", name: privacy_en, widget: text, required: false }
+          - { label: "Datenschutz (TR)", name: privacy_tr, widget: text, required: false }
