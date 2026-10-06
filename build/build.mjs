@@ -437,14 +437,6 @@ ${namedClients.length ? `<section class="section clients" aria-labelledby="h-cli
   </div>
 </section>` : ""}
 
-<section class="section cta" aria-labelledby="h-cta">
-  <div class="wrap">
-    <h2 class="h2" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
-    <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
-    <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${WA_URL ? ext(WA_URL, "WhatsApp", lang) : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang) : ""}</div>
-  </div>
-</section>
-
 ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).toFixed(4)}" aria-label="${esc(t.ending)}">
   <div class="ending-track" data-ending-track>
     <div class="ending-stage">
@@ -454,7 +446,18 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
       </figure>
     </div>
   </div>
-</section>` : ""}`;
+</section>` : ""}
+
+<section class="section cta cta--final" aria-labelledby="h-cta">
+  <div class="wrap">
+    <h2 class="cta-title" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
+    <div class="cta-foot">
+      <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
+      <a class="cta-go" href="${R.contact}"><span>${esc(t.cta)}</span><span class="cta-go-arrow" aria-hidden="true">→</span></a>
+    </div>
+    ${WA_URL || S.instagramUrl || S.email ? `<div class="cta-direct"><span class="cta-direct-label">${esc(t.direct)}</span>${S.email ? `<a href="mailto:${esc(S.email)}">${esc(S.email)}</a>` : ""}${WA_URL ? ext(WA_URL, "WhatsApp", lang, "") : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "") : ""}</div>` : ""}
+  </div>
+</section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
     scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
