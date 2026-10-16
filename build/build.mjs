@@ -442,7 +442,7 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
   <div class="wrap">
     <h2 class="h2" id="h-pkg">${esc(tr(PKG, "title", lang) || t.pkgTitle)}</h2>
     <ul class="pkg-grid">
-      ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}">
+      ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}" data-pixel-card${k.highlight ? ' data-pc-opacity="0.45" data-pc-glow="0.6"' : ""}>
         <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
         ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
         <p class="pkg-price">${pkgPriceParts(k, lang)}</p>
@@ -511,7 +511,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : []), ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -864,7 +864,7 @@ write("/404.html", page404());
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
 
 // 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).

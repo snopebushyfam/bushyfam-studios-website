@@ -824,3 +824,13 @@ h2.cast-card-name{margin:0}
 :root{color-scheme:dark}
 .pkg-name,.case-quote blockquote{text-wrap:balance}
 .work-all{margin-top:clamp(2.5rem,4vw,3.5rem)}
+
+/* PixelCard (nach React Bits, ohne React): Pixel-Canvas als Hintergrund der Paket-Karten.
+   Dunkle Kartenfläche mit leichtem Verlauf, weicher Schatten; Inhalt liegt über dem Canvas. */
+.pkg.pixel-card{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#141416 0%,#0b0b0c 100%);box-shadow:0 24px 48px -24px rgba(0,0,0,.85),0 8px 18px -10px rgba(0,0,0,.6);-webkit-tap-highlight-color:transparent;transition:border-color .26s ease}
+.pkg.pixel-card[data-active]{border-color:rgba(245,245,243,.5)}
+.pkg--featured.pixel-card{background:linear-gradient(180deg,#1b1b1e 0%,#111113 100%)}
+.pkg--featured.pixel-card[data-active]{border-color:var(--white)}
+.pixel-card-canvas{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;pointer-events:none}
+.pkg.pixel-card > :not(.pixel-card-canvas){position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){.pkg.pixel-card{transition:none}}
