@@ -344,14 +344,14 @@ const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ..
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name);
+  const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false);
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
         ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
         <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
@@ -381,6 +381,16 @@ function pageHome(lang) {
     ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
   </div>
 </section>
+
+${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section class="section process-home" aria-labelledby="h-process">
+  <div class="wrap">
+    <h2 class="h2" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
+    <ol class="steps process-steps">
+      ${HOME.processSteps.filter((s) => tr(s, "title", lang)).map((s, i) => `<li><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
+    </ol>
+    <p class="process-cta"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></p>
+  </div>
+</section>` : ""}
 
 ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
   <div class="wrap cast-head">

@@ -2,5 +2,6 @@
   "name": "MASON’S",
   "logo": "/assets/clients/masons.webp",
   "url": "",
-  "order": 1
+  "order": 1,
+  "enabled": true
 }

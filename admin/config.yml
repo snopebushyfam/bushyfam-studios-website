@@ -195,6 +195,7 @@ collections:
       - { label: "Name", name: name, widget: string }
       - { label: "Logo", name: logo, widget: image, required: false, hint: "Logo auf transparentem Grund (PNG/WebP/SVG), ohne weißen Kasten. Erscheint in Graustufen, farbig beim Darüberfahren. Ohne Logo erscheint der Name als Schriftzug." }
       - { label: "Website", name: url, widget: string, required: false }
+      - { label: "In der Logo-Wand zeigen", name: enabled, widget: boolean, default: true, required: false, hint: "Nur echte Auftraggeber zeigen. Aus = Eintrag bleibt gespeichert, erscheint aber nicht auf der Website." }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
   # ---------------------------------------------------------------- Seiten
@@ -324,6 +325,18 @@ collections:
           - { label: "Abschlusstext (DE)", name: ctaText_de, widget: text }
           - { label: "Abschlusstext (EN)", name: ctaText_en, widget: text }
           - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
+          - { label: "„So läuft’s“ – Überschrift (DE)", name: processTitle_de, widget: string, required: false, hint: "Block direkt unter den Leistungen. Leer lassen = Block ausblenden." }
+          - { label: "„So läuft’s“ – Überschrift (EN)", name: processTitle_en, widget: string, required: false }
+          - label: "„So läuft’s“ – Schritte"
+            name: processSteps
+            widget: list
+            required: false
+            summary: "{{title_de}}"
+            fields:
+              - { label: "Schritt (DE)", name: title_de, widget: string }
+              - { label: "Schritt (EN)", name: title_en, widget: string, required: false }
+              - { label: "Text (DE)", name: text_de, widget: text }
+              - { label: "Text (EN)", name: text_en, widget: text, required: false }
 
       - name: "services"
         label: "Leistungen"
