@@ -834,7 +834,7 @@ h2.cast-card-name{margin:0}
 .pkg-vat{margin-top:1.25rem;text-align:center;font-size:.8125rem;color:var(--muted)}
 .pkg-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 2rem;margin-top:clamp(2rem,4vw,3rem);text-align:center}
 .pkg-foot p{font-size:clamp(1.125rem,1rem + .4vw,1.375rem);font-weight:500}
-@media (min-width:900px){.pkg-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}}
+@media (min-width:900px){.pkg-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch}.pkg-grid > .pkg{flex:0 0 calc((100% - 2.5rem) / 3)}}
 @media (prefers-reduced-motion:reduce){.pkg-cta{transition:none}}
 .contact-grid .field select{width:100%;min-height:54px;padding:.6rem 2rem .6rem 0;background:transparent;border:0;border-bottom:1px solid var(--line-strong);border-radius:0;font:inherit;font-size:clamp(1.125rem,1rem + .4vw,1.375rem);color:var(--white);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--white) 50%),linear-gradient(135deg,var(--white) 50%,transparent 50%);background-position:calc(100% - 12px) 55%,calc(100% - 6px) 55%;background-size:6px 6px;background-repeat:no-repeat}
 .contact-grid .field select:focus-visible{outline:none;border-bottom:2px solid var(--white)}
@@ -857,3 +857,18 @@ h2.cast-card-name{margin:0}
 /* Abstände vereinheitlicht: Arbeiten-Liste und Besetzung enden mit dem gleichen Abstand zur Fußzeile wie die übrigen Bereiche */
 .work-page-list{padding-bottom:var(--section)}
 .cast-page{padding-bottom:var(--section)}
+
+/* Pakete: Hinweis unter dem Preis und zuschaltbare Option (Schalter) */
+.pkg-price-wrap .pkg-price{margin-bottom:.25rem}
+.pkg-note{margin:-.1rem 0 .9rem;font-size:.8125rem;color:var(--muted)}
+.pkg-addon{position:relative;display:flex;align-items:center;gap:.75rem;margin:-.5rem 0 1.5rem;padding:.75rem .9rem;border:1px solid var(--line-strong);border-radius:14px;cursor:pointer;font-size:.9375rem}
+.pkg-addon input{position:absolute;opacity:0;width:1px;height:1px}
+.pkg-switch{position:relative;flex:none;width:38px;height:22px;border-radius:999px;background:rgba(245,245,243,.18);transition:background-color .2s}
+.pkg-switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--white);transition:transform .2s}
+.pkg-addon input:checked + .pkg-switch{background:var(--white)}
+.pkg-addon input:checked + .pkg-switch::after{transform:translateX(16px);background:#000}
+.pkg-addon input:focus-visible + .pkg-switch{outline:2px solid var(--white);outline-offset:3px}
+.pkg-addon-label{flex:1;min-width:0}
+.pkg-addon-extra{flex:none;color:var(--muted);font-variant-numeric:tabular-nums}
+.pkg--addon-on .pkg-addon{border-color:var(--white)}
+@media (prefers-reduced-motion:reduce){.pkg-switch,.pkg-switch::after{transition:none}}

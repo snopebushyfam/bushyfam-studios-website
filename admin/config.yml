@@ -390,6 +390,24 @@ collections:
               - { label: "Hervorheben", name: highlight, widget: boolean, required: false, default: false, hint: "Hebt dieses Paket mit hellerer Karte und gefülltem Knopf hervor – am besten nur eines" }
               - { label: "Preis (DE)", name: price_de, widget: string, required: false, hint: "So wie er erscheinen soll, z. B. „ab 1.190 € / Monat“. Leer = Paket wird nicht angezeigt." }
               - { label: "Preis (EN)", name: price_en, widget: string, required: false, hint: "z. B. „from €1,190 / month“" }
+              - { label: "Kleiner Hinweis unter dem Preis (DE)", name: note_de, widget: string, required: false, hint: "z. B. „zzgl. Domain & Hosting“" }
+              - { label: "Kleiner Hinweis unter dem Preis (EN)", name: note_en, widget: string, required: false }
+              - label: "Zuschaltbare Option (optional)"
+                name: addon
+                widget: object
+                required: false
+                collapsed: true
+                hint: "Erscheint als Schalter in der Karte; beim Einschalten wechselt der Preis und die Anfrage nennt die Variante"
+                fields:
+                  - { label: "Kürzel der Variante", name: id, widget: string, required: false, hint: "z. B. website-fotoshooting" }
+                  - { label: "Schalter-Text (DE)", name: label_de, widget: string, required: false, hint: "z. B. „Mit Fotoshooting vor Ort“" }
+                  - { label: "Schalter-Text (EN)", name: label_en, widget: string, required: false }
+                  - { label: "Aufpreis-Anzeige (DE)", name: extra_de, widget: string, required: false, hint: "z. B. „+ 400 €“" }
+                  - { label: "Aufpreis-Anzeige (EN)", name: extra_en, widget: string, required: false }
+                  - { label: "Preis mit Option (DE)", name: price_de, widget: string, required: false, hint: "z. B. „ab 2.190 €“ – leer = Schalter erscheint nicht" }
+                  - { label: "Preis mit Option (EN)", name: price_en, widget: string, required: false }
+                  - { label: "Name der Variante im Formular (DE)", name: name_de, widget: string, required: false, hint: "z. B. „Website + Fotoshooting“" }
+                  - { label: "Name der Variante im Formular (EN)", name: name_en, widget: string, required: false }
           - { label: "Hinweis unter den Paketen (DE)", name: vatNote_de, widget: string, required: false, hint: "Klein unter den Paketen, z. B. „Alle Preise zzgl. MwSt.“" }
           - { label: "Hinweis unter den Paketen (EN)", name: vatNote_en, widget: string, required: false }
           - { label: "Satz unter den Paketen (DE)", name: note_de, widget: string, required: false }

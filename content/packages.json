@@ -67,6 +67,63 @@
         "Two rounds of revisions"
       ],
       "highlight": false
+    },
+    {
+      "id": "fotoshooting",
+      "name_de": "Fotoshooting",
+      "name_en": "Photo shoot",
+      "price_de": "ab 590 €",
+      "price_en": "from €590",
+      "text_de": "Produkt-, Laden- und Teamfotos an einem Termin",
+      "text_en": "Product, shop and team photos in one session",
+      "points_de": [
+        "Shooting vor Ort, bis zu 3 Stunden",
+        "20 bearbeitete Fotos",
+        "Produkte, Räume, Team oder Speisen",
+        "Nutzungsrechte für Website, Social Media & Werbung"
+      ],
+      "points_en": [
+        "On-site shoot, up to 3 hours",
+        "20 edited photos",
+        "Products, spaces, team or food",
+        "Usage rights for website, social media & ads"
+      ],
+      "highlight": false
+    },
+    {
+      "id": "website",
+      "name_de": "Website",
+      "name_en": "Website",
+      "price_de": "ab 1.790 €",
+      "price_en": "from €1,790",
+      "text_de": "Ein moderner Auftritt, der auf jedem Handy funktioniert",
+      "text_en": "A modern website that works on every phone",
+      "points_de": [
+        "Design & Umsetzung, bis zu 5 Seiten",
+        "Für Handy optimiert, mit Kontaktformular",
+        "Grundeinrichtung für Google (SEO)",
+        "Einweisung, damit du Texte selbst ändern kannst"
+      ],
+      "points_en": [
+        "Design & build, up to 5 pages",
+        "Mobile-optimised, with contact form",
+        "Basic Google setup (SEO)",
+        "Walkthrough so you can edit texts yourself"
+      ],
+      "note_de": "zzgl. Domain & Hosting",
+      "note_en": "plus domain & hosting",
+      "addon": {
+        "id": "website-fotoshooting",
+        "label_de": "Mit Fotoshooting vor Ort",
+        "label_en": "With on-site photo shoot",
+        "extra_de": "+ 400 €",
+        "extra_en": "+ €400",
+        "price_de": "ab 2.190 €",
+        "price_en": "from €2,190",
+        "name_de": "Website + Fotoshooting",
+        "name_en": "Website + photo shoot"
+      },
+      "highlight": false
     }
   ],
   "note_de": "Größeres Projekt? Wir machen ein individuelles Angebot.",

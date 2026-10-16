@@ -449,9 +449,14 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
       ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}" data-pixel-card${k.highlight ? ' data-pc-opacity="0.45" data-pc-glow="0.6"' : ""}>
         <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
         ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
-        <p class="pkg-price">${pkgPriceParts(k, lang)}</p>
+        <div class="pkg-price-wrap" aria-live="polite">
+          <p class="pkg-price" data-pkg-price="base">${pkgPriceParts(k, lang)}</p>
+          ${k.addon && tr(k.addon, "price", lang) ? `<p class="pkg-price" data-pkg-price="addon" hidden>${pkgPriceParts(k.addon, lang)}</p>` : ""}
+        </div>
+        ${tr(k, "note", lang) ? `<p class="pkg-note">${esc(tr(k, "note", lang))}</p>` : ""}
         ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${CHECK_ICON}<span>${esc(x)}</span></li>`).join("")}</ul>` : ""}
-        <a class="pkg-cta" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
+        ${k.addon && tr(k.addon, "price", lang) ? `<label class="pkg-addon"><input type="checkbox" data-pkg-addon data-addon-id="${esc(k.addon.id || "")}"><span class="pkg-switch" aria-hidden="true"></span><span class="pkg-addon-label">${esc(tr(k.addon, "label", lang))}</span>${tr(k.addon, "extra", lang) ? `<span class="pkg-addon-extra">${esc(tr(k.addon, "extra", lang))}</span>` : ""}</label>` : ""}
+        <a class="pkg-cta" data-pkg-link data-base-id="${esc(k.id || "")}" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
       </li>`).join("\n      ")}
     </ul>
     ${tr(PKG, "vatNote", lang) ? `<p class="pkg-vat">${esc(tr(PKG, "vatNote", lang))}</p>` : ""}
@@ -776,7 +781,7 @@ function pageContact(lang) {
     </div></fieldset>
     ${visiblePackages(lang).length ? `<div class="field"><label for="f-paket">${esc(f.package)} <span class="opt">(${esc(f.optional)})</span></label><select id="f-paket" name="paket">
       <option value="">${esc(f.packageNone)}</option>
-      ${visiblePackages(lang).map((k) => `<option value="${esc(tr(k, "name", "de"))}" data-id="${esc(k.id || "")}">${esc(tr(k, "name", lang))} – ${pkgPrice(k, lang)}</option>`).join("")}
+      ${visiblePackages(lang).map((k) => `<option value="${esc(tr(k, "name", "de"))}" data-id="${esc(k.id || "")}">${esc(tr(k, "name", lang))} – ${pkgPrice(k, lang)}</option>${k.addon && tr(k.addon, "price", lang) && tr(k.addon, "name", lang) ? `<option value="${esc(tr(k.addon, "name", "de"))}" data-id="${esc(k.addon.id || "")}">${esc(tr(k.addon, "name", lang))} – ${esc(tr(k.addon, "price", lang))}</option>` : ""}`).join("")}
     </select></div>` : ""}
     <div class="field field--talent" data-talent-field hidden><label for="f-talent">${esc(f.talent)} <span class="opt">(${esc(f.optional)})</span></label><input id="f-talent" name="talent" type="text" autocomplete="off" aria-describedby="e-talent"><p class="err" id="e-talent" hidden></p></div>
     ${field("nachricht", f.message, "textarea", true)}
