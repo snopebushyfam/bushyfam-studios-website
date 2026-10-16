@@ -21,7 +21,8 @@
         "10 edited photos",
         "One on-site shoot",
         "Formats for Instagram & TikTok"
-      ]
+      ],
+      "highlight": false
     },
     {
       "id": "werbeclip",
@@ -42,7 +43,8 @@
         "One shoot day",
         "Editing, colour & music",
         "Multiple cuts for web, social & ads"
-      ]
+      ],
+      "highlight": true
     },
     {
       "id": "brand-paket",
@@ -63,7 +65,8 @@
         "Colour palette & typefaces",
         "Compact brand guide",
         "Two rounds of revisions"
-      ]
+      ],
+      "highlight": false
     }
   ],
   "note_de": "Größeres Projekt? Wir machen ein individuelles Angebot.",

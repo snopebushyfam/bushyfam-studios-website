@@ -792,16 +792,31 @@ h2.cast-card-name{margin:0}
 .case-quote blockquote{margin:0;font-size:clamp(1.25rem,1rem + 1vw,1.75rem);font-weight:500;line-height:1.35}
 .case-quote figcaption{margin-top:.75rem;color:var(--muted);font-size:.9375rem}
 
-/* Pakete: drei ruhige Spalten mit Haarlinie, Preis als einzige Betonung */
-.pkg-grid{display:grid;gap:0;border-top:1px solid var(--line);margin-top:clamp(1.5rem,3vw,2.5rem)}
-.pkg{display:grid;align-content:start;gap:.6rem;padding-block:1.75rem;border-bottom:1px solid var(--line)}
-.pkg-name{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:700;letter-spacing:-.025em;line-height:1.05}
-.pkg-text{color:var(--muted)}
-.pkg-points{display:grid;gap:.35rem;margin:.25rem 0 0;padding-left:1.1rem;list-style:disc;font-size:.9375rem}
-.pkg-price{margin-top:.5rem;font-size:1.25rem;font-weight:600}
-.pkg-foot{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 2rem;margin-top:clamp(1.75rem,3vw,2.5rem)}
+/* Pakete im Kartenstil: abgerundete Karten mit feiner Linie, das hervorgehobene Paket heller mit weißem Rahmen,
+   Häkchen-Liste und Knopf über die ganze Breite – dunkel umgesetzt */
+.packages-home .h2{text-align:center;margin-inline:auto;max-width:18ch}
+.pkg-grid{display:grid;gap:1.25rem;margin-top:clamp(2rem,4vw,3.5rem)}
+.pkg{display:flex;flex-direction:column;gap:.5rem;padding:clamp(1.5rem,3vw,2.25rem);border:1px solid var(--line-strong);border-radius:20px;background:var(--black)}
+.pkg--featured{background:#141416;border:1.5px solid var(--white)}
+.pkg-name{font-size:clamp(1.25rem,1.1rem + .5vw,1.5rem);font-weight:700;letter-spacing:-.015em;line-height:1.15}
+.pkg-text{color:var(--muted);line-height:1.45}
+.pkg-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem;margin:1.25rem 0 .75rem}
+.pkg-price-pre{font-size:1rem;color:var(--muted)}
+.pkg-price-amount{font-size:clamp(2.25rem,1.7rem + 2vw,3rem);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums}
+.pkg-price-per{font-size:1rem;color:var(--muted)}
+.pkg-points{display:grid;gap:.85rem;margin:0 0 1.75rem;padding:0;list-style:none}
+.pkg-points li{display:flex;align-items:flex-start;gap:.75rem;color:var(--muted);line-height:1.4}
+.pkg-check{flex:none;width:20px;height:20px;margin-top:.1rem;color:var(--white)}
+.pkg-cta{display:flex;align-items:center;justify-content:center;gap:.6rem;min-height:52px;margin-top:auto;padding:.75rem 1.25rem;border:1px solid var(--line-strong);border-radius:999px;color:var(--white);font-weight:600;text-decoration:none;transition:background-color .25s,border-color .25s,color .25s}
+.pkg-cta:hover{border-color:var(--white);background:rgba(245,245,243,.06)}
+.pkg-cta:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.pkg--featured .pkg-cta{background:var(--white);border-color:var(--white);color:#000}
+.pkg--featured .pkg-cta:hover{background:#ddddd8}
+.pkg-vat{margin-top:1.25rem;text-align:center;font-size:.8125rem;color:var(--muted)}
+.pkg-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 2rem;margin-top:clamp(2rem,4vw,3rem);text-align:center}
 .pkg-foot p{font-size:clamp(1.125rem,1rem + .4vw,1.375rem);font-weight:500}
-@media (min-width:900px){.pkg-grid{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:2.5rem}.pkg{border-bottom:0}}
+@media (min-width:900px){.pkg-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}}
+@media (prefers-reduced-motion:reduce){.pkg-cta{transition:none}}
 .contact-grid .field select{width:100%;min-height:54px;padding:.6rem 2rem .6rem 0;background:transparent;border:0;border-bottom:1px solid var(--line-strong);border-radius:0;font:inherit;font-size:clamp(1.125rem,1rem + .4vw,1.375rem);color:var(--white);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--white) 50%),linear-gradient(135deg,var(--white) 50%,transparent 50%);background-position:calc(100% - 12px) 55%,calc(100% - 6px) 55%;background-size:6px 6px;background-repeat:no-repeat}
 .contact-grid .field select:focus-visible{outline:none;border-bottom:2px solid var(--white)}
 .contact-grid .field select option{background:#0b0b0c;color:var(--white)}
@@ -809,4 +824,3 @@ h2.cast-card-name{margin:0}
 :root{color-scheme:dark}
 .pkg-name,.case-quote blockquote{text-wrap:balance}
 .work-all{margin-top:clamp(2.5rem,4vw,3.5rem)}
-.pkg-vat{margin-top:1rem;font-size:.8125rem;color:var(--muted)}

@@ -387,6 +387,7 @@ collections:
               - { label: "Kurzbeschreibung (EN)", name: text_en, widget: string, required: false }
               - { label: "Leistungspunkte (DE)", name: points_de, widget: list, field: { label: "Punkt", name: point, widget: string }, hint: "3–4 kurze Punkte. Punkte mit [TODO: …] werden nicht angezeigt." }
               - { label: "Leistungspunkte (EN)", name: points_en, widget: list, required: false, field: { label: "Punkt", name: point, widget: string } }
+              - { label: "Hervorheben", name: highlight, widget: boolean, required: false, default: false, hint: "Hebt dieses Paket mit hellerer Karte und gefülltem Knopf hervor – am besten nur eines" }
               - { label: "Preis (DE)", name: price_de, widget: string, required: false, hint: "So wie er erscheinen soll, z. B. „ab 1.190 € / Monat“. Leer = Paket wird nicht angezeigt." }
               - { label: "Preis (EN)", name: price_en, widget: string, required: false, hint: "z. B. „from €1,190 / month“" }
           - { label: "Hinweis unter den Paketen (DE)", name: vatNote_de, widget: string, required: false, hint: "Klein unter den Paketen, z. B. „Alle Preise zzgl. MwSt.“" }

@@ -90,6 +90,14 @@ const trList = (obj, key, lang) => {
 };
 /* Preis: ausgeschriebener Preis je Sprache (z. B. „ab 1.190 € / Monat“); sonst nur die Zahl im Feld „price“ */
 const pkgPrice = (k, lang) => tr(k, "price", lang) ? esc(tr(k, "price", lang)) : filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", esc(String(k.price).replace(/€/g, "").trim())) : "";
+/* Preis in Teile zerlegen: kleines „ab/from“, große Summe, leises „/ Monat“ – wie im Kartenstil der Pakete */
+const pkgPriceParts = (k, lang) => {
+  const raw = tr(k, "price", lang) || (filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", String(k.price).replace(/€/g, "").trim()) : "");
+  const m = raw.match(/^\s*(ab|from|itibaren)?\s*(.+?)\s*(\/\s*.+)?$/i);
+  if (!m) return esc(raw);
+  return `${m[1] ? `<span class="pkg-price-pre">${esc(m[1])}</span> ` : ""}<span class="pkg-price-amount">${esc(m[2])}</span>${m[3] ? ` <span class="pkg-price-per">${esc(m[3])}</span>` : ""}`;
+};
+const CHECK_ICON = `<svg class="pkg-check" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="10" fill="currentColor"/><path d="M6 10.3l2.6 2.5L14 7.4" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const visiblePackages = (lang) => (PKG.items || []).filter((k) => tr(k, "name", lang) && pkgPrice(k, lang));
 
 /* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
@@ -434,12 +442,12 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
   <div class="wrap">
     <h2 class="h2" id="h-pkg">${esc(tr(PKG, "title", lang) || t.pkgTitle)}</h2>
     <ul class="pkg-grid">
-      ${visiblePackages(lang).map((k) => `<li class="pkg">
+      ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}">
         <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
         ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
-        ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
-        <p class="pkg-price">${pkgPrice(k, lang)}</p>
-        <a class="link-arrow" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
+        <p class="pkg-price">${pkgPriceParts(k, lang)}</p>
+        ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${CHECK_ICON}<span>${esc(x)}</span></li>`).join("")}</ul>` : ""}
+        <a class="pkg-cta" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
       </li>`).join("\n      ")}
     </ul>
     ${tr(PKG, "vatNote", lang) ? `<p class="pkg-vat">${esc(tr(PKG, "vatNote", lang))}</p>` : ""}
