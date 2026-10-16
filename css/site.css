@@ -808,3 +808,4 @@ h2.cast-card-name{margin:0}
 /* Dunkles Farbschema auch für native Elemente (Auswahlliste, Scrollleisten) */
 :root{color-scheme:dark}
 .pkg-name,.case-quote blockquote{text-wrap:balance}
+.work-all{margin-top:clamp(2.5rem,4vw,3.5rem)}

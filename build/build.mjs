@@ -378,7 +378,7 @@ function pageHome(lang) {
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
         ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
         <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
@@ -417,6 +417,16 @@ ${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section
     </ol>
     <p class="process-cta"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></p>
   </div>
+</section>` : ""}
+
+${PROJECTS.length ? `<section class="section work-feature" aria-labelledby="h-picks">
+  <div class="wrap head-row">
+    <h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang) || t.nav.work)}</h2>
+  </div>
+  <ul class="feature-list">
+    ${PROJECTS.slice(0, 3).map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
+  </ul>
+  <p class="wrap work-all"><a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a></p>
 </section>` : ""}
 
 ${visiblePackages(lang).length ? `<section class="section packages-home" aria-labelledby="h-pkg">
