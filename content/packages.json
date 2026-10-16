@@ -6,57 +6,68 @@
       "id": "social-starter",
       "name_de": "Social Starter",
       "name_en": "Social Starter",
+      "price_de": "ab 1.190 € / Monat",
+      "price_en": "from €1,190 / month",
       "text_de": "Reels & Fotos für einen Monat",
       "text_en": "Reels & photos for one month",
       "points_de": [
-        "[TODO: Leistungspunkt 1]",
-        "[TODO: Leistungspunkt 2]",
-        "[TODO: Leistungspunkt 3]"
+        "4 Reels pro Monat",
+        "10 bearbeitete Fotos",
+        "Ein Drehtermin vor Ort",
+        "Formate für Instagram & TikTok"
       ],
       "points_en": [
-        "[TODO: item 1]",
-        "[TODO: item 2]",
-        "[TODO: item 3]"
-      ],
-      "price": ""
+        "4 reels per month",
+        "10 edited photos",
+        "One on-site shoot",
+        "Formats for Instagram & TikTok"
+      ]
     },
     {
       "id": "werbeclip",
       "name_de": "Werbeclip",
       "name_en": "Commercial",
+      "price_de": "ab 2.490 €",
+      "price_en": "from €2,490",
       "text_de": "Ein Commercial von Konzept bis Schnitt",
-      "text_en": "One commercial from concept to edit",
+      "text_en": "One commercial from concept to final cut",
       "points_de": [
-        "[TODO: Leistungspunkt 1]",
-        "[TODO: Leistungspunkt 2]",
-        "[TODO: Leistungspunkt 3]"
+        "Konzept & Skript",
+        "Ein Drehtag",
+        "Schnitt, Farbe & Musik",
+        "Mehrere Schnittfassungen für Web, Social & Ads"
       ],
       "points_en": [
-        "[TODO: item 1]",
-        "[TODO: item 2]",
-        "[TODO: item 3]"
-      ],
-      "price": ""
+        "Concept & script",
+        "One shoot day",
+        "Editing, colour & music",
+        "Multiple cuts for web, social & ads"
+      ]
     },
     {
       "id": "brand-paket",
       "name_de": "Brand Paket",
-      "name_en": "Brand package",
+      "name_en": "Brand Package",
+      "price_de": "ab 1.290 €",
+      "price_en": "from €1,290",
       "text_de": "Logo, Look & Bildsprache",
       "text_en": "Logo, look & visual language",
       "points_de": [
-        "[TODO: Leistungspunkt 1]",
-        "[TODO: Leistungspunkt 2]",
-        "[TODO: Leistungspunkt 3]"
+        "Logo-System in mehreren Varianten",
+        "Farbpalette & Schriften",
+        "Kleiner Markenleitfaden",
+        "Zwei Korrekturrunden"
       ],
       "points_en": [
-        "[TODO: item 1]",
-        "[TODO: item 2]",
-        "[TODO: item 3]"
-      ],
-      "price": ""
+        "Logo system in several variations",
+        "Colour palette & typefaces",
+        "Compact brand guide",
+        "Two rounds of revisions"
+      ]
     }
   ],
   "note_de": "Größeres Projekt? Wir machen ein individuelles Angebot.",
-  "note_en": "Bigger project? We’ll put together an individual proposal."
+  "note_en": "Bigger project? We’ll put together an individual proposal.",
+  "vatNote_de": "Alle Preise zzgl. MwSt.",
+  "vatNote_en": "All prices plus VAT."
 }

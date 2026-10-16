@@ -377,7 +377,7 @@ collections:
           - label: "Pakete"
             name: items
             widget: list
-            summary: "{{name_de}} – ab {{price}}"
+            summary: "{{name_de}} – {{price_de}}"
             hint: "Ein Paket erscheint erst, wenn ein Preis eingetragen ist. Ohne sichtbares Paket bleibt der ganze Bereich ausgeblendet."
             fields:
               - { label: "Kürzel (für den Link zum Formular)", name: id, widget: string, pattern: ['^[a-z0-9-]+$', "Nur Kleinbuchstaben, Zahlen und Bindestriche"] }
@@ -387,7 +387,10 @@ collections:
               - { label: "Kurzbeschreibung (EN)", name: text_en, widget: string, required: false }
               - { label: "Leistungspunkte (DE)", name: points_de, widget: list, field: { label: "Punkt", name: point, widget: string }, hint: "3–4 kurze Punkte. Punkte mit [TODO: …] werden nicht angezeigt." }
               - { label: "Leistungspunkte (EN)", name: points_en, widget: list, required: false, field: { label: "Punkt", name: point, widget: string } }
-              - { label: "Preis ab (€)", name: price, widget: string, required: false, hint: "Nur die Zahl, z. B. 990 – erscheint als „ab 990 €“. Leer = Paket wird nicht angezeigt." }
+              - { label: "Preis (DE)", name: price_de, widget: string, required: false, hint: "So wie er erscheinen soll, z. B. „ab 1.190 € / Monat“. Leer = Paket wird nicht angezeigt." }
+              - { label: "Preis (EN)", name: price_en, widget: string, required: false, hint: "z. B. „from €1,190 / month“" }
+          - { label: "Hinweis unter den Paketen (DE)", name: vatNote_de, widget: string, required: false, hint: "Klein unter den Paketen, z. B. „Alle Preise zzgl. MwSt.“" }
+          - { label: "Hinweis unter den Paketen (EN)", name: vatNote_en, widget: string, required: false }
           - { label: "Satz unter den Paketen (DE)", name: note_de, widget: string, required: false }
           - { label: "Satz unter den Paketen (EN)", name: note_en, widget: string, required: false }
 
