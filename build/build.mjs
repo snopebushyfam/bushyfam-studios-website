@@ -11,11 +11,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { T, ROUTES, CATEGORIES, LANG_NAMES } from "./i18n.mjs";
+import { T, ROUTES, CATEGORIES, LANG_NAMES, PUBLIC_LANGS, DEFAULT_LANG, LEGACY_ROUTES } from "./i18n.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "dist");
-const LANGS = ["en", "de", "tr"];
+const LANGS = ["de", "en", "tr"];
 const ON_NETLIFY = process.env.NETLIFY === "true";
 const errors = [];
 
@@ -198,23 +198,32 @@ const hrefFor = (lang, key, slug) => {
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
 function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
-  const t = T[lang], others = LANGS.filter((l) => l !== lang);
+  const t = T[lang], others = PUBLIC_LANGS.filter((l) => l !== lang);
+  /* Eingefrorene Sprache (Türkisch): erreichbar, aber noindex, ohne canonical/hreflang */
+  const indexable = PUBLIC_LANGS.includes(lang);
   const site = (S.siteUrl || "").replace(/\/+$/, "");
   const here = hrefFor(lang, key, slug), hrefIn = (l) => (key === "home404" ? ROUTES[l].home : hrefFor(l, key, slug));
   const abs = (p) => site + p;
   /* Sprachauswahl: kleiner Knopf mit dem aktuellen Kürzel, darunter die Sprachen (funktioniert auch ohne JavaScript) */
   const langSwitch = (where) => `<details class="lang-switch lang-switch--${where}" data-lang-switch>
       <summary class="lang"><span aria-hidden="true">${lang.toUpperCase()}</span><span class="vh">${esc(t.switchTo)} – ${LANG_NAMES[lang]}</span></summary>
-      <ul class="lang-menu">${LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
+      <ul class="lang-menu">${PUBLIC_LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
     </details>`;
   const nav = [["work", t.nav.work], ...(CAST.length ? [["cast", t.nav.cast]] : []), ["services", t.nav.services], ["studio", t.nav.studio]];
   const navHref = (k) => (k === "services" ? ROUTES[lang].home + "#" + t.servicesId : ROUTES[lang][k]);
   const cur = (k) => (k === key || (k === "work" && key === "project") || (k === "cast" && key === "person") ? ' aria-current="page"' : "");
-  const ld = {
-    "@context": "https://schema.org", "@type": "ProfessionalService", name: S.brandName,
-    address: { "@type": "PostalAddress", addressLocality: tr(S, "location", lang), addressCountry: "DE" },
-    areaServed: "DE", sameAs: [S.instagramUrl].filter(Boolean), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}), ...(site ? { url: abs(ROUTES[lang].home) } : {})
-  };
+  /* Strukturierte Daten: LocalBusiness nur auf der Startseite (Adresse wie im Impressum) */
+  const A = S.address || {};
+  const ld = key === "home" ? {
+    "@context": "https://schema.org", "@type": "LocalBusiness", name: S.brandName,
+    ...(site ? { url: abs(ROUTES[lang].home), "@id": site + "/#business" } : {}),
+    ...(A.street ? { address: { "@type": "PostalAddress", streetAddress: A.street, postalCode: A.postalCode, addressLocality: A.city, addressCountry: A.country || "DE" } } : {}),
+    ...(S.email ? { email: S.email } : {}), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}),
+    ...(site && S.seo?.image ? { image: abs(url(S.seo.image)) } : {}),
+    sameAs: [S.instagramUrl].filter(Boolean), areaServed: { "@type": "Country", name: "Deutschland" },
+    hasOfferCatalog: { "@type": "OfferCatalog", name: tr(SERV, "title", lang) || t.nav.services,
+      itemListElement: (SERV.items || []).map((it) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: tr(it, "title", lang), description: tr(it, "text", lang) } })) }
+  } : null;
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -222,22 +231,22 @@ function layout({ lang, key, slug, title, description, body, scripts = [], ogIma
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${S.launch ? "" : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#000000">
-${site && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
-${LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
-<link rel="alternate" hreflang="x-default" href="${abs(hrefFor("en", key, slug))}">
+${!S.launch ? '<meta name="robots" content="noindex, nofollow">\n' : !indexable ? '<meta name="robots" content="noindex">\n' : ""}<meta name="theme-color" content="#000000">
+${site && indexable && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
+${PUBLIC_LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
+<link rel="alternate" hreflang="x-default" href="${abs(hrefIn(DEFAULT_LANG))}">
 ` : ""}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brandName)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${{ de: "de_DE", en: "en_GB", tr: "tr_TR" }[lang]}">
-${site && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
+${site && indexable && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
 ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n${imageSize(ogImage) ? `<meta property="og:image:width" content="${imageSize(ogImage).w}">\n<meta property="og:image:height" content="${imageSize(ogImage).h}">\n` : ""}` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
-<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
 </head>
 <body class="page-${key}">
 <a class="skip" href="#main">${esc(t.skip)}</a>
@@ -389,36 +398,6 @@ ${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section
       ${HOME.processSteps.filter((s) => tr(s, "title", lang)).map((s, i) => `<li><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
     </ol>
     <p class="process-cta"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></p>
-  </div>
-</section>` : ""}
-
-${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
-  <div class="wrap cast-head">
-    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
-    <p class="lead">${esc(t.castLead)}</p>
-  </div>
-  ${castRow(lang)}
-  <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
-</section>` : ""}
-${!CAST.length && featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
-  <div class="wrap head-row">
-    <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
-    <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
-  </div>
-  <ul class="feature-list">
-    ${featured.map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
-  </ul>
-</section>` : ""}
-
-${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
-  <div class="wrap objects-ctrl">
-    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
-  </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
   </div>
 </section>` : ""}
 
@@ -596,6 +575,7 @@ function pageCast(lang) {
   <p class="eyebrow">${esc(t.nav.cast)}</p>
   <h1 class="page-title" id="h-cast">${esc(t.nav.cast)}</h1>
   <p class="lead">${esc(t.castLead)}</p>
+  <p class="cast-note">${esc(t.castNote)}</p>
 </section>
 <section class="wrap work-list">
   ${roles.length > 1 ? `<div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
@@ -779,13 +759,12 @@ function page404() {
   const body = `
 <section class="wrap page-head" aria-labelledby="h-404">
   <p class="eyebrow">404</p>
-  <h1 class="page-title" id="h-404">${esc(T.en.notFound)}</h1>
-  <p class="lead">${esc(T.en.notFoundText)}</p>
-  <p class="lead" lang="de">${esc(T.de.notFound)} – ${esc(T.de.notFoundText)}</p>
-  <p class="lead" lang="tr">${esc(T.tr.notFound)} – ${esc(T.tr.notFoundText)}</p>
-  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.en.home}">${esc(T.en.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.de.home}" hreflang="de" lang="de">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.tr.home}" hreflang="tr" lang="tr">${esc(T.tr.backHome)}</a></div>
+  <h1 class="page-title" id="h-404">${esc(T.de.notFound)}</h1>
+  <p class="lead">${esc(T.de.notFoundText)}</p>
+  <p class="lead" lang="en">${esc(T.en.notFound)} – ${esc(T.en.notFoundText)}</p>
+  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.de.home}">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.en.home}" hreflang="en" lang="en">${esc(T.en.backHome)}</a></div>
 </section>`;
-  return layout({ lang: "en", key: "home404", title: `404 – ${S.brandName}`, description: T.en.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
+  return layout({ lang: "de", key: "home404", title: `404 – ${S.brandName}`, description: T.de.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
 }
 
 /* ---------- Schreiben ---------- */
@@ -813,6 +792,7 @@ for (const lang of LANGS) {
   write(R.thanks, pageThanks(lang)); unlisted.add(R.thanks);
   write(R.imprint, pageLegal(lang, "imprint"));
   write(R.privacy, pageLegal(lang, "privacy"));
+  if (!PUBLIC_LANGS.includes(lang)) for (const r of written) if (r.startsWith(R.home)) unlisted.add(r);
 }
 write("/404.html", page404());
 
@@ -821,6 +801,25 @@ for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), pa
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
 for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
+
+// 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).
+// Jede alte Seite zeigt auf dieselbe Seite in der neuen Struktur; Unterseiten (Projekte, Personen) per :splat.
+{
+  const lines = ["# Automatisch erzeugt von build/build.mjs – frühere Adressen → neue Struktur (Deutsch an der Wurzel, Englisch unter /en/)"];
+  for (const lang of ["en", "de"]) {
+    const covered = [];
+    for (const [k, from] of Object.entries(LEGACY_ROUTES[lang]).sort((a, b) => a[1].length - b[1].length)) {
+      const to = ROUTES[lang][k];
+      if (!to || from === to) continue;
+      // Unterseite einer schon weitergeleiteten Adresse mit gleichem Ziel-Muster (z. B. /de/kontakt/ unter /de/*): keine eigene Regel nötig
+      if (covered.some(([f, t2]) => from.startsWith(f) && to === t2 + from.slice(f.length))) continue;
+      covered.push([from, to]);
+      const bare = from.replace(/\/$/, "");
+      lines.push(`${bare}  ${to}  301`, `${from}*  ${to}:splat  301`);
+    }
+  }
+  fs.writeFileSync(path.join(OUT, "_redirects"), lines.join("\n") + "\n");
+}
 
 // robots.txt und sitemap.xml
 const site = (S.siteUrl || "").replace(/\/+$/, "");

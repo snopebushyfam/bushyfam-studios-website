@@ -8,6 +8,12 @@
   "reach_de": "für Unternehmen in ganz Deutschland",
   "reach_en": "working with businesses across Germany",
   "reach_tr": "Almanya genelinde ve uluslararası projeler",
+  "address": {
+    "street": "Köln-Aachener Str. 212",
+    "postalCode": "50127",
+    "city": "Bergheim",
+    "country": "DE"
+  },
   "email": "hello@bushyfam.studio",
   "whatsapp": "+49 1514 4930658",
   "instagramUrl": "https://www.instagram.com/bushyfamstudios/",

@@ -2,12 +2,19 @@
  * Feste Oberflächentexte (Navigation, Buttons, Formular) und Adressen je Sprache.
  * Inhalte wie Projekte, Leistungen und Studio-Texte kommen aus content/ (Admin).
  */
-// Englisch ist die Hauptsprache (Wurzel "/"), Deutsch liegt unter "/de/".
-export const DEFAULT_LANG = "en";
+// Deutsch ist die Hauptsprache (Wurzel "/"), Englisch liegt unter "/en/".
+// Türkisch (/tr/) ist eingefroren: erreichbar, aber noindex, nicht in Sitemap und Sprachwahl.
+export const DEFAULT_LANG = "de";
+export const PUBLIC_LANGS = ["de", "en"];
 export const ROUTES = {
-  en: { home: "/", work: "/work/", project: "/work/", cast: "/cast/", person: "/cast/", studio: "/studio/", contact: "/contact/", thanks: "/contact/thanks/", imprint: "/imprint/", privacy: "/privacy/" },
-  de: { home: "/de/", work: "/de/arbeiten/", project: "/de/arbeiten/", cast: "/de/besetzung/", person: "/de/besetzung/", studio: "/de/studio/", contact: "/de/kontakt/", thanks: "/de/kontakt/danke/", imprint: "/de/impressum/", privacy: "/de/datenschutz/" },
+  en: { home: "/en/", work: "/en/work/", project: "/en/work/", cast: "/en/cast/", person: "/en/cast/", studio: "/en/studio/", contact: "/en/contact/", thanks: "/en/contact/thanks/", imprint: "/en/imprint/", privacy: "/en/privacy/" },
+  de: { home: "/", work: "/arbeiten/", project: "/arbeiten/", cast: "/besetzung/", person: "/besetzung/", studio: "/studio/", contact: "/kontakt/", thanks: "/kontakt/danke/", imprint: "/impressum/", privacy: "/datenschutz/" },
   tr: { home: "/tr/", work: "/tr/isler/", project: "/tr/isler/", cast: "/tr/kadro/", person: "/tr/kadro/", studio: "/tr/studyo/", contact: "/tr/iletisim/", thanks: "/tr/iletisim/tesekkurler/", imprint: "/tr/kunye/", privacy: "/tr/gizlilik/" }
+};
+/* Frühere Adressen (bis zur Umstellung auf Deutsch als Hauptsprache) – daraus entstehen die 301-Weiterleitungen */
+export const LEGACY_ROUTES = {
+  en: { work: "/work/", cast: "/cast/", contact: "/contact/", thanks: "/contact/thanks/", imprint: "/imprint/", privacy: "/privacy/" },
+  de: { home: "/de/", work: "/de/arbeiten/", cast: "/de/besetzung/", studio: "/de/studio/", contact: "/de/kontakt/", thanks: "/de/kontakt/danke/", imprint: "/de/impressum/", privacy: "/de/datenschutz/" }
 };
 /* Sprachauswahl: Kürzel und Name in der jeweiligen Sprache */
 export const LANG_NAMES = { en: "English", de: "Deutsch", tr: "Türkçe" };
@@ -29,7 +36,7 @@ export const T = {
     seeWork: "Arbeiten ansehen", allWork: "Alle Arbeiten", seeAllWork: "Alle Arbeiten ansehen", moreAbout: "Mehr über Taha",
     film: "Film", play: "Abspielen", withSound: "mit Ton", noSound: "ohne Ton", media: "Bilder und Filme",
     portfolio: "Portfolio", workLead: "Werbeclips, Fotografie und Markengestaltung für Unternehmen.",
-    castHomeTitle: "Models & Talents", castLead: "Idee, Dreh – und die passenden Gesichter dazu. Models und Talents, mit denen BushyFam Studios zusammenarbeitet.", exploreCast: "Besetzung ansehen",
+    castHomeTitle: "Models & Talents", castLead: "Idee, Dreh – und die passenden Gesichter dazu. Models und Talents, mit denen BushyFam Studios zusammenarbeitet.", exploreCast: "Besetzung ansehen", castNote: "Die Talente werden für Produktionen von BushyFam Studios besetzt.",
     objectsTitle: "Objekte in Bewegung", objectsLead: "Produkt- und Food-Fotografie, freigestellt vor Schwarz.", pauseMotion: "Bewegung pausieren", resumeMotion: "Bewegung fortsetzen",
     viewCase: "Case ansehen", discoverStory: "Die Geschichte lesen", allProjects: "Alle Projekte",
     chooseRole: "Rolle wählen", castStatus: "{n} Personen in {cat}", castStatusOne: "1 Person in {cat}",
@@ -60,7 +67,7 @@ export const T = {
     seeWork: "See the work", allWork: "All work", seeAllWork: "See all work", moreAbout: "More about Taha",
     film: "Film", play: "Play", withSound: "with sound", noSound: "no sound", media: "Images and films",
     portfolio: "Portfolio", workLead: "Commercials, photography and brand design for businesses.",
-    castHomeTitle: "Models & Actors", castLead: "The idea, the shoot – and the right faces for it. Models and talents BushyFam Studios works with.", exploreCast: "Explore the cast",
+    castHomeTitle: "Models & Actors", castLead: "The idea, the shoot – and the right faces for it. Models and talents BushyFam Studios works with.", exploreCast: "Explore the cast", castNote: "The talent is cast for productions by BushyFam Studios.",
     objectsTitle: "Objects in Motion", objectsLead: "Product and food photography, isolated against black.", pauseMotion: "Pause motion", resumeMotion: "Resume motion",
     viewCase: "View case", discoverStory: "Discover the story", allProjects: "All projects",
     chooseRole: "Choose a role", castStatus: "{n} people in {cat}", castStatusOne: "1 person in {cat}",
@@ -91,7 +98,7 @@ export const T = {
     seeWork: "İşleri gör", allWork: "Tüm işler", seeAllWork: "Tüm işleri gör", moreAbout: "Taha hakkında daha fazlası",
     film: "Film", play: "Oynat", withSound: "sesli", noSound: "sessiz", media: "Görseller ve filmler",
     portfolio: "Portfolyo", workLead: "İşletmeler için reklam filmleri, fotoğraf ve marka tasarımı.",
-    castHomeTitle: "Modeller & Oyuncular", castLead: "Fikir, çekim – ve ona uygun yüzler. BushyFam Studios’un birlikte çalıştığı modeller ve yetenekler.", exploreCast: "Kadroyu keşfet",
+    castHomeTitle: "Modeller & Oyuncular", castLead: "Fikir, çekim – ve ona uygun yüzler. BushyFam Studios’un birlikte çalıştığı modeller ve yetenekler.", exploreCast: "Kadroyu keşfet", castNote: "Yetenekler BushyFam Studios prodüksiyonları için seçilir.",
     objectsTitle: "Hareketli Objeler", objectsLead: "Siyah fon üzerinde dekupe ürün ve yemek fotoğrafçılığı.", pauseMotion: "Hareketi durdur", resumeMotion: "Hareketi sürdür",
     viewCase: "Projeyi gör", discoverStory: "Hikâyeyi keşfet", allProjects: "Tüm projeler",
     chooseRole: "Rol seç", castStatus: "{cat} içinde {n} kişi", castStatusOne: "{cat} içinde 1 kişi",

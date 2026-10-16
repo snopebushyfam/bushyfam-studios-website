@@ -102,7 +102,7 @@ collections:
 
   # ---------------------------------------------------------------- Objects in Motion
   - name: "objekte"
-    label: "Objects in Motion (Produktgalerie)"
+    label: "Objects in Motion (derzeit nicht auf der Startseite)"
     label_singular: "Objekt"
     folder: "content/objects"
     create: true
@@ -219,6 +219,16 @@ collections:
           - { label: "WhatsApp-Nummer", name: whatsapp, widget: string, required: false, hint: "Mit Ländervorwahl, z. B. +49 1514 4930658 – leer lassen, um WhatsApp auszublenden" }
           - { label: "Instagram-Adresse", name: instagramUrl, widget: string, required: false }
           - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
+          - label: "Anschrift (wie im Impressum)"
+            name: address
+            widget: object
+            required: false
+            hint: "Für die strukturierten Daten (Google). Bei Umzug hier UND im Impressum ändern."
+            fields:
+              - { label: "Straße und Hausnummer", name: street, widget: string }
+              - { label: "PLZ", name: postalCode, widget: string }
+              - { label: "Ort", name: city, widget: string }
+              - { label: "Land (Kürzel)", name: country, widget: string, default: "DE" }
           - label: "Suchmaschinen-Text"
             name: seo
             widget: object
