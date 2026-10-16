@@ -35,8 +35,11 @@ export const esc = (v) => String(v ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 /** Feld in der gewünschten Sprache, sonst Deutsch als Rückfall */
 /* Fehlt ein Text in der gewählten Sprache: Türkisch fällt auf Englisch zurück, sonst auf Deutsch */
-const tr = (obj, key, lang) => (obj && (obj[`${key}_${lang}`] || (lang === "tr" && obj[`${key}_en`]) || obj[`${key}_de`])) || "";
-const pick = (obj, lang) => (obj && (obj[lang] || (lang === "tr" && obj.en) || obj.de)) || "";
+/* Platzhalter „[TODO: …]“ gelten als leer: Sie erscheinen nie auf der Website, der Abschnitt wird ausgeblendet */
+const isTodo = (v) => typeof v === "string" && /\[\s*TODO\b/i.test(v);
+const filled = (v) => (v && !isTodo(v) ? v : "");
+const tr = (obj, key, lang) => (obj && (filled(obj[`${key}_${lang}`]) || (lang === "tr" && filled(obj[`${key}_en`])) || filled(obj[`${key}_de`]))) || "";
+const pick = (obj, lang) => (obj && (filled(obj[lang]) || (lang === "tr" && filled(obj.en)) || filled(obj.de))) || "";
 const url = (p) => (!p ? "" : /^https?:\/\//.test(p) ? p : "/" + String(p).replace(/^\/+/, ""));
 const assetExists = (p) => !p || /^https?:\/\//.test(p) || fs.existsSync(path.join(ROOT, url(p)));
 const paras = (text) => String(text || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
@@ -74,6 +77,15 @@ function img(src, alt, { sizes = "100vw", cls = "", lazy = true, widths = [480, 
   }
   return `<img${cls ? ` class="${cls}"` : ""} src="${esc(s)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
 }
+/* Pakete: nur mit Namen UND Preis sichtbar; Leistungspunkte mit [TODO] fallen weg */
+const trList = (obj, key, lang) => {
+  const pickList = (k) => (Array.isArray(obj[k]) ? obj[k].map(filled).filter(Boolean) : []);
+  const own = pickList(`${key}_${lang}`);
+  return own.length ? own : (lang === "tr" && pickList(`${key}_en`).length ? pickList(`${key}_en`) : pickList(`${key}_de`));
+};
+const visiblePackages = (lang) => (PKG.items || []).filter((k) => tr(k, "name", lang) && filled(String(k.price ?? "").trim()));
+const priceLabel = (price, lang) => T[lang].priceFrom.replace("{p}", esc(String(price).replace(/€/g, "").trim()));
+
 /* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
 function svcCard(s, i, lang) {
   const id = `svc-more-${i + 1}`, alt = tr(s, "imageAlt", lang);
@@ -115,6 +127,7 @@ const WA_DIGITS = String(S.whatsapp || "").replace(/\D/g, "").replace(/^00/, "")
 const WA_URL = WA_DIGITS ? `https://wa.me/${WA_DIGITS}` : "";
 const HOME = readJson("content/home.json");
 const SERV = readJson("content/services.json");
+const PKG = fs.existsSync(path.join(ROOT, "content/packages.json")) ? readJson("content/packages.json") : { items: [] };
 const STU = readJson("content/studio.json");
 const CON = readJson("content/contact.json");
 const LEGAL = readJson("content/legal.json");
@@ -401,6 +414,22 @@ ${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section
   </div>
 </section>` : ""}
 
+${visiblePackages(lang).length ? `<section class="section packages-home" aria-labelledby="h-pkg">
+  <div class="wrap">
+    <h2 class="h2" id="h-pkg">${esc(tr(PKG, "title", lang) || t.pkgTitle)}</h2>
+    <ul class="pkg-grid">
+      ${visiblePackages(lang).map((k) => `<li class="pkg">
+        <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
+        ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
+        ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+        <p class="pkg-price">${priceLabel(k.price, lang)}</p>
+        <a class="link-arrow" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
+      </li>`).join("\n      ")}
+    </ul>
+    <div class="pkg-foot">${tr(PKG, "note", lang) ? `<p>${esc(tr(PKG, "note", lang))}</p>` : ""}<a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+  </div>
+</section>` : ""}
+
 ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   <div class="wrap">
     <div class="head-row"><h2 class="h2" id="h-reel">${esc(tr(SR, "title", lang))}${SR.duration ? ` <span class="muted">${esc(SR.duration)}</span>` : ""}</h2></div>
@@ -525,7 +554,14 @@ function pageProject(p, lang, i) {
   </section>`;
   }).join("\n  ");
 
-  const facts = [[t.factClient, p.client], [t.factYear, p.year], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  const facts = [[t.factClient, filled(p.client)], [t.factIndustry, tr(p, "industry", lang)], [t.factYear, filled(p.year)], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  /* Case-Aufbau: Aufgabe – Lösung – Ergebnis (+ optional Kundenzitat). Leere oder [TODO]-Felder werden ausgeblendet;
+     ohne Aufgabe und Lösung erscheint wie bisher der ausführliche Text. */
+  const blocks = [["task", t.caseTask], ["solution", t.caseSolution], ["result", t.caseResult]].map(([k, label]) => [label, paras(tr(p, k, lang))]).filter(([, ps]) => ps.length);
+  const Q = p.quote || {};
+  const quote = tr(Q, "text", lang) && filled(Q.name) ? `<figure class="case-quote"><blockquote><p>${esc(tr(Q, "text", lang))}</p></blockquote><figcaption>${esc(Q.name)}${tr(Q, "role", lang) ? `, ${esc(tr(Q, "role", lang))}` : ""}</figcaption></figure>` : "";
+  const caseHtml = blocks.length ? `<div class="case-blocks">${blocks.map(([label, ps]) => `<section class="case-block"><h2 class="case-label">${esc(label)}</h2>${ps.map((x) => `<p>${esc(x)}</p>`).join("")}</section>`).join("")}${quote}</div>`
+    : `${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}${quote}`;
   const nextSame = next && next.client && next.client === tr(next, "title", lang);
   const body = `
 <article class="project">
@@ -536,7 +572,7 @@ function pageProject(p, lang, i) {
   </header>
   <div class="wrap project-intro">
     ${facts.length ? `<dl class="facts">${facts.map(([k, v, w]) => `<div${w ? ` class="fact--${w}"` : ""}><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-    ${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
+    ${caseHtml}
   </div>
   ${chapterHtml}
   ${next && next.slug !== p.slug ? `<nav class="project-next" aria-label="${esc(t.moreWork)}">
@@ -709,6 +745,10 @@ function pageContact(lang) {
     <fieldset class="field"><legend>${esc(f.services)} <span class="opt">(${esc(f.optional)})</span></legend><div class="chips">
       ${(CON.options || []).map((o) => `<label class="chip"><input type="checkbox" name="leistungen" value="${esc(o.de)}"${o.cast ? " data-cast-option" : ""}><span class="box" aria-hidden="true"></span>${esc(pick(o, lang))}</label>`).join("\n      ")}
     </div></fieldset>
+    ${visiblePackages(lang).length ? `<div class="field"><label for="f-paket">${esc(f.package)} <span class="opt">(${esc(f.optional)})</span></label><select id="f-paket" name="paket">
+      <option value="">${esc(f.packageNone)}</option>
+      ${visiblePackages(lang).map((k) => `<option value="${esc(tr(k, "name", "de"))}" data-id="${esc(k.id || "")}">${esc(tr(k, "name", lang))} – ${priceLabel(k.price, lang)}</option>`).join("")}
+    </select></div>` : ""}
     <div class="field field--talent" data-talent-field hidden><label for="f-talent">${esc(f.talent)} <span class="opt">(${esc(f.optional)})</span></label><input id="f-talent" name="talent" type="text" autocomplete="off" aria-describedby="e-talent"><p class="err" id="e-talent" hidden></p></div>
     ${field("nachricht", f.message, "textarea", true)}
     <div class="field-row">${field("zeitraum", f.timeframe, "text", false)}${field("budget", f.budget, "text", false)}</div>

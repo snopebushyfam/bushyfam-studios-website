@@ -1,0 +1,62 @@
+{
+  "title_de": "Pakete",
+  "title_en": "Packages",
+  "items": [
+    {
+      "id": "social-starter",
+      "name_de": "Social Starter",
+      "name_en": "Social Starter",
+      "text_de": "Reels & Fotos für einen Monat",
+      "text_en": "Reels & photos for one month",
+      "points_de": [
+        "[TODO: Leistungspunkt 1]",
+        "[TODO: Leistungspunkt 2]",
+        "[TODO: Leistungspunkt 3]"
+      ],
+      "points_en": [
+        "[TODO: item 1]",
+        "[TODO: item 2]",
+        "[TODO: item 3]"
+      ],
+      "price": ""
+    },
+    {
+      "id": "werbeclip",
+      "name_de": "Werbeclip",
+      "name_en": "Commercial",
+      "text_de": "Ein Commercial von Konzept bis Schnitt",
+      "text_en": "One commercial from concept to edit",
+      "points_de": [
+        "[TODO: Leistungspunkt 1]",
+        "[TODO: Leistungspunkt 2]",
+        "[TODO: Leistungspunkt 3]"
+      ],
+      "points_en": [
+        "[TODO: item 1]",
+        "[TODO: item 2]",
+        "[TODO: item 3]"
+      ],
+      "price": ""
+    },
+    {
+      "id": "brand-paket",
+      "name_de": "Brand Paket",
+      "name_en": "Brand package",
+      "text_de": "Logo, Look & Bildsprache",
+      "text_en": "Logo, look & visual language",
+      "points_de": [
+        "[TODO: Leistungspunkt 1]",
+        "[TODO: Leistungspunkt 2]",
+        "[TODO: Leistungspunkt 3]"
+      ],
+      "points_en": [
+        "[TODO: item 1]",
+        "[TODO: item 2]",
+        "[TODO: item 3]"
+      ],
+      "price": ""
+    }
+  ],
+  "note_de": "Größeres Projekt? Wir machen ein individuelles Angebot.",
+  "note_en": "Bigger project? We’ll put together an individual proposal."
+}

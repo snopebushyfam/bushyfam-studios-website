@@ -17,6 +17,22 @@
   "body_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
   "body_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
   "body_tr": "Tek seferlik bir iş değil, süregelen bir iş birliği. Filmler lounge’da ve barda çekiliyor, dikey ve sosyal medyaya uygun izlenmek üzere kurgulanıyor. Fotoğraflar her içeceği ve tatlıyı başlı başına bir ürün olarak ele alıyor – siyah fon üzerinde dekupe.",
+  "industry_de": "[TODO: Branche, z. B. Gastronomie]",
+  "industry_en": "[TODO: industry]",
+  "task_de": "[TODO: Was war die Aufgabe bzw. das Ziel des Kunden?]",
+  "task_en": "[TODO: What was the brief?]",
+  "solution_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
+  "solution_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
+  "solution_tr": "Tek seferlik bir iş değil, süregelen bir iş birliği. Filmler lounge’da ve barda çekiliyor, dikey ve sosyal medyaya uygun izlenmek üzere kurgulanıyor. Fotoğraflar her içeceği ve tatlıyı başlı başına bir ürün olarak ele alıyor – siyah fon üzerinde dekupe.",
+  "result_de": "[TODO: Ergebnis, z. B. Reichweite, Anfragen, Einsatz – nur echte Angaben]",
+  "result_en": "[TODO: Result – real figures only]",
+  "quote": {
+    "text_de": "[TODO: Kundenzitat (optional)]",
+    "text_en": "[TODO: Client quote (optional)]",
+    "name": "[TODO: Name]",
+    "role_de": "[TODO: Rolle]",
+    "role_en": "[TODO: Role]"
+  },
   "cover": {
     "src": "/assets/work/masons/masons-cover-einschenken.jpg",
     "alt_de": "Standbild aus dem MASON’S-Drink-Clip: Ein gelber Drink fließt in ein kopfüber gehaltenes Martiniglas, vor rotem Licht",

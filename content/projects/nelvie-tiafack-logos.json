@@ -17,6 +17,22 @@
   "body_de": "NEV steht für „Never Ending Victory“ und greift zugleich seinen Vornamen auf. Die 3 ist seine Lieblingszahl – auch die drei Balken des E nehmen diese Zahl auf.\n\nDie Pyramide war ein ausdrücklicher Gestaltungswunsch.",
   "body_en": "NEV stands for “Never Ending Victory” and also refers to his first name. 3 is his favourite number – the three bars of the E pick up this number as well.\n\nThe pyramid was an explicit design request.",
   "body_tr": "NEV, “Never Ending Victory” anlamına geliyor ve aynı zamanda onun adına gönderme yapıyor. 3 onun en sevdiği sayı – E harfinin üç çizgisi de bu sayıyı tekrarlıyor.\n\nPiramit, açıkça istenen bir tasarım öğesiydi.",
+  "industry_de": "[TODO: Branche bzw. Tätigkeit des Kunden]",
+  "industry_en": "[TODO: industry]",
+  "task_de": "[TODO: Was war die Aufgabe bzw. das Ziel des Kunden?]",
+  "task_en": "[TODO: What was the brief?]",
+  "solution_de": "NEV steht für „Never Ending Victory“ und greift zugleich seinen Vornamen auf. Die 3 ist seine Lieblingszahl – auch die drei Balken des E nehmen diese Zahl auf.\n\nDie Pyramide war ein ausdrücklicher Gestaltungswunsch.",
+  "solution_en": "NEV stands for “Never Ending Victory” and also refers to his first name. 3 is his favourite number – the three bars of the E pick up this number as well.\n\nThe pyramid was an explicit design request.",
+  "solution_tr": "NEV, “Never Ending Victory” anlamına geliyor ve aynı zamanda onun adına gönderme yapıyor. 3 onun en sevdiği sayı – E harfinin üç çizgisi de bu sayıyı tekrarlıyor.\n\nPiramit, açıkça istenen bir tasarım öğesiydi.",
+  "result_de": "[TODO: Ergebnis, z. B. Reichweite, Anfragen, Einsatz – nur echte Angaben]",
+  "result_en": "[TODO: Result – real figures only]",
+  "quote": {
+    "text_de": "[TODO: Kundenzitat (optional)]",
+    "text_en": "[TODO: Client quote (optional)]",
+    "name": "[TODO: Name]",
+    "role_de": "[TODO: Rolle]",
+    "role_en": "[TODO: Role]"
+  },
   "cover": {
     "src": "/assets/work/nelvie-tiafack/nev3-logo-gelb.png",
     "alt_de": "Logo NEV mit einer 3 und einer Pyramide in einem schwarzen Rahmen auf gelbem Grund",
