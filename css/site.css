@@ -774,10 +774,29 @@ h2.cast-card-name{margin:0}
 @media (min-width:900px){.lang-switch--header{display:none}}
 .nav ul.lang-menu{display:grid;gap:0}
 
-/* „So läuft’s“: drei Schritte im Stil der Ablauf-Liste auf der Studio-Seite */
-.process-home .h2{margin-bottom:clamp(1.5rem,3vw,2.5rem)}
-.process-cta{margin-top:clamp(1.75rem,3vw,2.5rem)}
-@media (min-width:900px){.process-steps{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:2.5rem}}
+/* „So läuft’s“ (nach „How It Works 5“): nummerierte Schritt-Karten, verbunden durch eine Linie,
+   große Ziffern, darunter ein auffälliger Knopf. Gleiche Kartensprache wie die Pakete. */
+.process-home .h2{margin-bottom:clamp(2rem,4vw,3.5rem)}
+.hiw-steps{position:relative;display:grid;gap:1rem;margin:0;padding:0;list-style:none;counter-reset:none}
+.hiw-steps::before{content:"";position:absolute;left:calc(clamp(1.5rem,3vw,2.25rem) + 1.4rem);top:2rem;bottom:2rem;width:1px;background:linear-gradient(var(--line-strong),var(--line-strong)) ;z-index:0}
+.hiw-step{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;column-gap:1.25rem;row-gap:.35rem;align-items:start;align-content:start;padding:clamp(1.5rem,3vw,2.25rem);border:1px solid var(--line-strong);border-radius:20px;background:linear-gradient(180deg,#141416 0%,#0b0b0c 100%)}
+.hiw-no{grid-row:span 2;display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--white);color:#000;font-size:.9375rem;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 0 0 6px #0b0b0c}
+.hiw-title{font-size:clamp(1.375rem,1.15rem + .8vw,1.75rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;padding-top:.35rem}
+.hiw-text{color:var(--muted);line-height:1.5}
+.hiw-cta{margin-top:clamp(2rem,4vw,3rem)}
+.hiw-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;min-height:56px;padding:.8rem 1.75rem;border-radius:999px;background:var(--white);color:#000;font-weight:600;font-size:1.0625rem;text-decoration:none;transition:background-color .25s,transform .25s}
+.hiw-btn:hover{background:#ddddd8}
+.hiw-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+@media (min-width:900px){
+  .hiw-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem}
+  .hiw-steps::before{left:2rem;right:2rem;top:calc(clamp(1.5rem,3vw,2.25rem) + 1.4rem);bottom:auto;width:auto;height:1px}
+  .hiw-step{grid-template-columns:1fr;row-gap:.6rem}
+  .hiw-no{grid-row:auto;margin-bottom:1rem}
+  .hiw-title{padding-top:0}
+  .hiw-cta{display:flex;justify-content:center}
+  .hiw-btn{display:inline-flex;min-width:16rem}
+}
+@media (prefers-reduced-motion:reduce){.hiw-btn{transition:none}}
 /* Lange, beschreibende Headline (Leistung + Ort): kleiner gesetzt, damit sie in wenigen Zeilen steht */
 .hero-title--statement.hero-title--long{max-width:19ch;font-size:clamp(1.875rem,.9rem + 4.4vw,2.75rem);line-height:1;letter-spacing:-.035em}
 @media (min-width:900px){.hero-title--statement.hero-title--long{max-width:20ch;font-size:clamp(3rem,.8rem + 3.7vw,5.5rem)}}

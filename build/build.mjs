@@ -421,10 +421,14 @@ function pageHome(lang) {
 ${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section class="section process-home" aria-labelledby="h-process">
   <div class="wrap">
     <h2 class="h2" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
-    <ol class="steps process-steps">
-      ${HOME.processSteps.filter((s) => tr(s, "title", lang)).map((s, i) => `<li><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span><h3>${esc(tr(s, "title", lang))}</h3><p>${esc(tr(s, "text", lang))}</p></li>`).join("\n      ")}
+    <ol class="hiw-steps">
+      ${HOME.processSteps.filter((s) => tr(s, "title", lang)).map((s, i) => `<li class="hiw-step">
+        <span class="hiw-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+        <h3 class="hiw-title">${esc(tr(s, "title", lang))}</h3>
+        <p class="hiw-text">${esc(tr(s, "text", lang))}</p>
+      </li>`).join("\n      ")}
     </ol>
-    <p class="process-cta"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></p>
+    <p class="hiw-cta"><a class="hiw-btn" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a></p>
   </div>
 </section>` : ""}
 
