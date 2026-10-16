@@ -72,10 +72,15 @@ function imageSize(p) {
 function img(src, alt, { sizes = "100vw", cls = "", lazy = true, widths = [480, 960, 1600] } = {}) {
   const s = url(src), dim = imageSize(src) || {};
   let srcset = "";
-  if (ON_NETLIFY && s.startsWith("/assets/uploads/") && /\.(jpe?g|png|webp)$/i.test(s)) {
-    srcset = ` srcset="${widths.map((w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w} ${w}w`).join(", ")}" sizes="${sizes}"`;
+  /* Auf Netlify: JPG/PNG (und hochgeladene WebP) laufen über das Image CDN – passende Breite, als WebP.
+     Die Originaldateien bleiben unverändert im Repository; künftige Uploads werden automatisch genauso ausgeliefert. */
+  let out = s;
+  if (ON_NETLIFY && s.startsWith("/assets/") && (/\.(jpe?g|png)$/i.test(s) || (s.startsWith("/assets/uploads/") && /\.webp$/i.test(s)))) {
+    const cdn = (w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w}&amp;fm=webp`;
+    srcset = ` srcset="${widths.map((w) => `${cdn(w)} ${w}w`).join(", ")}" sizes="${sizes}"`;
+    out = cdn(960);
   }
-  return `<img${cls ? ` class="${cls}"` : ""} src="${esc(s)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
+  return `<img${cls ? ` class="${cls}"` : ""} src="${out.startsWith("/.netlify/") ? out : esc(out)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
 }
 /* Pakete: nur mit Namen UND Preis sichtbar; Leistungspunkte mit [TODO] fallen weg */
 const trList = (obj, key, lang) => {
