@@ -642,13 +642,13 @@ function pageCast(lang) {
   <p class="lead">${esc(t.castLead)}</p>
   <p class="cast-note">${esc(t.castNote)}</p>
 </section>
-<section class="wrap work-list">
-  ${roles.length > 1 ? `<div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
+${roles.length > 1 ? `<section class="wrap work-list">
+  <div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
     <button class="filter" type="button" data-cat="all" aria-pressed="true">${esc(t.all)}<span class="n">${CAST.length}</span></button>
     ${roles.map((r) => `<button class="filter" type="button" data-cat="${esc(r.id)}" aria-pressed="false">${esc(r.label)}<span class="n">${r.n}</span></button>`).join("\n    ")}
   </div>
-  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>` : ""}
-</section>
+  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>
+</section>` : ""}
 <section class="cast-page">
   ${castRow(lang, { page: true })}
 </section>
