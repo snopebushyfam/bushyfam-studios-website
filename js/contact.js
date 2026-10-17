@@ -37,6 +37,12 @@
       if (castOption) castOption.checked = true;
     }
   } catch (e) {}
+  // Paket aus „Paket anfragen“ (?paket=social-starter) vorauswählen
+  try {
+    var pk = new URLSearchParams(location.search).get("paket");
+    var sel = document.getElementById("f-paket");
+    if (pk && sel) [].forEach.call(sel.options, function (o) { if (o.getAttribute("data-id") === pk) sel.value = o.value; });
+  } catch (e) {}
   if (castOption) castOption.addEventListener("change", function () {
     syncTalent();
     if (castOption.checked && talentInput && !talentInput.value) talentInput.focus();

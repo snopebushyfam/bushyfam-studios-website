@@ -1,0 +1,133 @@
+{
+  "title_de": "Pakete",
+  "title_en": "Packages",
+  "items": [
+    {
+      "id": "social-starter",
+      "name_de": "Social Starter",
+      "name_en": "Social Starter",
+      "price_de": "ab 1.190 € / Monat",
+      "price_en": "from €1,190 / month",
+      "text_de": "Reels & Fotos für einen Monat",
+      "text_en": "Reels & photos for one month",
+      "points_de": [
+        "4 Reels pro Monat",
+        "10 bearbeitete Fotos",
+        "Ein Drehtermin vor Ort",
+        "Formate für Instagram & TikTok"
+      ],
+      "points_en": [
+        "4 reels per month",
+        "10 edited photos",
+        "One on-site shoot",
+        "Formats for Instagram & TikTok"
+      ],
+      "highlight": false
+    },
+    {
+      "id": "werbeclip",
+      "name_de": "Werbeclip",
+      "name_en": "Commercial",
+      "price_de": "ab 2.490 €",
+      "price_en": "from €2,490",
+      "text_de": "Ein Commercial von Konzept bis Schnitt",
+      "text_en": "One commercial from concept to final cut",
+      "points_de": [
+        "Konzept & Skript",
+        "Ein Drehtag",
+        "Schnitt, Farbe & Musik",
+        "Mehrere Schnittfassungen für Web, Social & Ads"
+      ],
+      "points_en": [
+        "Concept & script",
+        "One shoot day",
+        "Editing, colour & music",
+        "Multiple cuts for web, social & ads"
+      ],
+      "highlight": true
+    },
+    {
+      "id": "brand-paket",
+      "name_de": "Brand Paket",
+      "name_en": "Brand Package",
+      "price_de": "ab 1.290 €",
+      "price_en": "from €1,290",
+      "text_de": "Logo, Look & Bildsprache",
+      "text_en": "Logo, look & visual language",
+      "points_de": [
+        "Logo-System in mehreren Varianten",
+        "Farbpalette & Schriften",
+        "Kleiner Markenleitfaden",
+        "Zwei Korrekturrunden"
+      ],
+      "points_en": [
+        "Logo system in several variations",
+        "Colour palette & typefaces",
+        "Compact brand guide",
+        "Two rounds of revisions"
+      ],
+      "highlight": false
+    },
+    {
+      "id": "fotoshooting",
+      "name_de": "Fotoshooting",
+      "name_en": "Photo shoot",
+      "price_de": "ab 590 €",
+      "price_en": "from €590",
+      "text_de": "Produkt-, Laden- und Teamfotos an einem Termin",
+      "text_en": "Product, shop and team photos in one session",
+      "points_de": [
+        "Shooting vor Ort, bis zu 3 Stunden",
+        "20 bearbeitete Fotos",
+        "Produkte, Räume, Team oder Speisen",
+        "Nutzungsrechte für Website, Social Media & Werbung"
+      ],
+      "points_en": [
+        "On-site shoot, up to 3 hours",
+        "20 edited photos",
+        "Products, spaces, team or food",
+        "Usage rights for website, social media & ads"
+      ],
+      "highlight": false
+    },
+    {
+      "id": "website",
+      "name_de": "Website",
+      "name_en": "Website",
+      "price_de": "ab 1.790 €",
+      "price_en": "from €1,790",
+      "text_de": "Ein moderner Auftritt, der auf jedem Handy funktioniert",
+      "text_en": "A modern website that works on every phone",
+      "points_de": [
+        "Design & Umsetzung, bis zu 5 Seiten",
+        "Für Handy optimiert, mit Kontaktformular",
+        "Grundeinrichtung für Google (SEO)",
+        "Einweisung, damit du Texte selbst ändern kannst"
+      ],
+      "points_en": [
+        "Design & build, up to 5 pages",
+        "Mobile-optimised, with contact form",
+        "Basic Google setup (SEO)",
+        "Walkthrough so you can edit texts yourself"
+      ],
+      "note_de": "zzgl. Domain & Hosting",
+      "note_en": "plus domain & hosting",
+      "addon": {
+        "id": "website-fotoshooting",
+        "label_de": "Mit Fotoshooting vor Ort",
+        "label_en": "With on-site photo shoot",
+        "extra_de": "+ 400 €",
+        "extra_en": "+ €400",
+        "price_de": "ab 2.190 €",
+        "price_en": "from €2,190",
+        "name_de": "Website + Fotoshooting",
+        "name_en": "Website + photo shoot"
+      },
+      "highlight": false
+    }
+  ],
+  "note_de": "Größeres Projekt? Wir machen ein individuelles Angebot.",
+  "note_en": "Bigger project? We’ll put together an individual proposal.",
+  "vatNote_de": "Alle Preise zzgl. MwSt.",
+  "vatNote_en": "All prices plus VAT."
+}

@@ -69,7 +69,27 @@ collections:
       - { label: "Kurzbeschreibung (DE)", name: summary_de, widget: text, required: false }
       - { label: "Kurzbeschreibung (EN)", name: summary_en, widget: text, required: false }
       - { label: "Kurzbeschreibung (TR)", name: summary_tr, widget: text, required: false }
-      - { label: "Ausführlicher Text (DE)", name: body_de, widget: text, required: false, hint: "Kontext zum Projekt. Leerzeile = neuer Absatz" }
+      - { label: "Branche (DE)", name: industry_de, widget: string, required: false, hint: "z. B. Gastronomie, Immobilien – leer oder [TODO: …] = wird nicht angezeigt" }
+      - { label: "Branche (EN)", name: industry_en, widget: string, required: false }
+      - { label: "Aufgabe (DE)", name: task_de, widget: text, required: false, hint: "Was wollte der Kunde erreichen? Leer oder [TODO: …] = Abschnitt ausgeblendet" }
+      - { label: "Aufgabe (EN)", name: task_en, widget: text, required: false }
+      - { label: "Lösung (DE)", name: solution_de, widget: text, required: false, hint: "Was BushyFam gemacht hat. Leerzeile = neuer Absatz" }
+      - { label: "Lösung (EN)", name: solution_en, widget: text, required: false }
+      - { label: "Ergebnis (DE)", name: result_de, widget: text, required: false, hint: "Nur echte Angaben (Zahlen, Einsatz, Feedback). Leer oder [TODO: …] = Abschnitt ausgeblendet" }
+      - { label: "Ergebnis (EN)", name: result_en, widget: text, required: false }
+      - label: "Kundenzitat (optional)"
+        name: quote
+        widget: object
+        required: false
+        collapsed: true
+        hint: "Erscheint nur, wenn Zitat UND Name ausgefüllt sind – nur mit Zustimmung des Kunden"
+        fields:
+          - { label: "Zitat (DE)", name: text_de, widget: text, required: false }
+          - { label: "Zitat (EN)", name: text_en, widget: text, required: false }
+          - { label: "Name", name: name, widget: string, required: false }
+          - { label: "Rolle (DE)", name: role_de, widget: string, required: false, hint: "z. B. Inhaber" }
+          - { label: "Rolle (EN)", name: role_en, widget: string, required: false }
+      - { label: "Ausführlicher Text (DE)", name: body_de, widget: text, required: false, hint: "Älterer Freitext – wird nur gezeigt, wenn Aufgabe und Lösung leer sind" }
       - { label: "Ausführlicher Text (EN)", name: body_en, widget: text, required: false }
       - { label: "Ausführlicher Text (TR)", name: body_tr, widget: text, required: false }
       - label: "Bilder & Filme"
@@ -102,7 +122,7 @@ collections:
 
   # ---------------------------------------------------------------- Objects in Motion
   - name: "objekte"
-    label: "Objects in Motion (Produktgalerie)"
+    label: "Objects in Motion (derzeit nicht auf der Startseite)"
     label_singular: "Objekt"
     folder: "content/objects"
     create: true
@@ -195,6 +215,7 @@ collections:
       - { label: "Name", name: name, widget: string }
       - { label: "Logo", name: logo, widget: image, required: false, hint: "Logo auf transparentem Grund (PNG/WebP/SVG), ohne weißen Kasten. Erscheint in Graustufen, farbig beim Darüberfahren. Ohne Logo erscheint der Name als Schriftzug." }
       - { label: "Website", name: url, widget: string, required: false }
+      - { label: "In der Logo-Wand zeigen", name: enabled, widget: boolean, default: true, required: false, hint: "Nur echte Auftraggeber zeigen. Aus = Eintrag bleibt gespeichert, erscheint aber nicht auf der Website." }
       - { label: "Reihenfolge", name: order, widget: number, value_type: int, default: 10 }
 
   # ---------------------------------------------------------------- Seiten
@@ -218,6 +239,16 @@ collections:
           - { label: "WhatsApp-Nummer", name: whatsapp, widget: string, required: false, hint: "Mit Ländervorwahl, z. B. +49 1514 4930658 – leer lassen, um WhatsApp auszublenden" }
           - { label: "Instagram-Adresse", name: instagramUrl, widget: string, required: false }
           - { label: "Instagram-Name", name: instagramHandle, widget: string, required: false }
+          - label: "Anschrift (wie im Impressum)"
+            name: address
+            widget: object
+            required: false
+            hint: "Für die strukturierten Daten (Google). Bei Umzug hier UND im Impressum ändern."
+            fields:
+              - { label: "Straße und Hausnummer", name: street, widget: string }
+              - { label: "PLZ", name: postalCode, widget: string }
+              - { label: "Ort", name: city, widget: string }
+              - { label: "Land (Kürzel)", name: country, widget: string, default: "DE" }
           - label: "Suchmaschinen-Text"
             name: seo
             widget: object
@@ -324,6 +355,67 @@ collections:
           - { label: "Abschlusstext (DE)", name: ctaText_de, widget: text }
           - { label: "Abschlusstext (EN)", name: ctaText_en, widget: text }
           - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
+          - { label: "„So läuft’s“ – Überschrift (DE)", name: processTitle_de, widget: string, required: false, hint: "Block direkt unter den Leistungen. Leer lassen = Block ausblenden." }
+          - { label: "„So läuft’s“ – Überschrift (EN)", name: processTitle_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (DE)", name: processLead_de, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (EN)", name: processLead_en, widget: string, required: false }
+          - label: "„So läuft’s“ – Schritte"
+            name: processSteps
+            widget: list
+            required: false
+            summary: "{{title_de}}"
+            fields:
+              - { label: "Schritt (DE)", name: title_de, widget: string }
+              - { label: "Schritt (EN)", name: title_en, widget: string, required: false }
+              - { label: "Große Zeitmarke (DE)", name: figure_de, widget: string, required: false, hint: "Kurz halten, z. B. „Jetzt“, „20 Min.“, „48 h“. Leer = Schrittname wird groß gezeigt." }
+              - { label: "Große Zeitmarke (EN)", name: figure_en, widget: string, required: false }
+              - { label: "Text (DE)", name: text_de, widget: text }
+              - { label: "Text (EN)", name: text_en, widget: text, required: false }
+
+      - name: "packages"
+        label: "Pakete"
+        file: "content/packages.json"
+        fields:
+          - { label: "Überschrift (DE)", name: title_de, widget: string }
+          - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
+          - label: "Pakete"
+            name: items
+            widget: list
+            summary: "{{name_de}} – {{price_de}}"
+            hint: "Ein Paket erscheint erst, wenn ein Preis eingetragen ist. Ohne sichtbares Paket bleibt der ganze Bereich ausgeblendet."
+            fields:
+              - { label: "Kürzel (für den Link zum Formular)", name: id, widget: string, pattern: ['^[a-z0-9-]+$', "Nur Kleinbuchstaben, Zahlen und Bindestriche"] }
+              - { label: "Name (DE)", name: name_de, widget: string }
+              - { label: "Name (EN)", name: name_en, widget: string, required: false }
+              - { label: "Kurzbeschreibung (DE)", name: text_de, widget: string }
+              - { label: "Kurzbeschreibung (EN)", name: text_en, widget: string, required: false }
+              - { label: "Leistungspunkte (DE)", name: points_de, widget: list, field: { label: "Punkt", name: point, widget: string }, hint: "3–4 kurze Punkte. Punkte mit [TODO: …] werden nicht angezeigt." }
+              - { label: "Leistungspunkte (EN)", name: points_en, widget: list, required: false, field: { label: "Punkt", name: point, widget: string } }
+              - { label: "Hervorheben", name: highlight, widget: boolean, required: false, default: false, hint: "Hebt dieses Paket mit hellerer Karte und gefülltem Knopf hervor – am besten nur eines" }
+              - { label: "Preis (DE)", name: price_de, widget: string, required: false, hint: "So wie er erscheinen soll, z. B. „ab 1.190 € / Monat“. Leer = Paket wird nicht angezeigt." }
+              - { label: "Preis (EN)", name: price_en, widget: string, required: false, hint: "z. B. „from €1,190 / month“" }
+              - { label: "Kleiner Hinweis unter dem Preis (DE)", name: note_de, widget: string, required: false, hint: "z. B. „zzgl. Domain & Hosting“" }
+              - { label: "Kleiner Hinweis unter dem Preis (EN)", name: note_en, widget: string, required: false }
+              - label: "Zuschaltbare Option (optional)"
+                name: addon
+                widget: object
+                required: false
+                collapsed: true
+                hint: "Erscheint als Schalter in der Karte; beim Einschalten wechselt der Preis und die Anfrage nennt die Variante"
+                fields:
+                  - { label: "Kürzel der Variante", name: id, widget: string, required: false, hint: "z. B. website-fotoshooting" }
+                  - { label: "Schalter-Text (DE)", name: label_de, widget: string, required: false, hint: "z. B. „Mit Fotoshooting vor Ort“" }
+                  - { label: "Schalter-Text (EN)", name: label_en, widget: string, required: false }
+                  - { label: "Aufpreis-Anzeige (DE)", name: extra_de, widget: string, required: false, hint: "z. B. „+ 400 €“" }
+                  - { label: "Aufpreis-Anzeige (EN)", name: extra_en, widget: string, required: false }
+                  - { label: "Preis mit Option (DE)", name: price_de, widget: string, required: false, hint: "z. B. „ab 2.190 €“ – leer = Schalter erscheint nicht" }
+                  - { label: "Preis mit Option (EN)", name: price_en, widget: string, required: false }
+                  - { label: "Name der Variante im Formular (DE)", name: name_de, widget: string, required: false, hint: "z. B. „Website + Fotoshooting“" }
+                  - { label: "Name der Variante im Formular (EN)", name: name_en, widget: string, required: false }
+          - { label: "Hinweis unter den Paketen (DE)", name: vatNote_de, widget: string, required: false, hint: "Klein unter den Paketen, z. B. „Alle Preise zzgl. MwSt.“" }
+          - { label: "Hinweis unter den Paketen (EN)", name: vatNote_en, widget: string, required: false }
+          - { label: "Satz unter den Paketen (DE)", name: note_de, widget: string, required: false }
+          - { label: "Satz unter den Paketen (EN)", name: note_en, widget: string, required: false }
 
       - name: "services"
         label: "Leistungen"

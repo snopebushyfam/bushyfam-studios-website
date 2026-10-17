@@ -2,5 +2,6 @@
   "name": "Nelvie Tiafack",
   "logo": "/assets/clients/nev.webp",
   "url": "",
-  "order": 2
+  "order": 2,
+  "enabled": true
 }

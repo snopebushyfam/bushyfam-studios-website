@@ -2,5 +2,6 @@
   "name": "Gleis 7",
   "logo": "/assets/clients/gleis-7.webp",
   "url": "",
-  "order": 6
+  "order": 6,
+  "enabled": true
 }

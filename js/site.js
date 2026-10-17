@@ -52,6 +52,22 @@
     });
   });
 
+  /* ---------- Pakete: Zusatz (z. B. Fotoshooting zur Website) umschalten – Preis und Anfrage-Link wechseln mit ---------- */
+  [].forEach.call(document.querySelectorAll("[data-pkg-addon]"), function (box) {
+    var card = box.closest(".pkg");
+    if (!card) return;
+    var base = card.querySelector('[data-pkg-price="base"]'), extra = card.querySelector('[data-pkg-price="addon"]');
+    var link = card.querySelector("[data-pkg-link]");
+    var sync = function () {
+      var on = box.checked;
+      if (base && extra) { base.hidden = on; extra.hidden = !on; }
+      card.classList.toggle("pkg--addon-on", on);
+      if (link) link.href = link.href.replace(/([?&]paket=)[^&#]*/, "$1" + encodeURIComponent(on ? box.getAttribute("data-addon-id") : link.getAttribute("data-base-id")));
+    };
+    box.addEventListener("change", sync);
+    sync();
+  });
+
   /* ---------- Sprachauswahl: schließt bei Klick daneben oder mit Escape ---------- */
   var switches = [].slice.call(document.querySelectorAll("[data-lang-switch]"));
   if (switches.length) {
