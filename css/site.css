@@ -774,29 +774,56 @@ h2.cast-card-name{margin:0}
 @media (min-width:900px){.lang-switch--header{display:none}}
 .nav ul.lang-menu{display:grid;gap:0}
 
-/* „So läuft’s“ (nach „How It Works 5“): nummerierte Schritt-Karten, verbunden durch eine Linie,
-   große Ziffern, darunter ein auffälliger Knopf. Gleiche Kartensprache wie die Pakete. */
-.process-home .h2{margin-bottom:clamp(2rem,4vw,3.5rem)}
-.hiw-steps{position:relative;display:grid;gap:1rem;margin:0;padding:0;list-style:none;counter-reset:none}
-.hiw-steps::before{content:"";position:absolute;left:calc(clamp(1.5rem,3vw,2.25rem) + 1.4rem);top:2rem;bottom:2rem;width:1px;background:linear-gradient(var(--line-strong),var(--line-strong)) ;z-index:0}
-.hiw-step{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;column-gap:1.25rem;row-gap:.35rem;align-items:start;align-content:start;padding:clamp(1.5rem,3vw,2.25rem);border:1px solid var(--line-strong);border-radius:20px;background:linear-gradient(180deg,#141416 0%,#0b0b0c 100%)}
-.hiw-no{grid-row:span 2;display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--white);color:#000;font-size:.9375rem;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 0 0 6px #0b0b0c}
-.hiw-title{font-size:clamp(1.375rem,1.15rem + .8vw,1.75rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;padding-top:.35rem}
-.hiw-text{color:var(--muted);line-height:1.5}
-.hiw-cta{margin-top:clamp(2rem,4vw,3rem)}
+/* „So läuft’s“ als Szene: große Zeitmarken (Jetzt → 20 Min. → 48 h) statt Karten.
+   Grundzustand (ohne JS / reduzierte Bewegung): Schritte untereinander.
+   Mit JS (.is-pinned): Die Bühne bleibt beim Scrollen stehen, die Zeitmarken rollen Buchstabe für Buchstabe durch. */
+.process{overflow-x:clip}
+.process-head{display:grid;gap:1rem 3rem}
+.process-h{font-size:clamp(2.5rem,1.4rem + 4.6vw,5.5rem);letter-spacing:-.045em;line-height:.95}
+.process-lead{max-width:26rem;font-size:clamp(1.125rem,1rem + .4vw,1.375rem);line-height:1.45}
+.process-steps{display:grid;gap:clamp(3rem,7vw,5rem);margin-top:clamp(2.5rem,6vw,4.5rem)}
+.process-figure{font-weight:700;font-size:min(calc((100vw - 2 * var(--gutter)) / (var(--len) * .6)),11rem);letter-spacing:-.035em;line-height:.8;white-space:nowrap;padding-bottom:.08em;font-variant-numeric:tabular-nums}
+.process-figure span{display:inline-block}
+.process-copy{display:grid;gap:.35rem;margin-top:clamp(1rem,2.5vw,1.75rem);max-width:34rem}
+.process-title{font-size:clamp(1.5rem,1.2rem + 1vw,2.125rem);font-weight:700;letter-spacing:-.025em;line-height:1.1}
+.process-text{font-size:clamp(1.0625rem,1rem + .3vw,1.25rem);line-height:1.5}
+.process-foot{display:grid;gap:1.25rem;margin-top:clamp(2.5rem,5vw,4rem)}
+.process-nav{display:grid;grid-template-columns:repeat(var(--steps),minmax(0,1fr));gap:.75rem}
+.process-dot{display:grid;gap:.6rem;align-content:end;min-height:48px;padding:0;border:0;background:none;text-align:left;cursor:pointer;color:var(--white);opacity:.45;transition:opacity .3s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.process-dot[aria-current],.process-dot:hover{opacity:1}
+.process-dot-label{font-size:clamp(.875rem,.82rem + .25vw,1rem);font-weight:600;line-height:1.2}
+.process-bar{position:relative;display:block;height:3px;border-radius:3px;background:rgba(245,245,243,.18);overflow:hidden}
+.process-fill{position:absolute;inset:0;background:var(--white);transform:scaleX(var(--f,0));transform-origin:left center}
 .hiw-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;min-height:56px;padding:.8rem 1.75rem;border-radius:999px;background:var(--white);color:#000;font-weight:600;font-size:1.0625rem;text-decoration:none;transition:background-color .25s,transform .25s}
 .hiw-btn:hover{background:#ddddd8}
+.hiw-btn:active{transform:scale(.98)}
 .hiw-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+
+/* Szene */
+.process.is-pinned{padding-block:0}
+.is-pinned .process-track{height:calc(100svh + var(--steps) * 75svh)}
+.is-pinned .process-stage > *{width:100%}
+.is-pinned .process-stage{position:sticky;top:0;height:100svh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding-block:calc(var(--header-h) + clamp(1rem,3vh,2.5rem)) clamp(1.25rem,4vh,2.5rem);overflow:hidden}
+.is-pinned .process-steps{margin-top:0;gap:0;grid-template-areas:"s";align-items:center}
+.is-pinned .process-step{grid-area:s;opacity:var(--o,0);visibility:var(--v,hidden)}
+.is-pinned .process-figure{font-size:min(calc((100vw - 2 * var(--gutter)) / (var(--len) * .6)),30svh)}
+.is-pinned .process-figure span{transform:translateY(calc(var(--d,0) * (-60% - var(--i) * 16%)))}
+.is-pinned .process-step[data-still] .process-figure span{transform:none}
+.is-pinned .process-copy{transform:translateY(calc(var(--d,0) * -3rem));opacity:var(--oc,1)}
+.is-pinned .process-foot{margin-top:0}
 @media (min-width:900px){
-  .hiw-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem}
-  .hiw-steps::before{left:2rem;right:2rem;top:calc(clamp(1.5rem,3vw,2.25rem) + 1.4rem);bottom:auto;width:auto;height:1px}
-  .hiw-step{grid-template-columns:1fr;row-gap:.6rem}
-  .hiw-no{grid-row:auto;margin-bottom:1rem}
-  .hiw-title{padding-top:0}
-  .hiw-cta{display:flex;justify-content:center}
+  .process-head{grid-template-columns:minmax(0,1fr) minmax(0,26rem);align-items:end}
+  .process-step{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,22rem);align-items:end;column-gap:3rem}
+  .process-copy{margin-top:0;padding-bottom:1.2em}
+  .process-foot{grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:3rem}
+  .process-nav{max-width:40rem}
+  .process-cta{justify-self:start}
+  .is-pinned .process-cta{justify-self:end}
+  .process-figure,.is-pinned .process-figure{font-size:min(calc(min(100vw,var(--max)) * .64 / (var(--len) * .6)),30svh)}
   .hiw-btn{display:inline-flex;min-width:16rem}
 }
-@media (prefers-reduced-motion:reduce){.hiw-btn{transition:none}}
+@media (max-height:620px){.is-pinned .process-lead{display:none}}
+@media (prefers-reduced-motion:reduce){.hiw-btn,.process-dot{transition:none}}
 /* Lange, beschreibende Headline (Leistung + Ort): kleiner gesetzt, damit sie in wenigen Zeilen steht */
 .hero-title--statement.hero-title--long{max-width:19ch;font-size:clamp(1.875rem,.9rem + 4.4vw,2.75rem);line-height:1;letter-spacing:-.035em}
 @media (min-width:900px){.hero-title--statement.hero-title--long{max-width:20ch;font-size:clamp(3rem,.8rem + 3.7vw,5.5rem)}}

@@ -357,6 +357,8 @@ collections:
           - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
           - { label: "„So läuft’s“ – Überschrift (DE)", name: processTitle_de, widget: string, required: false, hint: "Block direkt unter den Leistungen. Leer lassen = Block ausblenden." }
           - { label: "„So läuft’s“ – Überschrift (EN)", name: processTitle_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (DE)", name: processLead_de, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (EN)", name: processLead_en, widget: string, required: false }
           - label: "„So läuft’s“ – Schritte"
             name: processSteps
             widget: list
@@ -365,6 +367,8 @@ collections:
             fields:
               - { label: "Schritt (DE)", name: title_de, widget: string }
               - { label: "Schritt (EN)", name: title_en, widget: string, required: false }
+              - { label: "Große Zeitmarke (DE)", name: figure_de, widget: string, required: false, hint: "Kurz halten, z. B. „Jetzt“, „20 Min.“, „48 h“. Leer = Schrittname wird groß gezeigt." }
+              - { label: "Große Zeitmarke (EN)", name: figure_en, widget: string, required: false }
               - { label: "Text (DE)", name: text_de, widget: text }
               - { label: "Text (EN)", name: text_en, widget: text, required: false }
 

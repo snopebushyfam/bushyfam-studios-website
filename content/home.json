@@ -18,19 +18,27 @@
       "title_de": "Anfrage",
       "title_en": "Enquiry",
       "text_de": "Ein paar Sätze per Formular oder WhatsApp reichen.",
-      "text_en": "A few sentences via the form or WhatsApp are enough."
+      "text_en": "A few sentences via the form or WhatsApp are enough.",
+      "figure_de": "Jetzt",
+      "figure_en": "Now"
     },
     {
       "title_de": "Kurzer Call",
       "title_en": "Short call",
       "text_de": "15–20 Minuten: Ziel, Zeitraum, Budget.",
-      "text_en": "15–20 minutes: goal, timeframe, budget."
+      "text_en": "15–20 minutes: goal, timeframe, budget.",
+      "figure_de": "20 Min.",
+      "figure_en": "20 min"
     },
     {
       "title_de": "Angebot",
       "title_en": "Proposal",
       "text_de": "Innerhalb von 48 Stunden ein konkretes Angebot.",
-      "text_en": "A concrete proposal within 48 hours."
+      "text_en": "A concrete proposal within 48 hours.",
+      "figure_de": "48 h",
+      "figure_en": "48 h"
     }
-  ]
+  ],
+  "processLead_de": "Drei Schritte, dann liegt ein konkretes Angebot auf dem Tisch.",
+  "processLead_en": "Three steps, then a concrete proposal is on the table."
 }

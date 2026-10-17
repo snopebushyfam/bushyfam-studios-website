@@ -377,6 +377,37 @@ function projectCard(p, lang, { headingLevel = 3 } = {}) {
 const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ...s, src: url(s.src) }))));
 
 /* ---------- Seiten ---------- */
+/* „So läuft’s“ als Szene: Beim Scrollen bleibt die Bühne stehen und die Schritte laufen nacheinander durch,
+   jeweils mit einer großen Zeitmarke (Jetzt → 20 Min. → 48 h). Ohne JavaScript oder mit reduzierter
+   Bewegung stehen die Schritte einfach untereinander. */
+function processSection(lang, t, R) {
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  if (!tr(HOME, "processTitle", lang) || !steps.length) return "";
+  const lead = tr(HOME, "processLead", lang);
+  return `<section class="section process" data-process aria-labelledby="h-process" style="--steps:${steps.length}">
+  <div class="process-track">
+    <div class="process-stage">
+      <div class="wrap process-head">
+        <h2 class="h2 process-h" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
+        ${lead ? `<p class="process-lead">${esc(lead)}</p>` : ""}
+      </div>
+      <ol class="wrap process-steps">
+        ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
+          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 3)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
+          <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
+        </li>`; }).join("\n        ")}
+      </ol>
+      <div class="wrap process-foot">
+        <div class="process-nav" data-process-nav hidden>
+          ${steps.map((s, i) => `<button type="button" class="process-dot" data-goto="${i}"${i ? "" : ' aria-current="step"'}><span class="process-dot-label">${esc(tr(s, "title", lang))}</span><span class="process-bar" aria-hidden="true"><span class="process-fill"></span></span></button>`).join("")}
+        </div>
+        <a class="hiw-btn process-cta" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
@@ -427,19 +458,7 @@ ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home
   <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
 </section>` : ""}
 
-${tr(HOME, "processTitle", lang) &&(HOME.processSteps || []).length ? `<section class="section process-home" aria-labelledby="h-process">
-  <div class="wrap">
-    <h2 class="h2" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
-    <ol class="hiw-steps">
-      ${HOME.processSteps.filter((s) => tr(s, "title", lang)).map((s, i) => `<li class="hiw-step">
-        <span class="hiw-no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
-        <h3 class="hiw-title">${esc(tr(s, "title", lang))}</h3>
-        <p class="hiw-text">${esc(tr(s, "text", lang))}</p>
-      </li>`).join("\n      ")}
-    </ol>
-    <p class="hiw-cta"><a class="hiw-btn" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a></p>
-  </div>
-</section>` : ""}
+${processSection(lang, t, R)}
 
 ${PROJECTS.length ? `<section class="section work-feature" aria-labelledby="h-picks">
   <div class="wrap head-row">
@@ -529,7 +548,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : []), ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
+    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : []), ...(visiblePackages(lang).length ? ["pixel-card.js"] : []), ...(processSection(lang, t, R) ? ["process.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -882,7 +901,7 @@ write("/404.html", page404());
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js", "process.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
 
 // 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).
