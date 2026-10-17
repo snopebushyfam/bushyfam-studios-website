@@ -418,7 +418,16 @@ function pageHome(lang) {
   </div>
 </section>
 
-${tr(HOME, "processTitle", lang) && (HOME.processSteps || []).length ? `<section class="section process-home" aria-labelledby="h-process">
+${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
+  <div class="wrap cast-head">
+    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
+    <p class="lead">${esc(t.castLead)}</p>
+  </div>
+  ${castRow(lang)}
+  <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
+</section>` : ""}
+
+${tr(HOME, "processTitle", lang) &&(HOME.processSteps || []).length ? `<section class="section process-home" aria-labelledby="h-process">
   <div class="wrap">
     <h2 class="h2" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
     <ol class="hiw-steps">
