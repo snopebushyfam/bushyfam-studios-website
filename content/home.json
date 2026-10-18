@@ -1,6 +1,6 @@
 {
   "workTitle_de": "Ausgewählte Arbeiten",
-  "workTitle_en": "Selected Work",
+  "workTitle_en": "Selected work",
   "workTitle_tr": "Seçilmiş İşler",
   "aboutText_de": "BushyFam Studios ist aus der Arbeit zwischen Film, Fotografie, bildender Kunst, Design und einem eigenen Buch entstanden – bis daraus eine gemeinsame Praxis wurde. Du arbeitest direkt mit der Person zusammen, die die kreative Richtung vorgibt: weniger Ebenen, weniger Übergaben, eine Idee vom ersten Gespräch bis zum letzten Bild.",
   "aboutText_en": "BushyFam Studios grew out of working across film, photography, visual art, design and publishing – until they became one practice. Clients work directly with the person shaping the creative direction: fewer layers, fewer handovers, one idea carried from the first conversation to the final frame.",
@@ -10,5 +10,35 @@
   "ctaTitle_tr": "Ne üzerinde çalıştığını anlat.",
   "ctaText_de": "Film, Fotografie, Design – oder alles zusammen. Es beginnt mit einer Nachricht.",
   "ctaText_en": "Film, photography, design – or all of it at once. It starts with a message.",
-  "ctaText_tr": "Film, fotoğraf, tasarım – ya da hepsi birden. Her şey bir mesajla başlar."
+  "ctaText_tr": "Film, fotoğraf, tasarım – ya da hepsi birden. Her şey bir mesajla başlar.",
+  "processTitle_de": "So läuft’s",
+  "processTitle_en": "How it works",
+  "processSteps": [
+    {
+      "title_de": "Anfrage",
+      "title_en": "Enquiry",
+      "text_de": "Ein paar Sätze per Formular oder WhatsApp reichen.",
+      "text_en": "A few sentences via the form or WhatsApp are enough.",
+      "figure_de": "Jetzt",
+      "figure_en": "Now"
+    },
+    {
+      "title_de": "Kurzer Call",
+      "title_en": "Short call",
+      "text_de": "15–20 Minuten: Ziel, Zeitraum, Budget.",
+      "text_en": "15–20 minutes: goal, timeframe, budget.",
+      "figure_de": "20 Min.",
+      "figure_en": "20 min"
+    },
+    {
+      "title_de": "Angebot",
+      "title_en": "Proposal",
+      "text_de": "Innerhalb von 48 Stunden ein konkretes Angebot.",
+      "text_en": "A concrete proposal within 48 hours.",
+      "figure_de": "48 h",
+      "figure_en": "48 h"
+    }
+  ],
+  "processLead_de": "Drei Schritte, dann liegt ein konkretes Angebot auf dem Tisch.",
+  "processLead_en": "Three steps, then a concrete proposal is on the table."
 }

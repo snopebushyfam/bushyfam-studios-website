@@ -11,11 +11,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { T, ROUTES, CATEGORIES, LANG_NAMES } from "./i18n.mjs";
+import { T, ROUTES, CATEGORIES, LANG_NAMES, PUBLIC_LANGS, DEFAULT_LANG, LEGACY_ROUTES } from "./i18n.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "dist");
-const LANGS = ["en", "de", "tr"];
+const LANGS = ["de", "en", "tr"];
 const ON_NETLIFY = process.env.NETLIFY === "true";
 const errors = [];
 
@@ -35,8 +35,11 @@ export const esc = (v) => String(v ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 /** Feld in der gewünschten Sprache, sonst Deutsch als Rückfall */
 /* Fehlt ein Text in der gewählten Sprache: Türkisch fällt auf Englisch zurück, sonst auf Deutsch */
-const tr = (obj, key, lang) => (obj && (obj[`${key}_${lang}`] || (lang === "tr" && obj[`${key}_en`]) || obj[`${key}_de`])) || "";
-const pick = (obj, lang) => (obj && (obj[lang] || (lang === "tr" && obj.en) || obj.de)) || "";
+/* Platzhalter „[TODO: …]“ gelten als leer: Sie erscheinen nie auf der Website, der Abschnitt wird ausgeblendet */
+const isTodo = (v) => typeof v === "string" && /\[\s*TODO\b/i.test(v);
+const filled = (v) => (v && !isTodo(v) ? v : "");
+const tr = (obj, key, lang) => (obj && (filled(obj[`${key}_${lang}`]) || (lang === "tr" && filled(obj[`${key}_en`])) || filled(obj[`${key}_de`]))) || "";
+const pick = (obj, lang) => (obj && (filled(obj[lang]) || (lang === "tr" && filled(obj.en)) || filled(obj.de))) || "";
 const url = (p) => (!p ? "" : /^https?:\/\//.test(p) ? p : "/" + String(p).replace(/^\/+/, ""));
 const assetExists = (p) => !p || /^https?:\/\//.test(p) || fs.existsSync(path.join(ROOT, url(p)));
 const paras = (text) => String(text || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
@@ -69,11 +72,35 @@ function imageSize(p) {
 function img(src, alt, { sizes = "100vw", cls = "", lazy = true, widths = [480, 960, 1600] } = {}) {
   const s = url(src), dim = imageSize(src) || {};
   let srcset = "";
-  if (ON_NETLIFY && s.startsWith("/assets/uploads/") && /\.(jpe?g|png|webp)$/i.test(s)) {
-    srcset = ` srcset="${widths.map((w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w} ${w}w`).join(", ")}" sizes="${sizes}"`;
+  /* Auf Netlify: JPG/PNG (und hochgeladene WebP) laufen über das Image CDN – passende Breite, als WebP.
+     Die Originaldateien bleiben unverändert im Repository; künftige Uploads werden automatisch genauso ausgeliefert. */
+  let out = s;
+  if (ON_NETLIFY && s.startsWith("/assets/") && (/\.(jpe?g|png)$/i.test(s) || (s.startsWith("/assets/uploads/") && /\.webp$/i.test(s)))) {
+    const cdn = (w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w}&amp;fm=webp`;
+    srcset = ` srcset="${widths.map((w) => `${cdn(w)} ${w}w`).join(", ")}" sizes="${sizes}"`;
+    out = cdn(960);
   }
-  return `<img${cls ? ` class="${cls}"` : ""} src="${esc(s)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
+  return `<img${cls ? ` class="${cls}"` : ""} src="${out.startsWith("/.netlify/") ? out : esc(out)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
 }
+/* Pakete: nur mit Namen UND Preis sichtbar; Leistungspunkte mit [TODO] fallen weg */
+const trList = (obj, key, lang) => {
+  const pickList = (k) => (Array.isArray(obj[k]) ? obj[k].map(filled).filter(Boolean) : []);
+  const own = pickList(`${key}_${lang}`);
+  return own.length ? own : (lang === "tr" && pickList(`${key}_en`).length ? pickList(`${key}_en`) : pickList(`${key}_de`));
+};
+/* Preis: ausgeschriebener Preis je Sprache (z. B. „ab 1.190 € / Monat“); sonst nur die Zahl im Feld „price“ */
+const pkgPrice = (k, lang) => tr(k, "price", lang) ? esc(tr(k, "price", lang)) : filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", esc(String(k.price).replace(/€/g, "").trim())) : "";
+/* Preis in Teile zerlegen: kleines „ab/from“, große Summe, leises „/ Monat“ – wie im Kartenstil der Pakete */
+const pkgPriceParts = (k, lang) => {
+  const raw = tr(k, "price", lang) || (filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", String(k.price).replace(/€/g, "").trim()) : "");
+  const m = raw.match(/^\s*(ab|from|itibaren)?\s*(.+?)\s*(\/\s*.+)?$/i);
+  if (!m) return esc(raw);
+  return `${m[1] ? `<span class="pkg-price-pre">${esc(m[1])}</span> ` : ""}<span class="pkg-price-amount">${esc(m[2])}</span>${m[3] ? ` <span class="pkg-price-per">${esc(m[3])}</span>` : ""}`;
+};
+const CHECK_ICON = `<svg class="pkg-check" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="10" fill="currentColor"/><path d="M6 10.3l2.6 2.5L14 7.4" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// „Pakete auf der Website zeigen“ aus = kein Paket-Bereich auf der Startseite und keine Paketauswahl im Formular
+const visiblePackages = (lang) => PKG.enabled === false ? [] : (PKG.items || []).filter((k) => tr(k, "name", lang) && pkgPrice(k, lang));
+
 /* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
 function svcCard(s, i, lang) {
   const id = `svc-more-${i + 1}`, alt = tr(s, "imageAlt", lang);
@@ -115,6 +142,7 @@ const WA_DIGITS = String(S.whatsapp || "").replace(/\D/g, "").replace(/^00/, "")
 const WA_URL = WA_DIGITS ? `https://wa.me/${WA_DIGITS}` : "";
 const HOME = readJson("content/home.json");
 const SERV = readJson("content/services.json");
+const PKG = fs.existsSync(path.join(ROOT, "content/packages.json")) ? readJson("content/packages.json") : { items: [] };
 const STU = readJson("content/studio.json");
 const CON = readJson("content/contact.json");
 const LEGAL = readJson("content/legal.json");
@@ -198,23 +226,32 @@ const hrefFor = (lang, key, slug) => {
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
 function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
-  const t = T[lang], others = LANGS.filter((l) => l !== lang);
+  const t = T[lang], others = PUBLIC_LANGS.filter((l) => l !== lang);
+  /* Eingefrorene Sprache (Türkisch): erreichbar, aber noindex, ohne canonical/hreflang */
+  const indexable = PUBLIC_LANGS.includes(lang);
   const site = (S.siteUrl || "").replace(/\/+$/, "");
   const here = hrefFor(lang, key, slug), hrefIn = (l) => (key === "home404" ? ROUTES[l].home : hrefFor(l, key, slug));
   const abs = (p) => site + p;
   /* Sprachauswahl: kleiner Knopf mit dem aktuellen Kürzel, darunter die Sprachen (funktioniert auch ohne JavaScript) */
   const langSwitch = (where) => `<details class="lang-switch lang-switch--${where}" data-lang-switch>
       <summary class="lang"><span aria-hidden="true">${lang.toUpperCase()}</span><span class="vh">${esc(t.switchTo)} – ${LANG_NAMES[lang]}</span></summary>
-      <ul class="lang-menu">${LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
+      <ul class="lang-menu">${PUBLIC_LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
     </details>`;
   const nav = [["work", t.nav.work], ...(CAST.length ? [["cast", t.nav.cast]] : []), ["services", t.nav.services], ["studio", t.nav.studio]];
   const navHref = (k) => (k === "services" ? ROUTES[lang].home + "#" + t.servicesId : ROUTES[lang][k]);
   const cur = (k) => (k === key || (k === "work" && key === "project") || (k === "cast" && key === "person") ? ' aria-current="page"' : "");
-  const ld = {
-    "@context": "https://schema.org", "@type": "ProfessionalService", name: S.brandName,
-    address: { "@type": "PostalAddress", addressLocality: tr(S, "location", lang), addressCountry: "DE" },
-    areaServed: "DE", sameAs: [S.instagramUrl].filter(Boolean), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}), ...(site ? { url: abs(ROUTES[lang].home) } : {})
-  };
+  /* Strukturierte Daten: LocalBusiness nur auf der Startseite (Adresse wie im Impressum) */
+  const A = S.address || {};
+  const ld = key === "home" ? {
+    "@context": "https://schema.org", "@type": "LocalBusiness", name: S.brandName,
+    ...(site ? { url: abs(ROUTES[lang].home), "@id": site + "/#business" } : {}),
+    ...(A.street ? { address: { "@type": "PostalAddress", streetAddress: A.street, postalCode: A.postalCode, addressLocality: A.city, addressCountry: A.country || "DE" } } : {}),
+    ...(S.email ? { email: S.email } : {}), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}),
+    ...(site && S.seo?.image ? { image: abs(url(S.seo.image)) } : {}),
+    sameAs: [S.instagramUrl].filter(Boolean), areaServed: { "@type": "Country", name: "Deutschland" },
+    hasOfferCatalog: { "@type": "OfferCatalog", name: tr(SERV, "title", lang) || t.nav.services,
+      itemListElement: (SERV.items || []).map((it) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: tr(it, "title", lang), description: tr(it, "text", lang) } })) }
+  } : null;
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -222,22 +259,22 @@ function layout({ lang, key, slug, title, description, body, scripts = [], ogIma
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${S.launch ? "" : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#000000">
-${site && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
-${LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
-<link rel="alternate" hreflang="x-default" href="${abs(hrefFor("en", key, slug))}">
+${!S.launch ? '<meta name="robots" content="noindex, nofollow">\n' : !indexable ? '<meta name="robots" content="noindex">\n' : ""}<meta name="theme-color" content="#000000">
+${site && indexable && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
+${PUBLIC_LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
+<link rel="alternate" hreflang="x-default" href="${abs(hrefIn(DEFAULT_LANG))}">
 ` : ""}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brandName)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${{ de: "de_DE", en: "en_GB", tr: "tr_TR" }[lang]}">
-${site && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
+${site && indexable && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
 ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n${imageSize(ogImage) ? `<meta property="og:image:width" content="${imageSize(ogImage).w}">\n<meta property="og:image:height" content="${imageSize(ogImage).h}">\n` : ""}` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
-<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
 </head>
 <body class="page-${key}">
 <a class="skip" href="#main">${esc(t.skip)}</a>
@@ -341,17 +378,48 @@ function projectCard(p, lang, { headingLevel = 3 } = {}) {
 const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ...s, src: url(s.src) }))));
 
 /* ---------- Seiten ---------- */
+/* „So läuft’s“ als Szene: Beim Scrollen bleibt die Bühne stehen und die Schritte laufen nacheinander durch,
+   jeweils mit einer großen Zeitmarke (Jetzt → 20 Min. → 48 h). Ohne JavaScript oder mit reduzierter
+   Bewegung stehen die Schritte einfach untereinander. */
+function processSection(lang, t, R) {
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  if (!tr(HOME, "processTitle", lang) || !steps.length) return "";
+  const lead = tr(HOME, "processLead", lang);
+  return `<section class="section process" data-process aria-labelledby="h-process" style="--steps:${steps.length}">
+  <div class="process-track">
+    <div class="process-stage">
+      <div class="wrap process-head">
+        <h2 class="h2 process-h" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
+        ${lead ? `<p class="process-lead">${esc(lead)}</p>` : ""}
+      </div>
+      <ol class="wrap process-steps">
+        ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
+          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 3)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
+          <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
+        </li>`; }).join("\n        ")}
+      </ol>
+      <div class="wrap process-foot">
+        <div class="process-nav" data-process-nav hidden>
+          ${steps.map((s, i) => `<button type="button" class="process-dot" data-goto="${i}"${i ? "" : ' aria-current="step"'}><span class="process-dot-label">${esc(tr(s, "title", lang))}</span><span class="process-bar" aria-hidden="true"><span class="process-fill"></span></span></button>`).join("")}
+        </div>
+        <a class="hiw-btn process-cta" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name);
+  const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false);
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
 <section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
         ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
         <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
@@ -390,25 +458,38 @@ ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home
   ${castRow(lang)}
   <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
 </section>` : ""}
-${!CAST.length && featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
+
+${processSection(lang, t, R)}
+
+${PROJECTS.length ? `<section class="section work-feature" aria-labelledby="h-picks">
   <div class="wrap head-row">
-    <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
-    <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
+    <h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang) || t.nav.work)}</h2>
   </div>
   <ul class="feature-list">
-    ${featured.map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
+    ${PROJECTS.slice(0, 3).map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
   </ul>
+  <p class="wrap work-all"><a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a></p>
 </section>` : ""}
 
-${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
-  <div class="wrap objects-ctrl">
-    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
-  </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
+${visiblePackages(lang).length ? `<section class="section packages-home" aria-labelledby="h-pkg">
+  <div class="wrap">
+    <h2 class="h2" id="h-pkg">${esc(tr(PKG, "title", lang) || t.pkgTitle)}</h2>
+    <ul class="pkg-grid">
+      ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}" data-pixel-card${k.highlight ? ' data-pc-opacity="0.45" data-pc-glow="0.6"' : ""}>
+        <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
+        ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
+        <div class="pkg-price-wrap" aria-live="polite">
+          <p class="pkg-price" data-pkg-price="base">${pkgPriceParts(k, lang)}</p>
+          ${k.addon && tr(k.addon, "price", lang) ? `<p class="pkg-price" data-pkg-price="addon" hidden>${pkgPriceParts(k.addon, lang)}</p>` : ""}
+        </div>
+        ${tr(k, "note", lang) ? `<p class="pkg-note">${esc(tr(k, "note", lang))}</p>` : ""}
+        ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${CHECK_ICON}<span>${esc(x)}</span></li>`).join("")}</ul>` : ""}
+        ${k.addon && tr(k.addon, "price", lang) ? `<label class="pkg-addon"><input type="checkbox" data-pkg-addon data-addon-id="${esc(k.addon.id || "")}"><span class="pkg-switch" aria-hidden="true"></span><span class="pkg-addon-label">${esc(tr(k.addon, "label", lang))}</span>${tr(k.addon, "extra", lang) ? `<span class="pkg-addon-extra">${esc(tr(k.addon, "extra", lang))}</span>` : ""}</label>` : ""}
+        <a class="pkg-cta" data-pkg-link data-base-id="${esc(k.id || "")}" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
+      </li>`).join("\n      ")}
+    </ul>
+    ${tr(PKG, "vatNote", lang) ? `<p class="pkg-vat">${esc(tr(PKG, "vatNote", lang))}</p>` : ""}
+    <div class="pkg-foot">${tr(PKG, "note", lang) ? `<p>${esc(tr(PKG, "note", lang))}</p>` : ""}<a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
   </div>
 </section>` : ""}
 
@@ -468,7 +549,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : []), ...(visiblePackages(lang).length ? ["pixel-card.js"] : []), ...(processSection(lang, t, R) ? ["process.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -536,7 +617,14 @@ function pageProject(p, lang, i) {
   </section>`;
   }).join("\n  ");
 
-  const facts = [[t.factClient, p.client], [t.factYear, p.year], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  const facts = [[t.factClient, filled(p.client)], [t.factIndustry, tr(p, "industry", lang)], [t.factYear, filled(p.year)], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  /* Case-Aufbau: Aufgabe – Lösung – Ergebnis (+ optional Kundenzitat). Leere oder [TODO]-Felder werden ausgeblendet;
+     ohne Aufgabe und Lösung erscheint wie bisher der ausführliche Text. */
+  const blocks = [["task", t.caseTask], ["solution", t.caseSolution], ["result", t.caseResult]].map(([k, label]) => [label, paras(tr(p, k, lang))]).filter(([, ps]) => ps.length);
+  const Q = p.quote || {};
+  const quote = tr(Q, "text", lang) && filled(Q.name) ? `<figure class="case-quote"><blockquote><p>${esc(tr(Q, "text", lang))}</p></blockquote><figcaption>${esc(Q.name)}${tr(Q, "role", lang) ? `, ${esc(tr(Q, "role", lang))}` : ""}</figcaption></figure>` : "";
+  const caseHtml = blocks.length ? `<div class="case-blocks">${blocks.map(([label, ps]) => `<section class="case-block"><h2 class="case-label">${esc(label)}</h2>${ps.map((x) => `<p>${esc(x)}</p>`).join("")}</section>`).join("")}${quote}</div>`
+    : `${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}${quote}`;
   const nextSame = next && next.client && next.client === tr(next, "title", lang);
   const body = `
 <article class="project">
@@ -547,7 +635,7 @@ function pageProject(p, lang, i) {
   </header>
   <div class="wrap project-intro">
     ${facts.length ? `<dl class="facts">${facts.map(([k, v, w]) => `<div${w ? ` class="fact--${w}"` : ""}><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-    ${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
+    ${caseHtml}
   </div>
   ${chapterHtml}
   ${next && next.slug !== p.slug ? `<nav class="project-next" aria-label="${esc(t.moreWork)}">
@@ -586,14 +674,15 @@ function pageCast(lang) {
   <p class="eyebrow">${esc(t.nav.cast)}</p>
   <h1 class="page-title" id="h-cast">${esc(t.nav.cast)}</h1>
   <p class="lead">${esc(t.castLead)}</p>
+  <p class="cast-note">${esc(t.castNote)}</p>
 </section>
-<section class="wrap work-list">
-  ${roles.length > 1 ? `<div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
+${roles.length > 1 ? `<section class="wrap work-list">
+  <div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
     <button class="filter" type="button" data-cat="all" aria-pressed="true">${esc(t.all)}<span class="n">${CAST.length}</span></button>
     ${roles.map((r) => `<button class="filter" type="button" data-cat="${esc(r.id)}" aria-pressed="false">${esc(r.label)}<span class="n">${r.n}</span></button>`).join("\n    ")}
   </div>
-  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>` : ""}
-</section>
+  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>
+</section>` : ""}
 <section class="cast-page">
   ${castRow(lang, { page: true })}
 </section>
@@ -719,6 +808,10 @@ function pageContact(lang) {
     <fieldset class="field"><legend>${esc(f.services)} <span class="opt">(${esc(f.optional)})</span></legend><div class="chips">
       ${(CON.options || []).map((o) => `<label class="chip"><input type="checkbox" name="leistungen" value="${esc(o.de)}"${o.cast ? " data-cast-option" : ""}><span class="box" aria-hidden="true"></span>${esc(pick(o, lang))}</label>`).join("\n      ")}
     </div></fieldset>
+    ${visiblePackages(lang).length ? `<div class="field"><label for="f-paket">${esc(f.package)} <span class="opt">(${esc(f.optional)})</span></label><select id="f-paket" name="paket">
+      <option value="">${esc(f.packageNone)}</option>
+      ${visiblePackages(lang).map((k) => `<option value="${esc(tr(k, "name", "de"))}" data-id="${esc(k.id || "")}">${esc(tr(k, "name", lang))} – ${pkgPrice(k, lang)}</option>${k.addon && tr(k.addon, "price", lang) && tr(k.addon, "name", lang) ? `<option value="${esc(tr(k.addon, "name", "de"))}" data-id="${esc(k.addon.id || "")}">${esc(tr(k.addon, "name", lang))} – ${esc(tr(k.addon, "price", lang))}</option>` : ""}`).join("")}
+    </select></div>` : ""}
     <div class="field field--talent" data-talent-field hidden><label for="f-talent">${esc(f.talent)} <span class="opt">(${esc(f.optional)})</span></label><input id="f-talent" name="talent" type="text" autocomplete="off" aria-describedby="e-talent"><p class="err" id="e-talent" hidden></p></div>
     ${field("nachricht", f.message, "textarea", true)}
     <div class="field-row">${field("zeitraum", f.timeframe, "text", false)}${field("budget", f.budget, "text", false)}</div>
@@ -769,13 +862,12 @@ function page404() {
   const body = `
 <section class="wrap page-head" aria-labelledby="h-404">
   <p class="eyebrow">404</p>
-  <h1 class="page-title" id="h-404">${esc(T.en.notFound)}</h1>
-  <p class="lead">${esc(T.en.notFoundText)}</p>
-  <p class="lead" lang="de">${esc(T.de.notFound)} – ${esc(T.de.notFoundText)}</p>
-  <p class="lead" lang="tr">${esc(T.tr.notFound)} – ${esc(T.tr.notFoundText)}</p>
-  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.en.home}">${esc(T.en.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.de.home}" hreflang="de" lang="de">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.tr.home}" hreflang="tr" lang="tr">${esc(T.tr.backHome)}</a></div>
+  <h1 class="page-title" id="h-404">${esc(T.de.notFound)}</h1>
+  <p class="lead">${esc(T.de.notFoundText)}</p>
+  <p class="lead" lang="en">${esc(T.en.notFound)} – ${esc(T.en.notFoundText)}</p>
+  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.de.home}">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.en.home}" hreflang="en" lang="en">${esc(T.en.backHome)}</a></div>
 </section>`;
-  return layout({ lang: "en", key: "home404", title: `404 – ${S.brandName}`, description: T.en.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
+  return layout({ lang: "de", key: "home404", title: `404 – ${S.brandName}`, description: T.de.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
 }
 
 /* ---------- Schreiben ---------- */
@@ -803,14 +895,34 @@ for (const lang of LANGS) {
   write(R.thanks, pageThanks(lang)); unlisted.add(R.thanks);
   write(R.imprint, pageLegal(lang, "imprint"));
   write(R.privacy, pageLegal(lang, "privacy"));
+  if (!PUBLIC_LANGS.includes(lang)) for (const r of written) if (r.startsWith(R.home)) unlisted.add(r);
 }
 write("/404.html", page404());
 
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js", "process.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
+
+// 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).
+// Jede alte Seite zeigt auf dieselbe Seite in der neuen Struktur; Unterseiten (Projekte, Personen) per :splat.
+{
+  const lines = ["# Automatisch erzeugt von build/build.mjs – frühere Adressen → neue Struktur (Deutsch an der Wurzel, Englisch unter /en/)"];
+  for (const lang of ["en", "de"]) {
+    const covered = [];
+    for (const [k, from] of Object.entries(LEGACY_ROUTES[lang]).sort((a, b) => a[1].length - b[1].length)) {
+      const to = ROUTES[lang][k];
+      if (!to || from === to) continue;
+      // Unterseite einer schon weitergeleiteten Adresse mit gleichem Ziel-Muster (z. B. /de/kontakt/ unter /de/*): keine eigene Regel nötig
+      if (covered.some(([f, t2]) => from.startsWith(f) && to === t2 + from.slice(f.length))) continue;
+      covered.push([from, to]);
+      const bare = from.replace(/\/$/, "");
+      lines.push(`${bare}  ${to}  301`, `${from}*  ${to}:splat  301`);
+    }
+  }
+  fs.writeFileSync(path.join(OUT, "_redirects"), lines.join("\n") + "\n");
+}
 
 // robots.txt und sitemap.xml
 const site = (S.siteUrl || "").replace(/\/+$/, "");
