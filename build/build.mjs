@@ -98,7 +98,8 @@ const pkgPriceParts = (k, lang) => {
   return `${m[1] ? `<span class="pkg-price-pre">${esc(m[1])}</span> ` : ""}<span class="pkg-price-amount">${esc(m[2])}</span>${m[3] ? ` <span class="pkg-price-per">${esc(m[3])}</span>` : ""}`;
 };
 const CHECK_ICON = `<svg class="pkg-check" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="10" fill="currentColor"/><path d="M6 10.3l2.6 2.5L14 7.4" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const visiblePackages = (lang) => (PKG.items || []).filter((k) => tr(k, "name", lang) && pkgPrice(k, lang));
+// „Pakete auf der Website zeigen“ aus = kein Paket-Bereich auf der Startseite und keine Paketauswahl im Formular
+const visiblePackages = (lang) => PKG.enabled === false ? [] : (PKG.items || []).filter((k) => tr(k, "name", lang) && pkgPrice(k, lang));
 
 /* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
 function svcCard(s, i, lang) {
