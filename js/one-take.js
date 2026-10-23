@@ -22,39 +22,58 @@
   html.classList.add("ot-js");
   var live = !reduced;
 
-  /* ---------- Bildfolgen der beiden Filme: erstes Bild sofort, der Rest lädt nach ---------- */
-  function frameList(canvas) {
-    var raw = canvas.getAttribute(phone ? "data-frames-m" : "data-frames-d") || canvas.getAttribute("data-frames-d") || '""';
-    var F; try { F = JSON.parse(raw); } catch (e) { F = ""; }
-    if (!F) { try { F = JSON.parse(canvas.getAttribute("data-frames-m") || '""'); } catch (e) { F = ""; } }
-    var poster = new Image(); poster.src = canvas.getAttribute("data-poster");
-    var seq = { poster: poster, imgs: [], count: F ? F.count : 0 };
-    if (F) {
-      var load = function (i) { var im = new Image(); im.decoding = "async"; im.src = F.base + "f-" + String(i + 1).padStart(3, "0") + ".webp"; im.onload = dirty; seq.imgs[i] = im; };
-      load(0); load(F.count - 1);
-      /* Rest in Ruhe nachladen, damit das erste Bild nicht wartet */
-      var i = 1; (function next() { var end = Math.min(F.count - 1, i + 8); for (; i < end; i++) load(i); if (i < F.count - 1) setTimeout(next, 60); })();
+  /* ---------- Die beiden Filme ----------
+     Quelle ist das Video (jedes Bild ein Keyframe, daher flüssig zu spulen). Handys laden zusätzlich alle
+     Einzelbilder und wechseln erst darauf, wenn alle da sind: Safari braucht pro Sprung im Video ≈ 100 ms. */
+  function film(canvas) {
+    var f = { poster: new Image(), video: null, vReady: false, imgs: [], count: 0, got: 0, framesReady: false };
+    f.poster.onload = dirty; f.poster.src = canvas.getAttribute("data-poster");
+    var srcs = []; try { srcs = JSON.parse(canvas.getAttribute("data-sources") || "[]"); } catch (e) {}
+    var px = W * Math.min(devicePixelRatio || 1, 2);
+    var usable = srcs.filter(function (s) { return !s.desktopOnly || (!phone && px > 1100); }).sort(function (a, b) { return a.width - b.width; });
+    var pickSrc = usable.filter(function (s) { return s.width >= (phone ? 540 : Math.min(px * 0.75, 1080)); })[0] || usable[usable.length - 1];
+    if (pickSrc && live) {
+      var v = document.createElement("video");
+      v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.preload = "auto";
+      v.addEventListener("loadeddata", function () { f.vReady = true; dirty(); });
+      v.addEventListener("seeked", dirty);
+      v.src = pickSrc.src;
+      /* iOS gibt Bilder eines Videos erst nach einem kurzen Abspielen frei */
+      var pr = v.play(); if (pr && pr.then) pr.then(function () { v.pause(); }).catch(function () {});
+      f.video = v;
     }
-    poster.onload = dirty;
-    return seq;
-  }
-  function pick(seq, i) {
-    for (var d = 0; d < seq.count; d++) {
-      var x = seq.imgs[i - d] || seq.imgs[i + d];
-      if (x && x.complete && x.naturalWidth) return x;
+    var F = null; try { F = JSON.parse(canvas.getAttribute("data-frames-m") || '""'); } catch (e) {}
+    if (F && live && (phone || matchMedia("(pointer: coarse)").matches)) {
+      f.count = F.count;
+      for (var i = 0; i < F.count; i++) (function (k) {
+        var im = new Image(); im.decoding = "async";
+        im.onload = function () { f.got++; if (f.got === f.count) { f.framesReady = true; dirty(); } };
+        im.src = F.base + "f-" + String(k + 1).padStart(3, "0") + ".webp"; f.imgs[k] = im;
+      })(i);
     }
-    return seq.poster.complete && seq.poster.naturalWidth ? seq.poster : null;
+    return f;
   }
+  /* Bild zur Stelle frac (0 … 1) des Films */
+  function frameAt(f, frac) {
+    if (f.framesReady) return f.imgs[Math.round(frac * (f.count - 1))];
+    if (f.vReady && f.video.duration) {
+      var t = frac * Math.max(0, f.video.duration - 0.05);
+      if (!f.video.seeking && Math.abs(f.video.currentTime - t) > 0.02) f.video.currentTime = t;
+      return f.video;
+    }
+    return f.poster.complete && f.poster.naturalWidth ? f.poster : null;
+  }
+  var dimW = function (m) { return m.videoWidth || m.naturalWidth; }, dimH = function (m) { return m.videoHeight || m.naturalHeight; };
   function sizeCanvas(c) { var dpr = Math.min(devicePixelRatio || 1, 2); c.width = Math.round(c.clientWidth * dpr); c.height = Math.round(c.clientHeight * dpr); }
   function draw(c, img, s, fx, fy, tx, ty) {
     var ctx = c.getContext("2d"), dpr = c.width / (c.clientWidth || 1);
-    var w = img.naturalWidth * s, h = img.naturalHeight * s;
+    var w = dimW(img) * s, h = dimH(img) * s;
     ctx.fillStyle = "#050506"; ctx.fillRect(0, 0, c.width, c.height);
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, (tx - fx * w) * dpr, (ty - fy * h) * dpr, w * dpr, h * dpr);
     return ctx;
   }
-  var cover = function (img, cw, ch) { return Math.max(cw / img.naturalWidth, ch / img.naturalHeight); };
+  var cover = function (img, cw, ch) { return Math.max(cw / dimW(img), ch / dimH(img)); };
 
   /* ---------- Filmkorn ---------- */
   var grainUrl = (function () {
@@ -122,7 +141,7 @@
 
   /* 1 · Einstieg: Bullauge öffnet sich, die Kamera fährt in die Pupille */
   var hero = $(".ot-hero"), hc = $('[data-ot-canvas="hero"]'), port = $(".ot-porthole"), rim = $(".ot-rim");
-  var heroSeq = hc ? frameList(hc) : null;
+  var heroFilm = null;
   var wm = $(".ot-wordmark"), lede = $(".ot-lede"), cue = $(".ot-cue"), tag = $(".ot-tagline"), black = $(".ot-hero .ot-blackout");
   var dots = [];
   if (rim) for (var di = 0; di < 20; di++) dots.push(rim.appendChild(document.createElement("i")));
@@ -137,7 +156,7 @@
     rim.style.opacity = 1 - seg(p, 0.04, 0.16);
     var spin = p * 120;
     dots.forEach(function (d, i) { var a = (i / dots.length * 360 + spin) * Math.PI / 180; d.style.transform = "translate(" + Math.cos(a) * (r + 9.5) + "px," + Math.sin(a) * (r + 9.5) + "px)"; });
-    var img = heroSeq && pick(heroSeq, Math.round(seg(p, 0.04, 0.92) * (heroSeq.count - 1)));
+    var img = heroFilm && frameAt(heroFilm, seg(p, 0.04, 0.92));
     if (img) {
       var z = 1 + 2.4 * easeIn(seg(p, 0.8, 0.97));
       var ctx = draw(hc, img, cover(img, W, H) * z, lerp(phone ? 0.55 : 0.6, 0.5, seg(p, 0, 0.35)), 0.5, W / 2, lerp(cy, H / 2, e));
@@ -270,16 +289,16 @@
 
   /* 7 · Ausstieg: aus der Pupille hinaus zum UFO */
   var exit = $(".ot-exit"), ec = $('[data-ot-canvas="exit"]'), front = $(".ot-exit .ot-front"), cta = $(".ot-cta"), egrain = $(".ot-exit .ot-grain");
-  var exitSeq = ec ? frameList(ec) : null;
+  var exitFilm = null;
   function exitRender(p) {
-    var img = exitSeq && pick(exitSeq, Math.round(seg(p, 0.02, 0.8) * (exitSeq.count - 1)));
+    var img = exitFilm && frameAt(exitFilm, seg(p, 0.02, 0.8));
     if (img) {
       var sc = cover(img, W, H) * lerp(2.4, 1, ease(seg(p, 0, 0.14)));
-      var sf = Math.min(W, H * (phone ? 0.62 : 0.5)) / img.naturalWidth * (phone ? 0.9 : 1);
+      var sf = Math.min(W, H * (phone ? 0.62 : 0.5)) / dimW(img) * (phone ? 0.9 : 1);
       var k = ease(seg(p, 0.5, 0.86)), s = lerp(sc, sf, k), cy = lerp(H / 2, H * (phone ? 0.5 : 0.55), k);
       var ctx = draw(ec, img, s, 0.5, 0.52, W / 2, cy);
       if (k > 0) {
-        var dpr = ec.width / (ec.clientWidth || 1), size = img.naturalWidth * s * dpr;
+        var dpr = ec.width / (ec.clientWidth || 1), size = dimW(img) * s * dpr;
         var g = ctx.createRadialGradient(W / 2 * dpr, cy * dpr, size * 0.36, W / 2 * dpr, cy * dpr, size * 0.52);
         g.addColorStop(0, "rgba(5,5,6,0)"); g.addColorStop(1, "rgba(5,5,6," + k + ")");
         ctx.fillStyle = g; ctx.fillRect(0, 0, ec.width, ec.height);
@@ -320,6 +339,11 @@
 
   if (live) scenes.forEach(function (s) { s.el.classList.add("is-live"); });
   layout();
+  if (hc) heroFilm = film(hc);
+  if (ec) {
+    if (!live || !("IntersectionObserver" in window)) exitFilm = film(ec);
+    else new IntersectionObserver(function (en, ob) { if (en[0].isIntersecting) { exitFilm = film(ec); ob.disconnect(); } }, { rootMargin: "200% 0px" }).observe(exit);
+  }
 
   var lenis = null;
   if (live && fine && window.Lenis) lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
