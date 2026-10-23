@@ -329,3 +329,9 @@
   .ot-grain{display:none}
   .ot-tl{mix-blend-mode:normal;background:rgba(5,5,6,.62);padding:2px 12px;border-radius:999px;left:calc(var(--m) - 6px);right:calc(var(--m) - 6px)}
 }
+
+/* Stationen im All: Breite nach Inhalt (nicht nach der halben Bühne), nie breiter als der Bildschirm */
+.ot-space.is-live .ot-item{width:max-content;max-width:min(94vw,1200px)}
+.ot-space.is-live .ot-item--title,.ot-space.is-live .ot-item--end{width:min(92vw,1100px)}
+.ot-item--title h2{font-size:clamp(36px,9vw,170px);overflow-wrap:anywhere}
+@media (max-width:767px){.ot-space.is-live .ot-item{max-width:88vw}}

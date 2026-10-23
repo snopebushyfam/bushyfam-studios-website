@@ -40,9 +40,17 @@
     f.count = F.count;
     var order = [], seen = {};
     [8, 4, 2, 1].forEach(function (step) { for (var i = 0; i < F.count; i += step) if (!seen[i]) { seen[i] = 1; order.push(i); } if (!seen[F.count - 1]) { seen[F.count - 1] = 1; order.push(F.count - 1); } });
-    var next = 0, running = 0;
+    /* Erst das Grobraster (jedes 8. Bild) zügig, danach den Rest in kleinen Portionen, wenn der Browser Luft hat –
+       sonst blockiert das Entpacken gleich nach dem Öffnen das erste Scrollen */
+    var coarse = Math.ceil(F.count / 8) + 1, next = 0, running = 0;
+    var idle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 40); };
     function pump() {
-      while (running < 8 && next < order.length) (function (k) {
+      if (next >= coarse && running > 0) return;
+      if (next >= coarse) { idle(function () { launch(2); }, { timeout: 300 }); return; }
+      launch(4);
+    }
+    function launch(max) {
+      while (running < max && next < order.length) (function (k) {
         running++;
         var im = new Image(); f.imgs[k] = im;
         var done = function () { f.ok[k] = true; running--; dirty(); pump(); };
