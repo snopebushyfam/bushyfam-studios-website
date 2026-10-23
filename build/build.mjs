@@ -225,7 +225,7 @@ const hrefFor = (lang, key, slug) => {
 /* Instagram-Symbol (Umriss, weiß über currentColor) für den Header */
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
-function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
+function layout({ lang, key, slug, title, description, body, scripts = [], styles = [], headerExtra = "", ogImage = S.seo?.image }) {
   const t = T[lang], others = PUBLIC_LANGS.filter((l) => l !== lang);
   /* Eingefrorene Sprache (Türkisch): erreichbar, aber noindex, ohne canonical/hreflang */
   const indexable = PUBLIC_LANGS.includes(lang);
@@ -274,7 +274,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
-${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
+${styles.map((f) => `<link rel="stylesheet" href="/css/${f}">\n`).join("")}${styles.length ? `<link rel="preload" href="/assets/fonts/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin>\n` : ""}${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
 </head>
 <body class="page-${key}">
 <a class="skip" href="#main">${esc(t.skip)}</a>
@@ -289,6 +289,7 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\
         <li>${langSwitch("nav")}</li>
       </ul>
     </nav>
+    ${headerExtra}
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
     ${igLink(lang, "ig-link header-ig")}
     ${langSwitch("header")}
@@ -409,67 +410,199 @@ function processSection(lang, t, R) {
 </section>`;
 }
 
+/* ---------- Startseite „One Take“ ----------
+   Die ganze Startseite ist eine Kamerafahrt: durch das Bullauge in die Pupille (Einstiegsfilm),
+   durch die Arbeiten im All, vorbei an Monitor, Besetzungs-Ring und Startkonsole, und am Ende
+   aus einer Pupille hinaus zum UFO (Schlussfilm). Alle Inhalte kommen aus dem Admin.
+   Ohne JavaScript oder mit reduzierter Bewegung stehen alle Abschnitte ruhig untereinander. */
+const frameSet = (folder, count) => {
+  if (!fs.existsSync(path.join(ROOT, folder))) return null;
+  for (let i = 1; i <= count; i++) if (!assetExists(`${folder}/${frameName(i)}`)) return null;
+  return { base: url(folder) + "/", count };
+};
+const OT_FRAMES = {
+  hero: { d: frameSet("/assets/hero/hero-cockpit-hoch-frames-900", 85), m: HERO_FRAMES },
+  exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
+};
+const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames-900/f-045.webp";
+
+/* Stationen im Flug: je Projekt bis zu drei – zuerst Filme, dann ein Foto */
+function flightItems(lang) {
+  const t = T[lang], o = t.ot, list = [];
+  for (const p of PROJECTS) {
+    const vids = (p.media || []).filter((m) => m.type === "video" && m.src).slice(0, 2);
+    const imgs = (p.media || []).filter((m) => m.type !== "video" && m.src && m.src !== p.cover.src);
+    const href = hrefFor(lang, "project", p.slug), title = tr(p, "title", lang);
+    const meta = [tr(p, "disciplines", lang) || catLabel(p.category, lang), p.year].filter(Boolean).join(" · ");
+    const main = vids[0] ? { kind: "video", m: vids[0] } : { kind: "image", m: { src: p.cover.src, alt_de: p.cover.alt_de, alt_en: p.cover.alt_en, alt_tr: p.cover.alt_tr }, fit: p.cover.fit };
+    list.push({ ...main, href, title, meta, text: tr(p, "summary", lang), main: true });
+    if (vids[1]) list.push({ kind: "video", m: vids[1], href, title: tr(vids[1], "title", lang) || title, meta: `${o.fromProject} ${title}` });
+    if (imgs[0]) list.push({ kind: "image", m: imgs[0], fit: p.cover.fit, href, title: tr(imgs[0], "caption", lang) || title, meta: `${o.fromProject} ${title}`, text: "" });
+    if (list.length >= 8) break;
+  }
+  if (assetExists(OT_STILL)) list.push({ kind: "image", m: { src: OT_STILL, alt_de: tr(S.hero.video, "description", "de"), alt_en: tr(S.hero.video, "description", "en") }, title: o.ownFilm, meta: o.ownFilmMeta, text: o.ownFilmText, portrait: true });
+  return list;
+}
+function flightMedia(it, lang) {
+  const alt = tr(it.m, "alt", lang) || tr(it.m, "title", lang) || it.title;
+  if (it.kind === "video") {
+    const d = it.m.poster ? imageSize(it.m.poster) || {} : {};
+    return `<div class="ot-pic ot-pic--portrait" data-cursor="Clip"><video muted loop playsinline preload="none"${it.m.poster ? ` poster="${esc(url(it.m.poster))}"` : ""}${d.w ? ` width="${d.w}" height="${d.h}"` : ""} data-ot-video aria-label="${esc(alt)}"><source src="${esc(url(it.m.src))}" type="video/mp4"></video></div>`;
+  }
+  const dim = imageSize(it.m.src) || { w: 1, h: 1 };
+  const shape = it.portrait || dim.h / dim.w > 1.25 ? "portrait" : dim.h / dim.w > 1.05 ? "tall" : "square";
+  return `<div class="ot-pic ot-pic--${shape}${it.fit === "contain" ? " ot-pic--contain" : ""}">${img(it.m.src, alt, { sizes: "(min-width: 900px) 30vw, 60vw", widths: [480, 960] })}</div>`;
+}
+
 function pageHome(lang) {
-  const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
-  const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false);
+  const t = T[lang], o = t.ot, R = ROUTES[lang], H = S.hero, V = H.video;
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
+  const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false && c.logo);
+  const items = flightItems(lang);
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  const services = SERV.items || [];
+  const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
+  const flightHold = Math.max(2.4, (items.length + 1) * 0.72).toFixed(2);
+  const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
+
   const body = `
-<section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
-  <div class="hero-copy" data-hero-copy>
-    <div class="hero-copy-inner">
-      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
-      <div class="hero-foot">
-        ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
-        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+<nav class="ot-tl" aria-label="${esc(o.timeline)}">
+  <span class="ot-tl-dot" aria-hidden="true"></span><span class="ot-tl-tc" aria-hidden="true">00:00:00:00</span><span class="ot-tl-ch" aria-hidden="true">${esc(o.chIntro)}</span>
+  <div class="ot-tl-track" data-ot-track><div class="ot-tl-fill"></div><div class="ot-tl-head"></div></div>
+</nav>
+<div class="ot-cur" aria-hidden="true"></div><div class="ot-cur-ring" aria-hidden="true"><span></span></div>
+${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="true" aria-label="${esc(tr(SR, "title", lang) || o.showreel)}">
+  <video data-ot-reel-video src="${esc(url(SR.src))}"${SR.poster ? ` poster="${esc(url(SR.poster))}"` : ""} controls playsinline preload="none"></video>
+  <button class="ot-btn ot-btn--ghost ot-reel-x" type="button" data-ot-reel-close>${esc(o.close)}</button>
+</div>` : ""}
+
+<section class="ot-scene ot-hero" id="top" data-ot-scene="hero" data-chapter="${esc(o.chIntro)}" style="--hold:2.6" aria-labelledby="h-home">
+  <div class="ot-stage">
+    <div class="ot-porthole"><canvas data-ot-canvas="hero" role="img" aria-label="${esc(tr(V, "description", lang))}" data-poster="${esc(url(V.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.hero.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.hero.m || ""))}"></canvas>
+      <img class="ot-fallback" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="" fetchpriority="high" decoding="async"></div>
+    <div class="ot-rim" aria-hidden="true"></div>
+    <h1 id="h-home"><span class="ot-wordmark" aria-hidden="true">BushyFam</span><span class="vh">${esc(S.brandName)}: </span>
+      <span class="ot-lede"><span>${esc(tr(H, "line1", lang))}</span><span class="ot-ctas"><a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreel)}</span></span></h1>
+    <div class="ot-cue" aria-hidden="true"><b>${esc(o.cueTitle)}</b>${esc(o.cueText)}<span class="ot-line"></span></div>
+    ${tr(H, "text", lang) ? `<p class="ot-tagline">${esc(tr(H, "text", lang))}</p>` : ""}
+    <div class="ot-grain" aria-hidden="true"></div>
+    <div class="ot-blackout" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="ot-scene ot-space" id="arbeiten" data-ot-scene="space" data-chapter="${esc(o.chWork)}" style="--hold:${flightHold}" aria-labelledby="h-work">
+  <div class="ot-stage">
+    <canvas class="ot-stars" aria-hidden="true"></canvas>
+    <div class="ot-world">
+      <div class="ot-item ot-item--title" data-z="0" data-x="0">
+        <h2 id="h-work">${esc(tr(HOME, "workTitle", lang) || t.nav.work)}</h2>
+        <p>${esc(o.workLead)}</p>
+      </div>
+      ${items.map((it, k) => `<div class="ot-item${k % 2 ? " ot-item--flip" : ""}" data-z="${-1900 * (k + 1)}" data-x="${k % 2 ? 0.13 : -0.13}">
+        ${flightMedia(it, lang)}
+        <div class="ot-cap"><span class="ot-meta">${esc(it.meta)}</span><h3>${esc(it.title)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ""}${it.main && it.href ? `<a class="ot-go" href="${it.href}" data-cursor="Case">${esc(t.viewCase)} ↗</a>` : ""}</div>
+      </div>`).join("\n      ")}
+      <div class="ot-item ot-item--end" data-z="${-1900 * (items.length + 1)}" data-x="0">
+        <h3>${esc(o.moreWork)}</h3>
+        <div class="ot-ctas"><a class="ot-btn" href="${R.work}" data-cursor="Alle">${esc(t.allWork)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreelLong)}</div>
+      </div>
+    </div>
+    <div class="ot-warp-out" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="ot-scene ot-svcs" id="${t.servicesId}" data-ot-scene="svcs" data-chapter="${esc(o.chServices)}" style="--hold:2.6" aria-labelledby="h-svc" tabindex="-1">
+  <div class="ot-stage">
+    <div class="ot-svc-left">
+      <h2 id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
+      <ol class="ot-panel">
+        ${services.map((s, i) => `<li class="ot-inst${i ? "" : " is-on"}" data-ot-inst><span class="ot-lamp" aria-hidden="true"></span><div><h3>${esc(tr(s, "title", lang))}</h3><div class="ot-more"><div><p>${esc(tr(s, "text", lang))}</p>${tr(s, "tags", lang) ? `<span>${esc(tr(s, "tags", lang))}</span>` : ""}</div></div></div></li>`).join("\n        ")}
+      </ol>
+    </div>
+    <div class="ot-monitor" aria-hidden="true">
+      <div class="ot-screen">
+        ${services.map((s, i) => `<div class="ot-feed${i ? "" : " is-on"}${i === 1 ? " ot-feed--kb" : ""}">${s.video ? `<video muted loop playsinline preload="none"${s.image ? ` poster="${esc(url(s.image))}"` : ""} data-ot-video><source src="${esc(url(s.video))}" type="video/mp4"></video>` : s.image ? img(s.image, "", { sizes: "(min-width: 900px) 40vw, 90vw", widths: [480, 960] }) : ""}</div>`).join("\n        ")}
+        <div class="ot-static"></div>
+        <div class="ot-osd"><span data-ot-osd-ch>${esc(o.channel.replace("{n}", 1).replace("{m}", services.length))}</span><span data-ot-osd-n>${esc(tr(services[0] || {}, "title", lang))}</span></div>
       </div>
     </div>
   </div>
-  <div class="hero-scrub" data-hero-scrub>
-    <div class="hero-stage">
-      <figure class="hero-media" data-hero-media data-sources="${sourcesAttr(V)}"${HERO_FRAMES ? ` data-frames="${esc(JSON.stringify(HERO_FRAMES))}"` : ""}>
-        <img class="hero-poster" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="${esc(tr(V, "description", lang))}" fetchpriority="high" decoding="async">
-        <video class="hero-video" muted playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" width="${V.width}" height="${V.height}"></video>
-      </figure>
+</section>
+
+${namedClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
+  <h2 id="h-clients" data-ot-reveal>${esc(o.clientsTitle)}</h2>
+  <div class="ot-marq"><div class="ot-marq-track">${[0, 1].map((copy) => namedClients.map((c) => {
+    const d = imageSize(c.logo) || { w: 2, h: 1 };
+    return `<img${d.h / d.w > 0.55 ? ' class="sq"' : ""} src="${esc(url(c.logo))}" width="${d.w}" height="${d.h}" alt="${copy ? "" : esc(c.name)}" loading="lazy" decoding="async"${copy ? ' aria-hidden="true"' : ""}>`;
+  }).join("")).join("")}</div></div>
+</section>` : ""}
+
+${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene="cast" data-chapter="${esc(o.chCast)}" style="--hold:2.2" aria-labelledby="h-cast-home">
+  <div class="ot-stage">
+    <div class="ot-cast-text">
+      <h2 id="h-cast-home">${esc(t.castHomeTitle)}</h2>
+      <p>${esc(t.castLead)}</p>
+      <div class="ot-who" aria-live="polite">${esc(CAST[0].name)}<small>${esc(tr(CAST[0], "role", lang))}</small></div>
+      <a class="ot-btn ot-btn--ghost" href="${R.cast}" data-cursor="Alle">${esc(t.exploreCast)} <span class="ot-arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="ot-ringwrap"><ul class="ot-ring">
+      ${CAST.map((p, i) => `<li data-role="${esc(tr(p, "role", lang))}"><a href="${hrefFor(lang, "person", p.slug)}">${img(p.photos[0].src, tr(p.photos[0], "alt", lang) || p.name, { sizes: "(min-width: 900px) 20vw, 46vw", widths: [480, 960], lazy: i > 2 })}<span class="ot-ring-name">${esc(p.name)}</span></a></li>`).join("\n      ")}
+    </ul></div>
+  </div>
+</section>` : ""}
+
+<section class="ot-block" id="anfrage" data-chapter="${esc(o.chLaunch)}" aria-labelledby="h-launch">
+  <div class="ot-block-head">
+    <h2 id="h-launch" data-ot-reveal>${esc(o.launchTitle)}</h2>
+    <p data-ot-reveal style="--d:.1s">${esc(o.launchLead)}</p>
+  </div>
+  <div class="ot-launch">
+    <form class="ot-builder" data-ot-builder onsubmit="return false">
+      <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-chips">
+        ${(CON.options || []).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
+      </div></fieldset>
+      <fieldset class="ot-q"><legend>${esc(o.qWhen)}</legend><div class="ot-chips">
+        ${o.when.map((w, i) => `<input type="radio" name="ot-when" id="ot-t${i}" value="${esc(w)}"${i ? "" : " checked"}><label for="ot-t${i}">${esc(w)}</label>`).join("")}
+      </div></fieldset>
+      <label class="ot-q" for="ot-note"><span>${esc(o.qNote)}</span><textarea id="ot-note" placeholder="${esc(o.notePh)}"></textarea></label>
+      <a class="link-arrow" href="${R.contact}">${esc(o.formLink)} <span aria-hidden="true">→</span></a>
+    </form>
+    <aside class="ot-plan" aria-label="${esc(o.plan)}">
+      <div class="ot-now"><span>${esc(o.plan)}</span><span>${esc(o.now)}: <b data-ot-now>–</b></span></div>
+      <ol class="ot-track3">
+        ${steps.map((s, i) => `<li><span class="ot-pt"></span><div><div class="ot-when" data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</div><div class="ot-what"><b>${esc(tr(s, "title", lang))}</b> · ${esc(tr(s, "text", lang))}</div></div></li>`).join("\n        ")}
+      </ol>
+      <p class="ot-mission" data-ot-mission></p>
+      <div class="ot-console" data-ot-console>
+        <button class="ot-launch-btn" type="button" data-ot-launch data-cursor="Start"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl" data-ot-lbl>${esc(o.launch)}</span></button>
+        <div class="ot-ctext"><b>${esc(o.consoleTitle)}</b><span>${esc(o.consoleText)}</span></div>
+        <img class="ot-ufo" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt="" aria-hidden="true">
+      </div>
+      <div class="ot-send" data-ot-send hidden>
+        <p class="ot-ready">${esc(o.readyText)}</p>
+        <blockquote data-ot-preview></blockquote>
+        <div class="ot-ctas">
+          ${WA_URL ? `<a class="ot-btn" data-ot-wa href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden">${esc(o.sendWa)} <span aria-hidden="true">↗</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+          ${S.email ? `<a class="ot-btn ot-btn--ghost" data-ot-mail href="mailto:${esc(S.email)}">${esc(o.sendMail)}</a>` : ""}
+        </div>
+      </div>
+      ${S.email ? `<div class="ot-mailrow">E-Mail: <span class="ot-mail">${esc(S.email)}</span> <button class="ot-copy" type="button" data-ot-copy>${esc(o.copy)}</button></div>` : ""}
+    </aside>
+  </div>
+</section>
+
+<section class="ot-block" id="studio" data-chapter="${esc(o.chStudio)}" aria-labelledby="h-about">
+  <div class="ot-studio">
+    <div class="ot-iris" data-ot-iris>${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { sizes: "(min-width: 900px) 45vw, 92vw" })}</div>
+    <div class="ot-studio-txt">
+      <h2 id="h-about" data-ot-reveal>${esc(STU.name)}</h2>
+      <p class="ot-role" data-ot-reveal style="--d:.08s">${esc(tr(STU, "role", lang))}</p>
+      <p data-ot-reveal style="--d:.16s">${esc(tr(HOME, "aboutText", lang))}</p>
+      <a class="ot-btn ot-btn--ghost" href="${R.studio}" data-ot-reveal style="--d:.24s">${esc(t.discoverStory)} <span class="ot-arr" aria-hidden="true">→</span></a>
     </div>
   </div>
-  ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
-
-<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
-  <div class="wrap">
-    <p class="eyebrow">${esc(t.nav.services)}</p>
-    <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
-  </div>
-  <ul class="svc-cards">
-    ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
-  </ul>
-  <div class="wrap">
-    ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
-  </div>
-</section>
-
-${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
-  <div class="wrap cast-head">
-    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
-    <p class="lead">${esc(t.castLead)}</p>
-  </div>
-  ${castRow(lang)}
-  <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
-</section>` : ""}
-
-${processSection(lang, t, R)}
-
-${PROJECTS.length ? `<section class="section work-feature" aria-labelledby="h-picks">
-  <div class="wrap head-row">
-    <h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang) || t.nav.work)}</h2>
-  </div>
-  <ul class="feature-list">
-    ${PROJECTS.slice(0, 3).map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
-  </ul>
-  <p class="wrap work-all"><a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a></p>
-</section>` : ""}
 
 ${visiblePackages(lang).length ? `<section class="section packages-home" aria-labelledby="h-pkg">
   <div class="wrap">
@@ -493,63 +626,26 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
   </div>
 </section>` : ""}
 
-${SR ? `<section class="section showreel" aria-labelledby="h-reel">
-  <div class="wrap">
-    <div class="head-row"><h2 class="h2" id="h-reel">${esc(tr(SR, "title", lang))}${SR.duration ? ` <span class="muted">${esc(SR.duration)}</span>` : ""}</h2></div>
-    <div class="clip-frame clip-frame--wide" data-clip data-src="${esc(url(SR.src))}">
-      ${SR.poster ? img(SR.poster, "", { sizes: "100vw" }) : ""}
-      <button class="clip-play" type="button" data-clip-play data-title="${esc(tr(SR, "title", lang))}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.play)}</span><span class="vh">: ${esc(tr(SR, "title", lang))}</span></button>
-    </div>
-  </div>
-</section>` : ""}
-
-
-
-<section class="section founder" aria-labelledby="h-about">
-  <div class="wrap about">
-    ${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { cls: "about-img", sizes: "(min-width: 900px) 34vw, 90vw" })}
-    <div class="about-text">
-      <p class="eyebrow">${esc(t.nav.studio)}</p>
-      <h2 class="h2" id="h-about">${esc(STU.name)}</h2>
-      <p class="role">${esc(tr(STU, "role", lang))}</p>
-      <p class="body">${esc(tr(HOME, "aboutText", lang))}</p>
-      <p class="more"><a class="link-arrow" href="${R.studio}">${esc(t.discoverStory)} <span aria-hidden="true">→</span></a></p>
+<section class="ot-scene ot-exit" id="kontakt" data-ot-scene="exit" data-chapter="${esc(o.chExit)}" style="--hold:2.4" aria-labelledby="h-cta">
+  <div class="ot-stage">
+    ${E ? `<canvas data-ot-canvas="exit" role="img" aria-label="${esc(tr(E, "description", lang))}" data-poster="${esc(url(E.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.exit.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.exit.m || ""))}"></canvas>` : ""}
+    <div class="ot-grain" aria-hidden="true"></div>
+    <div class="ot-front" aria-hidden="true"></div>
+    <div class="ot-cta">
+      <div><h2 id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>${tr(HOME, "ctaText", lang) ? `<p>${esc(tr(HOME, "ctaText", lang))}</p>` : ""}</div>
+      <div class="ot-ctas">
+        <a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>
+        ${WA_URL ? `<a class="ot-btn ot-btn--ghost" href="${WA_URL}" target="_blank" rel="noopener noreferrer">WhatsApp ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+        ${S.instagramUrl ? `<a class="ot-btn ot-btn--ghost" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${esc(S.instagramHandle || "Instagram")} ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+      </div>
     </div>
   </div>
 </section>
-
-${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
-  <div class="wrap"><h2 class="clients-title" id="h-clients">${esc(t.clients)}</h2>
-    <ul class="client-row">${namedClients.map((c) => {
-      const mark = c.logo ? img(c.logo, c.name, { cls: "client-logo", sizes: "200px" }) : `<span class="client-word">${esc(c.name)}</span>`;
-      return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
-    }).join("")}</ul>
-  </div>
-</section>` : ""}
-
-${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).toFixed(4)}" aria-label="${esc(t.ending)}">
-  <div class="ending-track" data-ending-track>
-    <div class="ending-stage">
-      <figure class="ending-media" data-ending-media data-sources="${sourcesAttr(E)}">
-        <img class="ending-poster" src="${esc(url(E.poster))}" width="${E.width}" height="${E.height}" alt="${esc(tr(E, "description", lang))}" loading="lazy" decoding="async">
-        <video class="ending-video" muted playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" width="${E.width}" height="${E.height}"></video>
-      </figure>
-    </div>
-  </div>
-</section>` : ""}
-
-<section class="section cta cta--final" aria-labelledby="h-cta">
-  <div class="wrap">
-    <h2 class="cta-title" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
-    <div class="cta-foot">
-      <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
-      <a class="cta-go" href="${R.contact}"><span>${esc(t.cta)}</span><span class="cta-go-arrow" aria-hidden="true">→</span></a>
-    </div>
-    ${WA_URL || S.instagramUrl || S.email ? `<div class="cta-direct"><span class="cta-direct-label">${esc(t.direct)}</span>${S.email ? `<a href="mailto:${esc(S.email)}">${esc(S.email)}</a>` : ""}${WA_URL ? ext(WA_URL, "WhatsApp", lang, "") : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "") : ""}</div>` : ""}
-  </div>
-</section>`;
-  return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : []), ...(visiblePackages(lang).length ? ["pixel-card.js"] : []), ...(processSection(lang, t, R) ? ["process.js"] : [])], ogImage: S.seo?.image || V.poster });
+<p class="ot-fwm" aria-hidden="true">BushyFam</p>
+<script type="application/json" id="ot-i18n">${JSON.stringify(i18n).replace(/</g, "\\u003c")}</script>`;
+  const headerExtra = `<button class="ot-snd" type="button" data-ot-snd aria-pressed="false" aria-label="${esc(o.soundLabel)}" data-cursor="Ton"><span class="ot-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="ot-snd-l">${esc(o.soundOn)}</span></button>`;
+  return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body, headerExtra,
+    styles: ["one-take.css"], scripts: ["lenis.min.js", "one-take.js", ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -902,7 +998,7 @@ write("/404.html", page404());
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js", "process.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js", "process.js", "one-take.js", "lenis.min.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
 
 // 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).

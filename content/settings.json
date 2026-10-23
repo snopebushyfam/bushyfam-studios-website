@@ -94,10 +94,10 @@
     }
   },
   "showreel": {
-    "enabled": false,
-    "src": "",
-    "poster": "",
-    "duration": "",
+    "enabled": true,
+    "src": "/assets/showreel/showreel-platzhalter.mp4",
+    "poster": "/assets/showreel/showreel-platzhalter-poster.jpg",
+    "duration": "00:20",
     "title_de": "Showreel",
     "title_en": "Showreel",
     "title_tr": "Showreel"
