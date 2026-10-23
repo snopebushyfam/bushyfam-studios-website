@@ -420,13 +420,14 @@ const frameSet = (folder, count) => {
   for (let i = 1; i <= count; i++) if (!assetExists(`${folder}/${frameName(i)}`)) return null;
   return { base: url(folder) + "/", count };
 };
-/* Die Filme laufen als Video (jedes Bild ein Keyframe, daher flüssig zu spulen). Handys laden zusätzlich
-   alle Einzelbilder und wechseln erst darauf, wenn alle da sind – Safari springt im Video zu langsam. */
+/* Die beiden Filme laufen als Bildfolge auf einer Zeichenfläche: 85 bzw. 76 Bilder, zwischen zwei Bildern
+   wird weich übergeblendet. Handys bekommen kleinere Bilder (wenig Arbeitsspeicher, Safari wirft sonst Bilder
+   aus dem Speicher); Videos werden hier bewusst nicht gespult – Safari springt darin zu langsam. */
 const OT_FRAMES = {
-  hero: { m: HERO_FRAMES },
-  exit: { m: frameSet("/assets/ending/ending-ufo-sq-frames", 152) },
+  hero: { d: frameSet("/assets/hero/hero-cockpit-hoch-frames-900", 85), m: frameSet("/assets/hero/hero-cockpit-hoch-frames-480", 85) },
+  exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
 };
-const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames/f-089.webp";
+const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames-900/f-045.webp";
 
 /* Stationen im Flug: je Projekt bis zu drei – zuerst Filme, dann ein Foto */
 function flightItems(lang) {
@@ -481,7 +482,7 @@ ${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="t
 
 <section class="ot-scene ot-hero" id="top" data-ot-scene="hero" data-chapter="${esc(o.chIntro)}" style="--hold:2.6" aria-labelledby="h-home">
   <div class="ot-stage">
-    <div class="ot-porthole"><canvas data-ot-canvas="hero" role="img" aria-label="${esc(tr(V, "description", lang))}" data-poster="${esc(url(V.poster))}" data-sources="${sourcesAttr(V)}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.hero.m || ""))}"></canvas>
+    <div class="ot-porthole"><canvas data-ot-canvas="hero" role="img" aria-label="${esc(tr(V, "description", lang))}" data-poster="${esc(url(V.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.hero.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.hero.m || ""))}"></canvas>
       <img class="ot-fallback" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="" fetchpriority="high" decoding="async"></div>
     <div class="ot-rim" aria-hidden="true"></div>
     <h1 id="h-home"><span class="ot-wordmark" aria-hidden="true">BushyFam</span><span class="vh">${esc(S.brandName)}: </span>
@@ -630,7 +631,7 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
 
 <section class="ot-scene ot-exit" id="kontakt" data-ot-scene="exit" data-chapter="${esc(o.chExit)}" style="--hold:2.4" aria-labelledby="h-cta">
   <div class="ot-stage">
-    ${E ? `<canvas data-ot-canvas="exit" role="img" aria-label="${esc(tr(E, "description", lang))}" data-poster="${esc(url(E.poster))}" data-sources="${sourcesAttr(E)}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.exit.m || ""))}"></canvas>` : ""}
+    ${E ? `<canvas data-ot-canvas="exit" role="img" aria-label="${esc(tr(E, "description", lang))}" data-poster="${esc(url(E.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.exit.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.exit.m || ""))}"></canvas>` : ""}
     <div class="ot-grain" aria-hidden="true"></div>
     <div class="ot-front" aria-hidden="true"></div>
     <div class="ot-cta">

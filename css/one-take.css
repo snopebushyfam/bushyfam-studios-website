@@ -323,3 +323,9 @@
   .page-home .header-ig,.page-home .lang-switch--header{display:none}
   .page-home .header-inner{gap:.6rem}
 }
+
+/* Touch-Geräte: kein animiertes Filmkorn und kein Mischmodus über dem bewegten Film (kostet Safari pro Bild) */
+@media (pointer:coarse){
+  .ot-grain{display:none}
+  .ot-tl{mix-blend-mode:normal;background:rgba(5,5,6,.62);padding:2px 12px;border-radius:999px;left:calc(var(--m) - 6px);right:calc(var(--m) - 6px)}
+}

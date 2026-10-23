@@ -18,63 +18,65 @@
   var easeIn = function (t) { return t * t * t; };
   var L = {};
   try { L = JSON.parse($("#ot-i18n").textContent); } catch (e) {}
-  var W = innerWidth, H = innerHeight, phone = W < 768;
+  var probe = document.createElement("div"); probe.style.cssText = "position:fixed;left:0;top:0;width:1px;height:100svh;visibility:hidden;pointer-events:none"; document.body.appendChild(probe);
+  var svh = function () { return probe.offsetHeight || innerHeight; };
+  var W = innerWidth, H = svh(), phone = W < 768;
   html.classList.add("ot-js");
   var live = !reduced;
 
   /* ---------- Die beiden Filme ----------
-     Quelle ist das Video (jedes Bild ein Keyframe, daher flüssig zu spulen). Handys laden zusätzlich alle
-     Einzelbilder und wechseln erst darauf, wenn alle da sind: Safari braucht pro Sprung im Video ≈ 100 ms. */
-  var USE_FRAMES = false; // Test: nur Video, auch am Handy
+     Bildfolge auf einer Zeichenfläche. Zwischen zwei Bildern wird passend zur Scrollposition weich
+     übergeblendet – das wirkt flüssiger als 24 Bilder pro Sekunde und springt nie, auch nicht während
+     des Ladens (dann wird zwischen den nächsten schon geladenen Bildern übergeblendet).
+     Geladen wird grob nach fein: jedes 8., dann jedes 4., 2. und zuletzt jedes Bild. */
   function film(canvas) {
-    var f = { poster: new Image(), video: null, vReady: false, imgs: [], count: 0, got: 0, framesReady: false };
+    var f = { poster: new Image(), imgs: [], ok: [], count: 0 };
     f.poster.onload = dirty; f.poster.src = canvas.getAttribute("data-poster");
-    var srcs = []; try { srcs = JSON.parse(canvas.getAttribute("data-sources") || "[]"); } catch (e) {}
-    var px = W * Math.min(devicePixelRatio || 1, 2);
-    var usable = srcs.filter(function (s) { return !s.desktopOnly || (!phone && px > 1100); }).sort(function (a, b) { return a.width - b.width; });
-    var pickSrc = usable.filter(function (s) { return s.width >= (phone ? 540 : Math.min(px * 0.75, 1080)); })[0] || usable[usable.length - 1];
-    if (pickSrc && live) {
-      var v = document.createElement("video");
-      v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.preload = "auto";
-      v.addEventListener("loadeddata", function () { f.vReady = true; dirty(); });
-      v.addEventListener("seeked", dirty);
-      v.src = pickSrc.src;
-      /* iOS gibt Bilder eines Videos erst nach einem kurzen Abspielen frei */
-      var pr = v.play(); if (pr && pr.then) pr.then(function () { v.pause(); }).catch(function () {});
-      f.video = v;
+    var small = phone || matchMedia("(pointer: coarse)").matches;
+    var F = null;
+    try { F = JSON.parse(canvas.getAttribute(small ? "data-frames-m" : "data-frames-d") || '""'); } catch (e) {}
+    if (!F) try { F = JSON.parse(canvas.getAttribute("data-frames-m") || '""'); } catch (e) {}
+    if (!F || !live) return f;
+    f.count = F.count;
+    var order = [], seen = {};
+    [8, 4, 2, 1].forEach(function (step) { for (var i = 0; i < F.count; i += step) if (!seen[i]) { seen[i] = 1; order.push(i); } if (!seen[F.count - 1]) { seen[F.count - 1] = 1; order.push(F.count - 1); } });
+    var next = 0, running = 0;
+    function pump() {
+      while (running < 6 && next < order.length) (function (k) {
+        running++;
+        var im = new Image(); f.imgs[k] = im;
+        var done = function () { f.ok[k] = true; running--; dirty(); pump(); };
+        im.onload = function () { if (im.decode) im.decode().then(done, done); else done(); };
+        im.onerror = function () { running--; pump(); };
+        im.src = F.base + "f-" + String(k + 1).padStart(3, "0") + ".webp";
+      })(order[next++]);
     }
-    var F = null; try { F = JSON.parse(canvas.getAttribute("data-frames-m") || '""'); } catch (e) {}
-    if (F && live && USE_FRAMES) {
-      f.count = F.count;
-      for (var i = 0; i < F.count; i++) (function (k) {
-        var im = new Image(); im.decoding = "async";
-        im.onload = function () { f.got++; if (f.got === f.count) { f.framesReady = true; dirty(); } };
-        im.src = F.base + "f-" + String(k + 1).padStart(3, "0") + ".webp"; f.imgs[k] = im;
-      })(i);
-    }
+    pump();
     return f;
   }
-  /* Bild zur Stelle frac (0 … 1) des Films */
+  /* Zwei Nachbarbilder und Mischanteil zur Stelle frac (0 … 1) */
   function frameAt(f, frac) {
-    if (f.framesReady) return f.imgs[Math.round(frac * (f.count - 1))];
-    if (f.vReady && f.video.duration) {
-      var t = frac * Math.max(0, f.video.duration - 0.05);
-      if (!f.video.seeking && Math.abs(f.video.currentTime - t) > 0.02) {
-        /* Safari: fastSeek springt schneller; bei Videos, in denen jedes Bild ein Keyframe ist, trotzdem bildgenau */
-        if (f.video.fastSeek) f.video.fastSeek(t); else f.video.currentTime = t;
-      }
-      return f.video;
+    if (f.count) {
+      var x = clamp(frac) * (f.count - 1), a = -1, b = -1;
+      for (var i = Math.floor(x); i >= 0; i--) if (f.ok[i]) { a = i; break; }
+      for (var j = Math.ceil(x); j < f.count; j++) if (f.ok[j]) { b = j; break; }
+      if (a < 0 && b >= 0) a = b;
+      if (b < 0 && a >= 0) b = a;
+      if (a >= 0) return { a: f.imgs[a], b: f.imgs[b], t: b > a ? (x - a) / (b - a) : 0 };
     }
-    return f.poster.complete && f.poster.naturalWidth ? f.poster : null;
+    return f.poster.complete && f.poster.naturalWidth ? { a: f.poster, b: f.poster, t: 0 } : null;
   }
-  var dimW = function (m) { return m.videoWidth || m.naturalWidth; }, dimH = function (m) { return m.videoHeight || m.naturalHeight; };
-  function sizeCanvas(c) { var dpr = Math.min(devicePixelRatio || 1, 2); c.width = Math.round(c.clientWidth * dpr); c.height = Math.round(c.clientHeight * dpr); }
-  function draw(c, img, s, fx, fy, tx, ty) {
+  var dimW = function (m) { return (m.a || m).naturalWidth; }, dimH = function (m) { return (m.a || m).naturalHeight; };
+  function sizeCanvas(c) {
+    var dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  }
+  function draw(c, fr, s, fx, fy, tx, ty) {
     var ctx = c.getContext("2d"), dpr = c.width / (c.clientWidth || 1);
-    var w = dimW(img) * s, h = dimH(img) * s;
-    ctx.fillStyle = "#050506"; ctx.fillRect(0, 0, c.width, c.height);
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, (tx - fx * w) * dpr, (ty - fy * h) * dpr, w * dpr, h * dpr);
+    var w = dimW(fr) * s, h = dimH(fr) * s, x = (tx - fx * w) * dpr, y = (ty - fy * h) * dpr;
+    ctx.globalAlpha = 1; ctx.fillStyle = "#050506"; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(fr.a, x, y, w * dpr, h * dpr);
+    if (fr.b && fr.b !== fr.a && fr.t > 0.02) { ctx.globalAlpha = fr.t; ctx.drawImage(fr.b, x, y, w * dpr, h * dpr); ctx.globalAlpha = 1; }
     return ctx;
   }
   var cover = function (img, cw, ch) { return Math.max(cw / dimW(img), ch / dimH(img)); };
@@ -336,7 +338,7 @@
     });
   }
   function layout() {
-    W = innerWidth; H = innerHeight; phone = W < 768;
+    W = innerWidth; H = svh(); phone = W < 768;
     [hc, ec].forEach(function (c) { if (c) sizeCanvas(c); });
     castLayout(); fit(); dirty();
   }
@@ -378,7 +380,12 @@
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  addEventListener("resize", function () { layout(); buildTimeline(); });
+  /* iOS meldet beim Ein-/Ausklappen der Adressleiste ständig eine neue Größe: nur bei echter Änderung neu aufbauen */
+  var lastW = innerWidth, lastH = svh();
+  addEventListener("resize", function () {
+    if (innerWidth === lastW && Math.abs(svh() - lastH) < 2) return;
+    lastW = innerWidth; lastH = svh(); layout(); buildTimeline();
+  });
   addEventListener("load", function () { fit(); buildTimeline(); });
   if (document.fonts) document.fonts.ready.then(function () { fit(); buildTimeline(); });
 
