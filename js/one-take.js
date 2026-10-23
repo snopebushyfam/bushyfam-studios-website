@@ -25,6 +25,7 @@
   /* ---------- Die beiden Filme ----------
      Quelle ist das Video (jedes Bild ein Keyframe, daher flüssig zu spulen). Handys laden zusätzlich alle
      Einzelbilder und wechseln erst darauf, wenn alle da sind: Safari braucht pro Sprung im Video ≈ 100 ms. */
+  var USE_FRAMES = false; // Test: nur Video, auch am Handy
   function film(canvas) {
     var f = { poster: new Image(), video: null, vReady: false, imgs: [], count: 0, got: 0, framesReady: false };
     f.poster.onload = dirty; f.poster.src = canvas.getAttribute("data-poster");
@@ -43,7 +44,7 @@
       f.video = v;
     }
     var F = null; try { F = JSON.parse(canvas.getAttribute("data-frames-m") || '""'); } catch (e) {}
-    if (F && live && (phone || matchMedia("(pointer: coarse)").matches)) {
+    if (F && live && USE_FRAMES) {
       f.count = F.count;
       for (var i = 0; i < F.count; i++) (function (k) {
         var im = new Image(); im.decoding = "async";
@@ -58,7 +59,10 @@
     if (f.framesReady) return f.imgs[Math.round(frac * (f.count - 1))];
     if (f.vReady && f.video.duration) {
       var t = frac * Math.max(0, f.video.duration - 0.05);
-      if (!f.video.seeking && Math.abs(f.video.currentTime - t) > 0.02) f.video.currentTime = t;
+      if (!f.video.seeking && Math.abs(f.video.currentTime - t) > 0.02) {
+        /* Safari: fastSeek springt schneller; bei Videos, in denen jedes Bild ein Keyframe ist, trotzdem bildgenau */
+        if (f.video.fastSeek) f.video.fastSeek(t); else f.video.currentTime = t;
+      }
       return f.video;
     }
     return f.poster.complete && f.poster.naturalWidth ? f.poster : null;
