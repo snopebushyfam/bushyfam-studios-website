@@ -106,16 +106,25 @@
       ]
     },
     {
-      "kind": "still",
+      "kind": "browser",
       "title_de": "Websites & Digital",
       "title_en": "Websites & digital",
       "title_tr": "Web siteleri ve dijital",
-      "text_de": "Websites, Social-Media-Auftritte und Anzeigen – als ein zusammenhängendes System gedacht.",
-      "text_en": "Websites, social media presence and ads – designed as one connected system.",
-      "text_tr": "Web siteleri, sosyal medya ve reklamlar – tek bir bütün olarak düşünülmüş.",
+      "text_de": "Websites für Unternehmen aus der Region – modern, schnell und gemacht, damit Kunden anfragen.",
+      "text_en": "Websites for local businesses – modern, fast and built to turn visitors into enquiries.",
+      "text_tr": "Bölgedeki işletmeler için web siteleri – modern, hızlı ve ziyaretçiyi müşteriye dönüştürmek için.",
       "media": [
         {
-          "src": "/assets/services/digital-website.webp"
+          "src": "/assets/showcase/web-hochundtief.webp",
+          "url": "hochundtief-service.de"
+        },
+        {
+          "src": "/assets/showcase/web-csi.webp",
+          "url": "csi-dienstleistungen.de"
+        },
+        {
+          "src": "/assets/showcase/web-kms.webp",
+          "url": "kms.koeln"
         }
       ]
     },

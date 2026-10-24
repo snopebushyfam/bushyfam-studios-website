@@ -20,7 +20,10 @@
       "text_de": "Ein paar Sätze per Formular oder WhatsApp reichen.",
       "text_en": "A few sentences via the form or WhatsApp are enough.",
       "figure_de": "Jetzt",
-      "figure_en": "Now"
+      "figure_en": "Now",
+      "title_tr": "Talep",
+      "text_tr": "Form ya da WhatsApp üzerinden birkaç cümle yeterli.",
+      "figure_tr": "Şimdi"
     },
     {
       "title_de": "Kurzer Call",
@@ -28,7 +31,10 @@
       "text_de": "15–20 Minuten: Ziel, Zeitraum, Budget.",
       "text_en": "15–20 minutes: goal, timeframe, budget.",
       "figure_de": "20 Min.",
-      "figure_en": "20 min"
+      "figure_en": "20 min",
+      "title_tr": "Kısa görüşme",
+      "text_tr": "15–20 dakika: hedef, zaman ve bütçe.",
+      "figure_tr": "20 dk."
     },
     {
       "title_de": "Angebot",
@@ -36,9 +42,14 @@
       "text_de": "Innerhalb von 48 Stunden ein konkretes Angebot.",
       "text_en": "A concrete proposal within 48 hours.",
       "figure_de": "48 h",
-      "figure_en": "48 h"
+      "figure_en": "48 h",
+      "title_tr": "Teklif",
+      "text_tr": "48 saat içinde somut bir teklif.",
+      "figure_tr": "48 s"
     }
   ],
   "processLead_de": "Drei Schritte, dann liegt ein konkretes Angebot auf dem Tisch.",
-  "processLead_en": "Three steps, then a concrete proposal is on the table."
+  "processLead_en": "Three steps, then a concrete proposal is on the table.",
+  "processTitle_tr": "Nasıl işler",
+  "processLead_tr": "Üç adım – ve somut bir teklif masanda."
 }

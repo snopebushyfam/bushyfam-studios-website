@@ -170,6 +170,7 @@
     if (d.kind === "cinema") { d.slides = $$(".ot-cine-shot", el); d.period = 3200; }
     if (d.kind === "cards") { d.slides = $$(".ot-card", el); d.period = 2200; }
     if (d.kind === "porthole") { d.slides = [el]; d.period = 0; }
+    if (d.kind === "browser") { d.slides = $$(".ot-br-page", el); d.view = $(".ot-br-view", el); d.url = $(".ot-br-url", el); d.period = 5200; }
     return d;
   });
   var vidOf = function (node) { return node && node.querySelector("video"); };
@@ -184,6 +185,14 @@
       d.slides.forEach(function (s, k) { s.classList.toggle("is-on", k === d.i); var v = vidOf(s); if (!v) return; if (k === d.i) { v.currentTime = 0; play(v); } else v.pause(); });
     } else if (d.kind === "cards") {
       d.slides.forEach(function (s, k) { s.setAttribute("data-pos", String((k - d.i + n) % n)); });
+    } else if (d.kind === "browser") {
+      d.slides.forEach(function (s, k) {
+        s.classList.toggle("is-on", k === d.i);
+        var im = s.querySelector("img"); if (!im) return;
+        im.style.transition = "none"; im.style.transform = "none";
+        if (k === d.i) { void im.offsetWidth; var dist = Math.max(0, im.offsetHeight - d.view.offsetHeight); im.style.transition = "transform " + (d.period - 700) + "ms cubic-bezier(.45,0,.2,1)"; im.style.transform = "translateY(" + (-dist) + "px)"; }
+      });
+      if (d.url) d.url.textContent = d.slides[d.i].getAttribute("data-url") || "";
     } else if (d.kind === "porthole") { play(vidOf(d.el)); }
   }
   function devVisible(d) {

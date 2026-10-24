@@ -3,9 +3,9 @@
  * Inhalte wie Projekte, Leistungen und Studio-Texte kommen aus content/ (Admin).
  */
 // Deutsch ist die Hauptsprache (Wurzel "/"), Englisch liegt unter "/en/".
-// Türkisch (/tr/) ist eingefroren: erreichbar, aber noindex, nicht in Sitemap und Sprachwahl.
+// Türkisch (/tr/) ist freigegeben: in Sprachwahl, Sitemap und hreflang.
 export const DEFAULT_LANG = "de";
-export const PUBLIC_LANGS = ["de", "en"];
+export const PUBLIC_LANGS = ["de", "en", "tr"];
 export const ROUTES = {
   en: { home: "/en/", work: "/en/work/", project: "/en/work/", cast: "/en/cast/", person: "/en/cast/", studio: "/en/studio/", contact: "/en/contact/", thanks: "/en/contact/thanks/", imprint: "/en/imprint/", privacy: "/en/privacy/" },
   de: { home: "/", work: "/arbeiten/", project: "/arbeiten/", cast: "/besetzung/", person: "/besetzung/", studio: "/studio/", contact: "/kontakt/", thanks: "/kontakt/danke/", imprint: "/impressum/", privacy: "/datenschutz/" },
@@ -126,21 +126,21 @@ export const T = {
     skip: "İçeriğe geç", homeLabel: "Ana sayfa", mainNav: "Ana menü", mobileNav: "Mobil menü", footerNav: "Alt bilgi",
     nav: { home: "Ana sayfa", work: "İşler", services: "Hizmetler", studio: "Stüdyo", contact: "İletişim", cast: "Kadro" },
     servicesId: "hizmetler",
-    ot: { cueTitle: "Step in.", cueText: "Scroll and the camera starts moving.", showreel: "Showreel", showreelLong: "Watch the showreel", close: "Close",
-      soundOn: "Sound on", soundOff: "Sound off", soundLabel: "Toggle sound", timeline: "Chapter timeline", jumpTo: "Jump to",
-      chIntro: "Intro", chWork: "Work", chServices: "Services", chCast: "Cast", chLaunch: "Enquiry", chStudio: "Studio", chExit: "Contact",
-      workLead: "Behind the pupil lies everything we have filmed, photographed and designed. Keep scrolling and fly right through it.",
-      moreWork: "More work", endTitle: "So what shall we make for you?", qBudget: "Rough budget?", budgets: ["Under €1,000", "€1,000–3,000", "Over €3,000", "Not sure yet"], budgetMsg: "Budget: {b}.",
-      freeCall: "First call free and without obligation.", directMe: "You talk directly to me – {name}, founder.", sendNow: "Send via WhatsApp", orMail: "or by email",
-      clientsLead: "From hospitality to property management – for businesses across Germany.", castLeadHome: "For your shoot: models and actors from our network – no casting of your own.", mobileWa: "WhatsApp", fromProject: "From the project", ownFilm: "UFO Cockpit", ownFilmMeta: "Own production · Short film",
-      ownFilmText: "Our own short film: from the spaceship cabin into the pupil. You just flew through it.",
-      channel: "Channel {n} of {m}", clientsTitle: "Already on board", castRole: "Model & acting",
-      launchTitle: "Ready in 48 hours", launchLead: "Put your project together. The flight plan works out live when you get what from us and drafts the message for you.",
-      qWhat: "What do you need?", qWhen: "When should it start?", qNote: "One sentence about the project", notePh: "For example: we are opening a café in December and need reels for Instagram.",
-      when: ["As soon as possible", "Next month", "Still planning"], plan: "Flight plan", now: "Now", today: "Today, {t}", mission: "Mission", start: "Start", open: "still open",
-      launch: "Launch sequence", ready: "Ready", go: "Go!", consoleTitle: "All set?", consoleText: "Press the button. Then send the drafted message via WhatsApp or email.",
-      readyText: "Ready to send. Your message:", sendWa: "Send via WhatsApp", sendMail: "Send via email", copy: "Copy", copied: "Copied", formLink: "Prefer the full form",
-      msg: "Hi BushyFam, I am interested in: {list}. Start: {when}.", subject: "Project enquiry: {list}", locale: "tr-TR", draft: "" },
+    ot: { cueTitle: "Bin.", cueText: "Kaydır, kamera harekete geçsin.", showreel: "Showreel", showreelLong: "Showreel’i izle", close: "Kapat",
+      soundOn: "Ses açık", soundOff: "Ses kapalı", soundLabel: "Sesi aç/kapat", timeline: "Bölüm zaman çizelgesi", jumpTo: "Şuraya git:",
+      chIntro: "Giriş", chWork: "İşler", chServices: "Hizmetler", chCast: "Kadro", chLaunch: "Talep", chStudio: "Stüdyo", chExit: "İletişim",
+      workLead: "Gözbebeğinin arkasında çektiğimiz, fotoğrafladığımız ve tasarladığımız her şey var. Kaydırmaya devam et – tam içinden geçiyorsun.",
+      moreWork: "Daha fazla iş", endTitle: "Peki senin için ne yapalım?", qBudget: "Yaklaşık bütçe?", budgets: ["1.000 €’nun altında", "1.000–3.000 €", "3.000 €’nun üzerinde", "Henüz bilmiyorum"], budgetMsg: "Bütçe: {b}.",
+      freeCall: "İlk görüşme ücretsiz ve bağlayıcı değil.", directMe: "Doğrudan benimle konuşuyorsun – {name}, kurucu.", sendNow: "WhatsApp ile gönder", orMail: "ya da e-posta ile",
+      clientsLead: "Gastronomiden gayrimenkul yönetimine – Almanya genelindeki işletmeler için.", castLeadHome: "Çekimin için: ağımızdan modeller ve oyuncular – kendi castingine gerek yok.", mobileWa: "WhatsApp", fromProject: "Projeden", ownFilm: "UFO Kokpiti", ownFilmMeta: "Kendi yapımımız · Kısa film",
+      ownFilmText: "Kendi kısa filmimiz: uzay gemisi kabininden gözbebeğinin içine.",
+      channel: "Kanal {n} / {m}", clientsTitle: "Gemide olanlar", castRole: "Model ve oyunculuk",
+      launchTitle: "48 saatte hazır", launchLead: "Projeni oluştur. Uçuş planı, bizden ne zaman ne alacağını canlı hesaplar ve mesajını senin için hazırlar.",
+      qWhat: "Neye ihtiyacın var?", qWhen: "Ne zaman başlasın?", qNote: "Proje hakkında bir cümle", notePh: "Örneğin: Aralık’ta bir kafe açıyoruz ve Instagram için Reels’e ihtiyacımız var.",
+      when: ["Mümkün olan en kısa sürede", "Gelecek ay", "Henüz planlıyorum"], plan: "Uçuş planı", now: "Şimdi", today: "Bugün, {t}", mission: "Görev", start: "Başlangıç", open: "henüz belli değil",
+      launch: "Başlat", ready: "Hazır", go: "Başla!", consoleTitle: "Her şey hazır mı?", consoleText: "Hazırlanan mesajı WhatsApp ya da e-posta ile gönder.",
+      readyText: "Göndermeye hazır. Mesajın:", sendWa: "WhatsApp ile gönder", sendMail: "E-posta ile gönder", copy: "Kopyala", copied: "Kopyalandı", formLink: "Ayrıntılı formu tercih ederim",
+      msg: "Merhaba BushyFam, şununla ilgileniyorum: {list}. Başlangıç: {when}.", subject: "Proje talebi: {list}", locale: "tr-TR", draft: "" },
     cta: "Proje başlat", ctaSmall: "Aklında bir proje mi var?", menu: "Menü", switchTo: "Dil seç", language: "Dil",
     seeWork: "İşleri gör", allWork: "Tüm işler", seeAllWork: "Tüm işleri gör", moreAbout: "Taha hakkında daha fazlası",
     film: "Film", play: "Oynat", withSound: "sesli", noSound: "sessiz", media: "Görseller ve filmler",

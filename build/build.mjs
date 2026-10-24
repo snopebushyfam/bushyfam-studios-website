@@ -426,6 +426,10 @@ function stationDevice(s, lang) {
     </div></div>`;
   if (s.kind === "cinema") return `<div class="ot-dev ot-cinema" data-dev="cinema" aria-hidden="true"><div class="ot-cinema-screen">${media.map((m, i) => `<div class="ot-cine-shot${i ? "" : " is-on"}">${stationMedia(m, "", lang, "(min-width: 900px) 46vw, 88vw")}</div>`).join("")}</div></div>`;
   if (s.kind === "cards") return `<div class="ot-dev ot-cards${fit}" data-dev="cards" aria-hidden="true">${media.map((m, i) => `<div class="ot-card" data-pos="${i}">${stationMedia(m, "", lang, "(min-width: 900px) 26vw, 62vw")}</div>`).join("")}</div>`;
+  if (s.kind === "browser") return `<div class="ot-dev ot-browser" data-dev="browser" aria-hidden="true">
+      <div class="ot-br-bar"><i></i><i></i><i></i><span class="ot-br-url">${esc(media[0].url || "")}</span></div>
+      <div class="ot-br-view">${media.map((m, i) => `<div class="ot-br-page${i ? "" : " is-on"}" data-url="${esc(m.url || "")}">${img(m.src, "", { sizes: "(min-width: 900px) 44vw, 86vw", widths: [480, 960], lazy: true })}</div>`).join("")}</div>
+    </div>`;
   if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px")}</div>`;
   return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
 }

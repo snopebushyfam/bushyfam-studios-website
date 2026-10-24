@@ -330,3 +330,14 @@
 .ot-board-head p{max-width:44ch;color:var(--dim);font-size:clamp(16px,1.2vw,18px)}
 
 .ot-cta-bottom{display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto}
+
+/* Browser-Fenster: echte Kunden-Websites, scrollen von selbst */
+.ot-browser{width:min(44vw,640px);aspect-ratio:16/11;border-radius:12px;overflow:hidden;background:#1b1c1f;border:2px solid #2a2c31;display:flex;flex-direction:column;min-height:0}
+.ot-br-bar{flex:none;height:34px;display:flex;align-items:center;gap:7px;padding:0 12px}
+.ot-br-bar i{width:10px;height:10px;border-radius:50%;background:#3a3c42}
+.ot-br-url{margin-left:10px;flex:1;height:22px;border-radius:6px;background:#0f1012;color:var(--dim);font:500 12px var(--font);display:flex;align-items:center;padding:0 10px;white-space:nowrap;overflow:hidden}
+.ot-br-view{position:relative;flex:1;min-height:0;overflow:hidden;background:#fff}
+.ot-br-page{position:absolute;inset:0;opacity:0;transition:opacity .6s}
+.ot-br-page.is-on{opacity:1}
+.ot-br-page img{display:block;width:100%;height:auto;object-fit:initial}
+@media (max-width:767px){.ot-browser{width:86vw}}

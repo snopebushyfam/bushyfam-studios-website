@@ -397,6 +397,7 @@ collections:
                   - { label: "Kartenstapel (Bilder oder Clips)", value: "cards" }
                   - { label: "Einzelbild (schwebt leicht)", value: "still" }
                   - { label: "Bullauge (ein Clip, rund)", value: "porthole" }
+                  - { label: "Browser-Fenster (Website-Screenshots scrollen, mit Adresse)", value: "browser" }
               - { label: "Bilder ganz zeigen (für Logos)", name: fit, widget: select, required: false, options: [{ label: "Füllen", value: "cover" }, { label: "Ganz zeigen", value: "contain" }] }
               - { label: "Überschrift (DE)", name: title_de, widget: string }
               - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
@@ -411,6 +412,7 @@ collections:
                 fields:
                   - { label: "Datei (MP4 oder Bild)", name: src, widget: file }
                   - { label: "Vorschaubild für Clips (optional)", name: poster, widget: image, required: false, hint: "Leer = gleichnamige .jpg neben dem Clip, falls vorhanden" }
+                  - { label: "Adresse (nur Browser-Fenster)", name: url, widget: string, required: false, hint: "z. B. kms.koeln – erscheint in der Adressleiste" }
 
       - name: "packages"
         label: "Pakete"

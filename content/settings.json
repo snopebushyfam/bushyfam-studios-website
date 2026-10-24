@@ -4,10 +4,10 @@
   "brandName": "BushyFam Studios",
   "location_de": "Köln / Rhein-Erft",
   "location_en": "Cologne / Rhein-Erft",
-  "location_tr": "Köln",
+  "location_tr": "Köln / Rhein-Erft",
   "reach_de": "für Unternehmen in ganz Deutschland",
   "reach_en": "working with businesses across Germany",
-  "reach_tr": "Almanya genelinde ve uluslararası projeler",
+  "reach_tr": "Almanya genelindeki işletmeler için",
   "address": {
     "street": "Köln-Aachener Str. 212",
     "postalCode": "50127",
@@ -21,17 +21,17 @@
   "seo": {
     "title_de": "BushyFam Studios – Werbeclips & Social Content für Unternehmen | Köln",
     "title_en": "BushyFam Studios – Commercials & Social Content for Businesses | Cologne",
-    "title_tr": "BushyFam Studios – Film, Fotoğraf & Marka Tasarımı",
+    "title_tr": "BushyFam Studios – İşletmeler için Reklam Klipleri ve Sosyal Medya İçeriği | Köln",
     "description_de": "BushyFam Studios produziert Werbeclips, Fotos und Social Content – aus Köln / Rhein-Erft für Unternehmen in ganz Deutschland.",
     "description_en": "BushyFam Studios produces commercials, photography and social content – from Cologne / Rhein-Erft for businesses across Germany.",
-    "description_tr": "BushyFam Studios, Köln merkezli film, fotoğraf, marka ve dijital deneyimler için bir yaratıcı stüdyodur.",
+    "description_tr": "BushyFam Studios, Köln / Rhein-Erft’ten Almanya genelindeki işletmeler için reklam klipleri, fotoğraf ve sosyal medya içeriği üretir.",
     "image": "/assets/brand/og-bushyfam.jpg"
   },
   "hero": {
     "line1_de": "Werbeclips, Fotos und Social Content für Unternehmen aus Köln.",
     "line2_de": "",
     "line1_en": "Commercials, photography and social content for businesses from Cologne.",
-    "line1_tr": "Bakmaya değer şeyler yapıyoruz.",
+    "line1_tr": "Köln’den işletmeler için reklam klipleri, fotoğraf ve sosyal medya içeriği.",
     "line2_en": "",
     "text_de": "Dinge, die man sich gern ansieht.",
     "text_en": "We make things worth looking at.",
@@ -65,7 +65,8 @@
       "description_de": "Kurzfilm: Eine Frau blickt aus einem UFO-Cockpit mit BushyFam-Schriftzug, die Kamera fährt bis in ihre Pupille.",
       "description_en": "Short film: a woman looks out of a UFO cockpit with the BushyFam lettering; the camera moves all the way into her pupil.",
       "description_tr": "Kısa film: bir kadın BushyFam yazılı bir UFO kokpitinden dışarı bakıyor; kamera onun gözbebeğinin içine kadar ilerliyor."
-    }
+    },
+    "text_tr": "Bakmaya değer şeyler."
   },
   "ending": {
     "enabled": true,
