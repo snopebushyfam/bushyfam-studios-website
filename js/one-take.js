@@ -208,8 +208,6 @@
       it.style.visibility = o < 0.01 ? "hidden" : "visible";
       it.style.pointerEvents = o > 0.6 ? "auto" : "none";
       it.style.transform = "translate(-50%,-50%) translate3d(" + xf * W + "px,0," + rel + "px)";
-      var v = it.querySelector("video");
-      if (v) { if (o > 0.05 && v.paused) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else if (o <= 0.05 && !v.paused) v.pause(); }
     });
   }
   if (space && n > 1) scene(space, spaceRender, null);
@@ -241,6 +239,47 @@
       requestAnimationFrame(tick);
     }
   })();
+
+
+  /* ---------- Geräte im All: Feed, Leinwand, Kartenstapel, Bullauge ----------
+     Laufen nur, solange ihre Station sichtbar ist; sonst pausieren alle Videos. */
+  var play = function (v) { if (!v) return; if (v.preload !== "auto") v.preload = "auto"; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); };
+  var devs = $$("[data-dev]").map(function (el) {
+    var d = { el: el, kind: el.getAttribute("data-dev"), item: el.closest(".ot-item"), on: false, i: 0, last: 0 };
+    if (d.kind === "feed") { d.track = $(".ot-feed-track", el); d.slides = $$(".ot-feed-item", el); d.bar = $(".ot-feed-bar i", el); d.heart = $(".ot-feed-ui span", el); d.period = 2400; }
+    if (d.kind === "cinema") { d.slides = $$(".ot-cine-shot", el); d.period = 3200; }
+    if (d.kind === "cards") { d.slides = $$(".ot-card", el); d.period = 2200; }
+    if (d.kind === "porthole") { d.slides = [el]; d.period = 0; }
+    return d;
+  });
+  var vidOf = function (node) { return node && node.querySelector("video"); };
+  function showSlide(d) {
+    var n = d.slides.length;
+    if (d.kind === "feed") {
+      d.track.style.transform = "translateY(" + (-d.i * 100) + "%)";
+      d.slides.forEach(function (s, k) { var v = vidOf(s); if (!v) return; if (k === d.i) { v.currentTime = 0; play(v); } else v.pause(); });
+      if (d.bar) { d.bar.style.transition = "none"; d.bar.style.width = "0"; void d.bar.offsetWidth; d.bar.style.transition = "width " + d.period + "ms linear"; d.bar.style.width = "100%"; }
+      if (d.heart && d.i % 2) { d.heart.classList.add("pop"); setTimeout(function () { d.heart.classList.remove("pop"); }, 700); }
+    } else if (d.kind === "cinema") {
+      d.slides.forEach(function (s, k) { s.classList.toggle("is-on", k === d.i); var v = vidOf(s); if (!v) return; if (k === d.i) { v.currentTime = 0; play(v); } else v.pause(); });
+    } else if (d.kind === "cards") {
+      d.slides.forEach(function (s, k) { s.setAttribute("data-pos", String((k - d.i + n) % n)); });
+    } else if (d.kind === "porthole") { play(vidOf(d.el)); }
+  }
+  function devVisible(d) {
+    if (document.hidden) return false;
+    if (live && space && space.classList.contains("is-live")) return parseFloat(d.item.style.opacity || "0") > 0.5 && d.item.style.visibility !== "hidden";
+    var r = d.el.getBoundingClientRect(); return r.bottom > 0 && r.top < H;
+  }
+  if (devs.length && !reduced) setInterval(function () {
+    var now = Date.now();
+    devs.forEach(function (d) {
+      var vis = devVisible(d);
+      if (vis && !d.on) { d.on = true; d.last = now; showSlide(d); }
+      else if (!vis && d.on) { d.on = false; $$("video", d.el).forEach(function (v) { v.pause(); }); if (d.bar) { d.bar.style.transition = "none"; d.bar.style.width = "0"; } }
+      else if (vis && d.period && now - d.last >= d.period) { d.last = now; d.i = (d.i + 1) % d.slides.length; showSlide(d); }
+    });
+  }, 150);
 
   /* 3 · Leistungen: der Monitor schaltet beim Scrollen durch die Kanäle */
   var svcs = $(".ot-svcs"), insts = $$("[data-ot-inst]"), feeds = $$(".ot-feed"), screen = $(".ot-screen");

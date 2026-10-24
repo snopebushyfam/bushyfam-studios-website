@@ -337,3 +337,49 @@
 @media (max-width:767px){.ot-space.is-live .ot-item{max-width:88vw}}
 .ot-pic--wide{width:min(38vw,560px);aspect-ratio:16/9}
 @media (max-width:767px){.ot-pic--wide{width:84vw}}
+
+/* ---------- Geräte im All: Leistungen, gezeigt mit eigener Arbeit als Dekoration ---------- */
+.ot-item--dev .ot-cap{max-width:380px}
+.ot-item--dev h3{font-size:clamp(30px,3.6vw,58px)}
+.ot-dev{position:relative;flex:none}
+.ot-dev video,.ot-dev img{display:block;width:100%;height:100%;object-fit:cover}
+/* Smartphone mit laufendem Feed */
+.ot-phone{width:min(21vw,290px);aspect-ratio:9/19.5;border-radius:42px;background:#0d0e10;padding:9px;border:2px solid #2a2c31}
+.ot-phone::before{content:"";position:absolute;top:18px;left:50%;width:28%;height:22px;margin-left:-14%;border-radius:12px;background:#000;z-index:3}
+.ot-phone-screen{position:relative;width:100%;height:100%;border-radius:33px;overflow:hidden;background:#000}
+.ot-phone-screen::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);pointer-events:none;z-index:1}
+.ot-feed-track{display:flex;flex-direction:column;height:100%;transition:transform .65s cubic-bezier(.7,0,.2,1)}
+.ot-feed-item{flex:none;height:100%}
+.ot-feed-ui{position:absolute;right:10px;bottom:24%;display:flex;flex-direction:column;gap:18px;color:#fff;z-index:2}
+.ot-feed-ui svg{width:26px;height:26px;display:block}
+.ot-feed-ui span:first-child{transition:transform .3s,color .3s}
+.ot-feed-ui span.pop{color:#ff3b5c;transform:scale(1.25)}
+.ot-feed-handle{position:absolute;left:14px;bottom:28px;color:#fff;font:500 13px var(--font);z-index:2}
+.ot-feed-bar{position:absolute;left:14px;right:14px;bottom:16px;height:2px;background:rgba(255,255,255,.3);z-index:2;border-radius:2px;overflow:hidden}
+.ot-feed-bar i{display:block;height:100%;width:0;background:#fff}
+/* Kinoleinwand mit wechselnden Spots */
+.ot-cinema{width:min(44vw,660px);aspect-ratio:16/9;padding:10px;background:#0d0e10;border-radius:14px;border:2px solid #2a2c31}
+.ot-cinema-screen{position:relative;width:100%;height:100%;border-radius:6px;overflow:hidden;background:#000}
+.ot-cine-shot{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.ot-cine-shot.is-on{opacity:1}
+/* Kartenstapel */
+.ot-cards{width:min(24vw,340px);aspect-ratio:4/5}
+.ot-card{position:absolute;inset:0;border-radius:12px;overflow:hidden;background:#161719;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s;transform:scale(.8);opacity:0;z-index:0}
+.ot-card[data-pos="0"]{transform:none;opacity:1;z-index:4}
+.ot-card[data-pos="1"]{transform:translate(10%,-6%) rotate(6deg) scale(.93);opacity:.8;z-index:3}
+.ot-card[data-pos="2"]{transform:translate(-10%,-9%) rotate(-7deg) scale(.87);opacity:.55;z-index:2}
+.ot-fit-contain .ot-card img{object-fit:contain}
+/* Bild, schwebt leicht */
+.ot-still{width:min(26vw,360px);animation:ot-float 7s ease-in-out infinite}
+.ot-still img{border-radius:12px;height:auto}
+@keyframes ot-float{50%{transform:translateY(-12px)}}
+/* Bullauge */
+.ot-port{width:min(26vw,360px);aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:11px solid #23262c;background:#000}
+@media (max-width:767px){
+  .ot-phone{width:54vw;border-radius:34px;padding:7px}
+  .ot-phone-screen{border-radius:27px}
+  .ot-cinema{width:86vw;padding:6px}
+  .ot-cards{width:60vw}
+  .ot-still,.ot-port{width:62vw}
+}
+@media (prefers-reduced-motion:reduce){.ot-still{animation:none}}

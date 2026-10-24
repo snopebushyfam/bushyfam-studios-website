@@ -372,6 +372,46 @@ collections:
               - { label: "Text (DE)", name: text_de, widget: text }
               - { label: "Text (EN)", name: text_en, widget: text, required: false }
 
+      - name: "showcase"
+        label: "Leistungen im All (Startseite)"
+        file: "content/showcase.json"
+        description: "Die Stationen im Flug auf der Startseite: je eine Leistung, gezeigt mit eurer Arbeit als Dekoration. Keine Kundennamen nötig."
+        fields:
+          - { label: "Überschrift (DE)", name: title_de, widget: string }
+          - { label: "Überschrift (EN)", name: title_en, widget: string }
+          - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
+          - { label: "Einleitungssatz (DE)", name: lead_de, widget: text, required: false }
+          - { label: "Einleitungssatz (EN)", name: lead_en, widget: text, required: false }
+          - { label: "Einleitungssatz (TR)", name: lead_tr, widget: text, required: false }
+          - label: "Stationen"
+            name: stations
+            widget: list
+            summary: "{{title_de}}"
+            fields:
+              - label: "Darstellung"
+                name: kind
+                widget: select
+                options:
+                  - { label: "Smartphone mit Feed (Clips wischen automatisch weiter)", value: "feed" }
+                  - { label: "Kinoleinwand (Querformat-Clips wechseln)", value: "cinema" }
+                  - { label: "Kartenstapel (Bilder oder Clips)", value: "cards" }
+                  - { label: "Einzelbild (schwebt leicht)", value: "still" }
+                  - { label: "Bullauge (ein Clip, rund)", value: "porthole" }
+              - { label: "Bilder ganz zeigen (für Logos)", name: fit, widget: select, required: false, options: [{ label: "Füllen", value: "cover" }, { label: "Ganz zeigen", value: "contain" }] }
+              - { label: "Überschrift (DE)", name: title_de, widget: string }
+              - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
+              - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
+              - { label: "Satz dazu (DE)", name: text_de, widget: text, required: false }
+              - { label: "Satz dazu (EN)", name: text_en, widget: text, required: false }
+              - { label: "Satz dazu (TR)", name: text_tr, widget: text, required: false }
+              - label: "Clips & Bilder"
+                name: media
+                widget: list
+                summary: "{{src}}"
+                fields:
+                  - { label: "Datei (MP4 oder Bild)", name: src, widget: file }
+                  - { label: "Vorschaubild für Clips (optional)", name: poster, widget: image, required: false, hint: "Leer = gleichnamige .jpg neben dem Clip, falls vorhanden" }
+
       - name: "packages"
         label: "Pakete"
         file: "content/packages.json"

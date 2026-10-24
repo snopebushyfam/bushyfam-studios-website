@@ -428,36 +428,36 @@ const OT_FRAMES = {
 };
 const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames/f-089.webp";
 
-/* Stationen im Flug: zuerst je Projekt eine Hauptstation (Film, sonst Titelbild), dann – solange Platz ist
-   (höchstens 7) – je Projekt eine zweite (lieber ein Foto, sonst der nächste Film). Am Ende der eigene Kurzfilm. */
-const FLIGHT_MAX = 7;
-function flightItems(lang) {
-  const o = T[lang].ot;
-  const per = PROJECTS.map((p) => {
-    const vids = (p.media || []).filter((m) => m.type === "video" && m.src);
-    const imgs = (p.media || []).filter((m) => m.type !== "video" && m.src && m.src !== p.cover.src);
-    const href = hrefFor(lang, "project", p.slug), title = tr(p, "title", lang);
-    const meta = [tr(p, "disciplines", lang) || catLabel(p.category, lang), p.year].filter(Boolean).join(" · ");
-    const main = vids[0] ? { kind: "video", m: vids[0] } : { kind: "image", m: { src: p.cover.src, alt_de: p.cover.alt_de, alt_en: p.cover.alt_en, alt_tr: p.cover.alt_tr }, fit: p.cover.fit };
-    const second = imgs[0] ? { kind: "image", m: imgs[0], fit: p.cover.fit, title: tr(imgs[0], "caption", lang) || tr(imgs[0], "title", lang) || catLabel("foto", lang) }
-      : vids[1] ? { kind: "video", m: vids[1], title: tr(vids[1], "title", lang) || title } : null;
-    return { main: { ...main, href, title, meta, text: tr(p, "summary", lang), main: true }, second: second && { ...second, href, meta: `${o.fromProject} ${title}`, text: "" } };
-  }).slice(0, FLIGHT_MAX);
-  let room = FLIGHT_MAX - per.length;
-  const list = [];
-  for (const x of per) { list.push(x.main); if (x.second && room > 0) { list.push(x.second); room--; } }
-  if (assetExists(OT_STILL)) list.push({ kind: "image", m: { src: OT_STILL, alt_de: tr(S.hero.video, "description", "de"), alt_en: tr(S.hero.video, "description", "en") }, title: o.ownFilm, meta: o.ownFilmMeta, text: o.ownFilmText, portrait: true });
-  return list;
-}
-function flightMedia(it, lang) {
-  const alt = tr(it.m, "alt", lang) || tr(it.m, "title", lang) || it.title;
-  if (it.kind === "video") {
-    const d = it.m.poster ? imageSize(it.m.poster) || {} : {};
-    return `<div class="ot-pic ot-pic--${d.w && d.w / d.h > 1.2 ? "wide" : "portrait"}" data-cursor="Clip"><video muted loop playsinline preload="none"${it.m.poster ? ` poster="${esc(url(it.m.poster))}"` : ""}${d.w ? ` width="${d.w}" height="${d.h}"` : ""} data-ot-video aria-label="${esc(alt)}"><source src="${esc(url(it.m.src))}" type="video/mp4"></video></div>`;
+/* Stationen im All: je eine Leistung, gezeigt in einem „Gerät“ (Smartphone-Feed, Kinoleinwand, Kartenstapel,
+   Bild, Bullauge). Inhalte aus content/showcase.json (Admin: Seiten → Leistungen im All). Keine Kundennamen. */
+const SHOW = fs.existsSync(path.join(ROOT, "content/showcase.json")) ? readJson("content/showcase.json") : { stations: [] };
+const STATIONS = (SHOW.stations || []).filter((s) => s.kind && (s.media || []).length);
+for (const s of STATIONS) for (const m of s.media) need(assetExists(m.src), `Leistungen im All → „${s.title_de}“: Datei nicht gefunden: ${m.src}`);
+if (errors.length) { console.error("\n✖ Build abgebrochen – bitte im Admin korrigieren:\n" + errors.map((e) => "  • " + e).join("\n") + "\n"); process.exit(1); }
+const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src || "");
+const posterFor = (m) => m.poster || (isVideo(m.src) && assetExists(m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg")) ? m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg") : "");
+function stationMedia(m, cls, lang, sizes) {
+  if (isVideo(m.src)) {
+    const p = posterFor(m);
+    return `<video class="${cls}" muted loop playsinline preload="none"${p ? ` poster="${esc(url(p))}"` : ""}><source src="${esc(url(m.src))}" type="video/mp4"></video>`;
   }
-  const dim = imageSize(it.m.src) || { w: 1, h: 1 };
-  const shape = it.portrait || dim.h / dim.w > 1.25 ? "portrait" : dim.h / dim.w > 1.05 ? "tall" : "square";
-  return `<div class="ot-pic ot-pic--${shape}${it.fit === "contain" ? " ot-pic--contain" : ""}">${img(it.m.src, alt, { sizes: "(min-width: 900px) 30vw, 60vw", widths: [480, 960] })}</div>`;
+  return img(m.src, tr(m, "alt", lang), { sizes, cls, widths: [480, 960] });
+}
+const HEART = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.2 5.2 3 1.6-1.8 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>`;
+const BUBBLE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c5 0 9 3.4 9 7.7s-4 7.7-9 7.7c-1 0-2-.1-2.9-.4L4 20l1.4-4C4 14.6 3 12.8 3 10.7 3 6.4 7 3 12 3z" fill="currentColor"/></svg>`;
+const PLANE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.8 10.6c-.8.3-.8 1.4 0 1.7l6.6 2.3 2.3 6.6c.3.8 1.4.8 1.7 0L21.5 3.5z" fill="currentColor"/></svg>`;
+function stationDevice(s, lang) {
+  const media = s.media || [], fit = s.fit === "contain" ? " ot-fit-contain" : "";
+  if (s.kind === "feed") return `<div class="ot-dev ot-phone" data-dev="feed" aria-hidden="true"><div class="ot-phone-screen">
+      <div class="ot-feed-track">${media.map((m) => `<div class="ot-feed-item">${stationMedia(m, "", lang, "300px")}</div>`).join("")}</div>
+      <div class="ot-feed-ui"><span>${HEART}</span><span>${BUBBLE}</span><span>${PLANE}</span></div>
+      <div class="ot-feed-handle">${esc(S.instagramHandle || "@bushyfamstudios")}</div>
+      <div class="ot-feed-bar"><i></i></div>
+    </div></div>`;
+  if (s.kind === "cinema") return `<div class="ot-dev ot-cinema" data-dev="cinema" aria-hidden="true"><div class="ot-cinema-screen">${media.map((m, i) => `<div class="ot-cine-shot${i ? "" : " is-on"}">${stationMedia(m, "", lang, "(min-width: 900px) 46vw, 88vw")}</div>`).join("")}</div></div>`;
+  if (s.kind === "cards") return `<div class="ot-dev ot-cards${fit}" data-dev="cards" aria-hidden="true">${media.map((m, i) => `<div class="ot-card" data-pos="${i}">${stationMedia(m, "", lang, "(min-width: 900px) 26vw, 62vw")}</div>`).join("")}</div>`;
+  if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px")}</div>`;
+  return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
 }
 
 function pageHome(lang) {
@@ -465,11 +465,10 @@ function pageHome(lang) {
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false && c.logo);
-  const items = flightItems(lang);
   const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
   const services = SERV.items || [];
   const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
-  const flightHold = Math.max(2.4, (items.length + 1) * 0.72).toFixed(2);
+  const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.8).toFixed(2);
   const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
 
   const body = `
@@ -505,42 +504,25 @@ ${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="t
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
-<section class="ot-scene ot-space" id="arbeiten" data-ot-scene="space" data-chapter="${esc(o.chWork)}" style="--hold:${flightHold}" aria-labelledby="h-work">
+<section class="ot-scene ot-space" id="${t.servicesId}" data-ot-scene="space" data-chapter="${esc(o.chServices)}" style="--hold:${flightHold}" aria-labelledby="h-svc" tabindex="-1">
   <div class="ot-stage">
     <canvas class="ot-stars" aria-hidden="true"></canvas>
     <div class="ot-world">
       <div class="ot-item ot-item--title" data-z="0" data-x="0">
-        <h2 id="h-work">${esc(tr(HOME, "workTitle", lang) || t.nav.work)}</h2>
-        <p>${esc(o.workLead)}</p>
+        <h2 id="h-svc">${esc(tr(SHOW, "title", lang) || tr(SERV, "title", lang) || t.nav.services)}</h2>
+        ${tr(SHOW, "lead", lang) ? `<p>${esc(tr(SHOW, "lead", lang))}</p>` : ""}
       </div>
-      ${items.map((it, k) => `<div class="ot-item${k % 2 ? " ot-item--flip" : ""}" data-z="${-1900 * (k + 1)}" data-x="${k % 2 ? 0.13 : -0.13}">
-        ${flightMedia(it, lang)}
-        <div class="ot-cap"><span class="ot-meta">${esc(it.meta)}</span><h3>${esc(it.title)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ""}${it.main && it.href ? `<a class="ot-go" href="${it.href}" data-cursor="Case">${esc(t.viewCase)} ↗</a>` : ""}</div>
+      ${STATIONS.map((s, k) => `<div class="ot-item ot-item--dev${k % 2 ? " ot-item--flip" : ""}" data-z="${-1900 * (k + 1)}" data-x="${k % 2 ? 0.12 : -0.12}">
+        ${stationDevice(s, lang)}
+        <div class="ot-cap"><h3>${esc(tr(s, "title", lang))}</h3>${tr(s, "text", lang) ? `<p>${esc(tr(s, "text", lang))}</p>` : ""}</div>
       </div>`).join("\n      ")}
-      <div class="ot-item ot-item--end" data-z="${-1900 * (items.length + 1)}" data-x="0">
-        <h3>${esc(o.moreWork)}</h3>
-        <div class="ot-ctas"><a class="ot-btn" href="${R.work}" data-cursor="Alle">${esc(t.allWork)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreelLong)}</div>
+      <div class="ot-item ot-item--end" data-z="${-1900 * (STATIONS.length + 1)}" data-x="0">
+        <h3>${esc(o.endTitle)}</h3>
+        <div class="ot-ctas"><a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreelLong)}</div>
+        <a class="ot-go" href="${R.work}">${esc(t.allWork)} →</a>
       </div>
     </div>
     <div class="ot-warp-out" aria-hidden="true"></div>
-  </div>
-</section>
-
-<section class="ot-scene ot-svcs" id="${t.servicesId}" data-ot-scene="svcs" data-chapter="${esc(o.chServices)}" style="--hold:2.6" aria-labelledby="h-svc" tabindex="-1">
-  <div class="ot-stage">
-    <div class="ot-svc-left">
-      <h2 id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
-      <ol class="ot-panel">
-        ${services.map((s, i) => `<li class="ot-inst${i ? "" : " is-on"}" data-ot-inst><span class="ot-lamp" aria-hidden="true"></span><div><h3>${esc(tr(s, "title", lang))}</h3><div class="ot-more"><div><p>${esc(tr(s, "text", lang))}</p>${tr(s, "tags", lang) ? `<span>${esc(tr(s, "tags", lang))}</span>` : ""}</div></div></div></li>`).join("\n        ")}
-      </ol>
-    </div>
-    <div class="ot-monitor" aria-hidden="true">
-      <div class="ot-screen">
-        ${services.map((s, i) => `<div class="ot-feed${i ? "" : " is-on"}${i === 1 ? " ot-feed--kb" : ""}">${s.video ? `<video muted loop playsinline preload="none"${s.image ? ` poster="${esc(url(s.image))}"` : ""} data-ot-video><source src="${esc(url(s.video))}" type="video/mp4"></video>` : s.image ? img(s.image, "", { sizes: "(min-width: 900px) 40vw, 90vw", widths: [480, 960] }) : ""}</div>`).join("\n        ")}
-        <div class="ot-static"></div>
-        <div class="ot-osd"><span data-ot-osd-ch>${esc(o.channel.replace("{n}", 1).replace("{m}", services.length))}</span><span data-ot-osd-n>${esc(tr(services[0] || {}, "title", lang))}</span></div>
-      </div>
-    </div>
   </div>
 </section>
 
