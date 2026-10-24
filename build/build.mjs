@@ -438,8 +438,9 @@ function flightItems(lang) {
     const meta = [tr(p, "disciplines", lang) || catLabel(p.category, lang), p.year].filter(Boolean).join(" · ");
     const main = vids[0] ? { kind: "video", m: vids[0] } : { kind: "image", m: { src: p.cover.src, alt_de: p.cover.alt_de, alt_en: p.cover.alt_en, alt_tr: p.cover.alt_tr }, fit: p.cover.fit };
     list.push({ ...main, href, title, meta, text: tr(p, "summary", lang), main: true });
-    if (vids[1]) list.push({ kind: "video", m: vids[1], href, title: tr(vids[1], "title", lang) || title, meta: `${o.fromProject} ${title}` });
-    if (imgs[0]) list.push({ kind: "image", m: imgs[0], fit: p.cover.fit, href, title: tr(imgs[0], "caption", lang) || title, meta: `${o.fromProject} ${title}`, text: "" });
+    /* Zweite Station: lieber ein Foto (Abwechslung), sonst der nächste Film */
+    if (imgs[0]) list.push({ kind: "image", m: imgs[0], fit: p.cover.fit, href, title: tr(imgs[0], "caption", lang) || tr(imgs[0], "title", lang) || catLabel("foto", lang), meta: `${o.fromProject} ${title}`, text: "" });
+    else if (vids[1]) list.push({ kind: "video", m: vids[1], href, title: tr(vids[1], "title", lang) || title, meta: `${o.fromProject} ${title}` });
     if (list.length >= 8) break;
   }
   if (assetExists(OT_STILL)) list.push({ kind: "image", m: { src: OT_STILL, alt_de: tr(S.hero.video, "description", "de"), alt_en: tr(S.hero.video, "description", "en") }, title: o.ownFilm, meta: o.ownFilmMeta, text: o.ownFilmText, portrait: true });
