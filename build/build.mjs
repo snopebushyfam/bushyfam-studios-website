@@ -528,7 +528,7 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   </div>
 </section>` : ""}
 
-<section class="ot-block" id="anfrage" data-chapter="${esc(o.chLaunch)}" aria-labelledby="h-launch">
+<section class="ot-block ot-launch-sec" id="anfrage" data-chapter="${esc(o.chLaunch)}" aria-labelledby="h-launch">
   <div class="ot-block-head">
     <h2 id="h-launch" data-ot-reveal>${esc(o.launchTitle)}</h2>
     <p data-ot-reveal style="--d:.1s">${esc(o.launchLead)}</p>
@@ -536,29 +536,21 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   <div class="ot-launch">
     <form class="ot-builder" data-ot-builder onsubmit="return false">
       <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-chips">
-        ${(CON.options || []).filter((op) => !/^(noch offen|still open|henüz belli değil)/i.test(pick(op, "de")) && !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
-      </div></fieldset>
-      <fieldset class="ot-q"><legend>${esc(o.qWhen)}</legend><div class="ot-chips">
-        ${o.when.map((w, i) => `<input type="radio" name="ot-when" id="ot-t${i}" value="${esc(w)}"${i ? "" : " checked"}><label for="ot-t${i}">${esc(w)}</label>`).join("")}
+        ${(CON.options || []).filter((op) => !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
       </div></fieldset>
       <fieldset class="ot-q"><legend>${esc(o.qBudget)}</legend><div class="ot-chips">
         ${o.budgets.map((b, i) => `<input type="radio" name="ot-budget" id="ot-b${i}" value="${esc(b)}"><label for="ot-b${i}">${esc(b)}</label>`).join("")}
       </div></fieldset>
-      <label class="ot-q" for="ot-note"><span>${esc(o.qNote)}</span><textarea id="ot-note" placeholder="${esc(o.notePh)}"></textarea></label>
-      <a class="link-arrow" href="${R.contact}">${esc(o.formLink)} <span aria-hidden="true">→</span></a>
     </form>
     <aside class="ot-plan" aria-label="${esc(o.plan)}">
-      <div class="ot-now"><span>${esc(o.plan)}</span><span>${esc(o.now)}: <b data-ot-now>–</b></span></div>
-      <ol class="ot-track3">
-        ${steps.map((s, i) => `<li><span class="ot-pt"></span><div><div class="ot-when" data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</div><div class="ot-what"><b>${esc(tr(s, "title", lang))}</b> · ${esc(tr(s, "text", lang))}</div></div></li>`).join("\n        ")}
+      <ol class="ot-steps">
+        ${steps.map((s, i) => `<li><b data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</b><span>${esc(tr(s, "title", lang))}</span></li>`).join("")}
       </ol>
-      <p class="ot-mission" data-ot-mission></p>
-      <blockquote class="ot-preview" data-ot-preview></blockquote>
       <div class="ot-console" data-ot-console>
         ${WA_URL ? `<a class="ot-launch-btn" data-ot-wa data-ot-send-link href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl">${esc(o.sendNow)}</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
-        <div class="ot-ctext">${meLine}<span class="ot-free">${esc(o.freeCall)}</span>${S.email ? `<a class="ot-mail-link" data-ot-mail data-ot-send-link href="mailto:${esc(S.email)}">${esc(o.orMail)}: ${esc(S.email)}</a>` : ""}</div>
-        <img class="ot-ufo" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt="" aria-hidden="true">
+        <div class="ot-ctext">${meLine}<span class="ot-free">${esc(o.freeCall)}</span></div>
       </div>
+      <p class="ot-alt">${S.email ? `<a data-ot-mail data-ot-send-link href="mailto:${esc(S.email)}">${esc(o.orMail)}</a> · ` : ""}<a href="${R.contact}">${esc(o.formLink)}</a></p>
     </aside>
   </div>
 </section>

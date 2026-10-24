@@ -450,27 +450,18 @@
     var whens = $$("[data-ot-when]"), nowEl = $("[data-ot-now]"), mission = $("[data-ot-mission]"), preview = $("[data-ot-preview]");
     var wa = $("[data-ot-wa]"), mail = $("[data-ot-mail]");
     var plan = function () {
-      var now = new Date();
-      nowEl.textContent = fmtD(now) + ", " + now.toLocaleTimeString(loc);
-      var call = nextWorkday(now), offer = new Date(call.getTime() + 48 * 3600e3);
-      var labels = [(L.today || "{t}").replace("{t}", fmtT(now)), fmtD(call), fmtD(offer)];
+      var now = new Date(), call = nextWorkday(now), offer = new Date(call.getTime() + 48 * 3600e3);
+      var fmtS = function (d) { return d.toLocaleDateString(loc, { weekday: "short", day: "numeric", month: innerWidth < 768 ? undefined : "short" }); };
+      var labels = [(L.today || "{t}").replace("{t}", fmtT(now)).replace(/,.*$/, ""), fmtS(call), fmtS(offer)];
       whens.forEach(function (el, i) { if (labels[i]) el.textContent = labels[i]; });
       var what = $$('input[type="checkbox"]:checked', builder).map(function (i) { return i.value; });
-      var whenIn = $('input[name="ot-when"]:checked', builder), when = whenIn ? whenIn.value : "";
       var budIn = $('input[name="ot-budget"]:checked', builder), budget = budIn ? budIn.value : "";
-      var note = $("#ot-note").value.trim(), list = what.length ? what.join(", ") : (L.open || "");
-      mission.textContent = "";
-      [[L.mission, list], [L.start, when]].forEach(function (pair, i) {
-        if (i) mission.appendChild(document.createTextNode(" · "));
-        mission.appendChild(document.createTextNode(pair[0] + ": "));
-        var b = document.createElement("b"); b.textContent = pair[1]; mission.appendChild(b);
-      });
-      var msg = (L.msg || "").replace("{list}", list).replace("{when}", when) + (budget ? " " + (L.budgetMsg || "{b}").replace("{b}", budget) : "") + (note ? " " + note : "");
-      if (preview) preview.textContent = msg;
+      var list = what.length ? what.join(", ") : (L.open || "");
+      var msg = (L.msg || "").replace("{list}", list) + (budget ? " " + (L.budgetMsg || "{b}").replace("{b}", budget) : "");
       if (wa && L.wa) wa.href = L.wa + "?text=" + encodeURIComponent(msg);
       if (mail && L.email) mail.href = "mailto:" + L.email + "?subject=" + encodeURIComponent((L.subject || "").replace("{list}", list)) + "&body=" + encodeURIComponent(msg);
     };
-    plan(); setInterval(plan, 1000);
+    plan(); setInterval(plan, 60000);
     builder.addEventListener("input", plan); builder.addEventListener("change", plan);
 
     var consoleEl = $("[data-ot-console]"), lr = $(".ot-lr");

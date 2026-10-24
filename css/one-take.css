@@ -365,3 +365,43 @@
 .ot-taha .ot-stage{background:#010101}
 @media (max-width:900px){.ot-taha .ot-studio-txt p:not(.ot-role){display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}}
 @media (max-width:900px){.ot-taha-media{height:46svh;aspect-ratio:9/16;width:auto;max-width:100%;justify-self:center}}
+
+/* Startkonsole kompakt */
+.ot-launch-sec .ot-block-head{margin-bottom:clamp(24px,4vw,48px)}
+.ot-launch{align-items:stretch}
+.ot-builder{gap:26px}
+.ot-q legend{font-size:18px;margin-bottom:10px}
+.ot-chips{gap:8px}
+.ot-chips label{padding:9px 15px;font-size:14px}
+.ot-plan{gap:18px;position:static}
+.ot-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;counter-reset:s}
+.ot-steps li{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:8px;background:var(--void)}
+.ot-steps b{font-family:var(--ot-display);font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ot-steps span{font-size:13px;color:var(--dim)}
+.ot-steps li:first-child b{color:var(--iris)}
+.ot-console{min-height:0;padding:18px;gap:18px;grid-template-columns:auto minmax(0,1fr);align-items:center}
+.ot-launch-btn{width:96px;height:96px;font-size:12px}
+.ot-ctext{padding-right:0;gap:8px}
+.ot-me{font-size:14px;gap:10px}
+.ot-me-img{width:38px;height:38px}
+.ot-free{font-size:13px}
+.ot-alt{font-size:14px;color:var(--dim);margin:0}
+.ot-alt a{color:var(--dim);text-decoration:underline;text-decoration-color:var(--iris);text-underline-offset:4px}
+.ot-alt a:hover{color:var(--ink)}
+@media (max-width:767px){
+  .ot-launch-sec{padding-top:90px}
+  .ot-launch-sec .ot-block-head{gap:10px}
+  .ot-launch-sec h2{font-size:clamp(32px,9vw,44px)}
+  .ot-launch-sec .ot-block-head p{font-size:16px}
+  .ot-launch{gap:20px}
+  .ot-builder{gap:18px}
+  .ot-q legend{font-size:16px;margin-bottom:8px}
+  .ot-chips label{padding:8px 12px;font-size:13px}
+  .ot-plan{padding:14px}
+  .ot-steps b{font-size:13px}
+  .ot-steps span{font-size:12px}
+  .ot-steps li{padding:8px 9px}
+  .ot-console{grid-template-columns:auto minmax(0,1fr);justify-items:stretch;padding:14px;gap:14px}
+  .ot-launch-btn{width:84px;height:84px;font-size:11px}
+  .ot-launch-btn .ot-lbl{padding:0 8px}
+}
