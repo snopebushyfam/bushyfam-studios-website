@@ -934,3 +934,17 @@ body:not(.page-home) .filter[aria-pressed="true"]{background:var(--white);color:
 body:not(.page-home) .chip input:checked + .box{background:var(--iris);border-color:var(--iris)}
 body:not(.page-home) .site-header.solid{background:rgba(5,5,6,.94);border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
 body:not(.page-home) .site-footer{background:var(--black)}
+
+/* Fester Kontakt am Handy: WhatsApp + Anfrage, immer erreichbar (Startseite: erst nach dem Einstieg) */
+.m-cta{display:none}
+@media (max-width:767px){
+  .m-cta{position:fixed;left:0;right:0;bottom:0;z-index:48;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(5,5,6,.94);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  .m-cta a{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;font-weight:500;font-size:15px;text-decoration:none}
+  .m-cta-wa{background:rgba(243,240,234,.12);color:var(--white)}
+  .m-cta-go{background:var(--white);color:var(--black)}
+  body:has(.m-cta){padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  .page-home .m-cta{transform:translateY(110%)}
+  .ot-past .page-home .m-cta,html:not(.ot-js) .page-home .m-cta{transform:none}
+  html:has(.mobile-menu:not([hidden])) .m-cta{display:none}
+}
+.form-free{margin-top:-.25rem}

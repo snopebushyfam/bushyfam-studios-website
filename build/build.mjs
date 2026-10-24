@@ -307,6 +307,7 @@ ${styles.map((f) => `<link rel="stylesheet" href="/css/${f}">\n`).join("")}${sty
 <main id="main" tabindex="-1">
 ${body}
 </main>
+${key !== "contact" && key !== "thanks" ? `<div class="m-cta" data-m-cta>${WA_URL ? `<a class="m-cta-wa" href="${WA_URL}" target="_blank" rel="noopener noreferrer">${esc(t.ot.mobileWa)}<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}<a class="m-cta-go" href="${ROUTES[lang].contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a></div>` : ""}
 ${footer(lang)}
 <script src="/js/site.js" defer></script>
 ${scripts.map((s) => `<script src="/js/${s}" defer></script>`).join("\n")}
@@ -379,36 +380,6 @@ function projectCard(p, lang, { headingLevel = 3 } = {}) {
 const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ...s, src: url(s.src) }))));
 
 /* ---------- Seiten ---------- */
-/* „So läuft’s“ als Szene: Beim Scrollen bleibt die Bühne stehen und die Schritte laufen nacheinander durch,
-   jeweils mit einer großen Zeitmarke (Jetzt → 20 Min. → 48 h). Ohne JavaScript oder mit reduzierter
-   Bewegung stehen die Schritte einfach untereinander. */
-function processSection(lang, t, R) {
-  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
-  if (!tr(HOME, "processTitle", lang) || !steps.length) return "";
-  const lead = tr(HOME, "processLead", lang);
-  return `<section class="section process" data-process aria-labelledby="h-process" style="--steps:${steps.length}">
-  <div class="process-track">
-    <div class="process-stage">
-      <div class="wrap process-head">
-        <h2 class="h2 process-h" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
-        ${lead ? `<p class="process-lead">${esc(lead)}</p>` : ""}
-      </div>
-      <ol class="wrap process-steps">
-        ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
-          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 3)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
-          <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
-        </li>`; }).join("\n        ")}
-      </ol>
-      <div class="wrap process-foot">
-        <div class="process-nav" data-process-nav hidden>
-          ${steps.map((s, i) => `<button type="button" class="process-dot" data-goto="${i}"${i ? "" : ' aria-current="step"'}><span class="process-dot-label">${esc(tr(s, "title", lang))}</span><span class="process-bar" aria-hidden="true"><span class="process-fill"></span></span></button>`).join("")}
-        </div>
-        <a class="hiw-btn process-cta" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </div>
-</section>`;
-}
 
 /* ---------- Startseite „One Take“ ----------
    Die ganze Startseite ist eine Kamerafahrt: durch das Bullauge in die Pupille (Einstiegsfilm),
@@ -426,7 +397,6 @@ const frameSet = (folder, count) => {
 const OT_FRAMES = {
   exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
 };
-const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames/f-089.webp";
 
 /* Stationen im All: je eine Leistung, gezeigt in einem „Gerät“ (Smartphone-Feed, Kinoleinwand, Kartenstapel,
    Bild, Bullauge). Inhalte aus content/showcase.json (Admin: Seiten → Leistungen im All). Keine Kundennamen. */
@@ -469,6 +439,7 @@ function pageHome(lang) {
   const services = SERV.items || [];
   const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
   const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
+  const meLine = `<span class="ot-me">${img(STU.portrait.src, "", { cls: "ot-me-img", sizes: "48px", widths: [96, 192] })}<span>${esc(o.directMe.replace("{name}", String(STU.name || "").split(" ")[0]))}</span></span>`;
   const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
 
   const body = `
@@ -527,7 +498,7 @@ ${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="t
 </section>
 
 ${namedClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
-  <h2 id="h-clients" data-ot-reveal>${esc(o.clientsTitle)}</h2>
+  <div class="ot-board-head"><h2 id="h-clients" data-ot-reveal>${esc(o.clientsTitle)}</h2><p data-ot-reveal style="--d:.08s">${esc(o.clientsLead)}</p></div>
   <div class="ot-marq"><div class="ot-marq-track">${[0, 1].map((copy) => namedClients.map((c) => {
     const d = imageSize(c.logo) || { w: 2, h: 1 };
     return `<img${d.h / d.w > 0.55 ? ' class="sq"' : ""} src="${esc(url(c.logo))}" width="${d.w}" height="${d.h}" alt="${copy ? "" : esc(c.name)}" loading="lazy" decoding="async"${copy ? ' aria-hidden="true"' : ""}>`;
@@ -538,7 +509,7 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   <div class="ot-stage">
     <div class="ot-cast-text">
       <h2 id="h-cast-home">${esc(t.castHomeTitle)}</h2>
-      <p>${esc(t.castLead)}</p>
+      <p>${esc(o.castLeadHome)}</p>
       <div class="ot-who" aria-live="polite">${esc(CAST[0].name)}<small>${esc(tr(CAST[0], "role", lang))}</small></div>
       <a class="ot-btn ot-btn--ghost" href="${R.cast}" data-cursor="Alle">${esc(t.exploreCast)} <span class="ot-arr" aria-hidden="true">→</span></a>
     </div>
@@ -561,6 +532,9 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
       <fieldset class="ot-q"><legend>${esc(o.qWhen)}</legend><div class="ot-chips">
         ${o.when.map((w, i) => `<input type="radio" name="ot-when" id="ot-t${i}" value="${esc(w)}"${i ? "" : " checked"}><label for="ot-t${i}">${esc(w)}</label>`).join("")}
       </div></fieldset>
+      <fieldset class="ot-q"><legend>${esc(o.qBudget)}</legend><div class="ot-chips">
+        ${o.budgets.map((b, i) => `<input type="radio" name="ot-budget" id="ot-b${i}" value="${esc(b)}"><label for="ot-b${i}">${esc(b)}</label>`).join("")}
+      </div></fieldset>
       <label class="ot-q" for="ot-note"><span>${esc(o.qNote)}</span><textarea id="ot-note" placeholder="${esc(o.notePh)}"></textarea></label>
       <a class="link-arrow" href="${R.contact}">${esc(o.formLink)} <span aria-hidden="true">→</span></a>
     </form>
@@ -570,20 +544,12 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
         ${steps.map((s, i) => `<li><span class="ot-pt"></span><div><div class="ot-when" data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</div><div class="ot-what"><b>${esc(tr(s, "title", lang))}</b> · ${esc(tr(s, "text", lang))}</div></div></li>`).join("\n        ")}
       </ol>
       <p class="ot-mission" data-ot-mission></p>
+      <blockquote class="ot-preview" data-ot-preview></blockquote>
       <div class="ot-console" data-ot-console>
-        <button class="ot-launch-btn" type="button" data-ot-launch data-cursor="Start"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl" data-ot-lbl>${esc(o.launch)}</span></button>
-        <div class="ot-ctext"><b>${esc(o.consoleTitle)}</b><span>${esc(o.consoleText)}</span></div>
+        ${WA_URL ? `<a class="ot-launch-btn" data-ot-wa data-ot-send-link href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl">${esc(o.sendNow)}</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+        <div class="ot-ctext">${meLine}<span class="ot-free">${esc(o.freeCall)}</span>${S.email ? `<a class="ot-mail-link" data-ot-mail data-ot-send-link href="mailto:${esc(S.email)}">${esc(o.orMail)}: ${esc(S.email)}</a>` : ""}</div>
         <img class="ot-ufo" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt="" aria-hidden="true">
       </div>
-      <div class="ot-send" data-ot-send hidden>
-        <p class="ot-ready">${esc(o.readyText)}</p>
-        <blockquote data-ot-preview></blockquote>
-        <div class="ot-ctas">
-          ${WA_URL ? `<a class="ot-btn" data-ot-wa href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden">${esc(o.sendWa)} <span aria-hidden="true">↗</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
-          ${S.email ? `<a class="ot-btn ot-btn--ghost" data-ot-mail href="mailto:${esc(S.email)}">${esc(o.sendMail)}</a>` : ""}
-        </div>
-      </div>
-      ${S.email ? `<div class="ot-mailrow">E-Mail: <span class="ot-mail">${esc(S.email)}</span> <button class="ot-copy" type="button" data-ot-copy>${esc(o.copy)}</button></div>` : ""}
     </aside>
   </div>
 </section>
@@ -629,11 +595,12 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
     <div class="ot-front" aria-hidden="true"></div>
     <div class="ot-cta">
       <div><h2 id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>${tr(HOME, "ctaText", lang) ? `<p>${esc(tr(HOME, "ctaText", lang))}</p>` : ""}</div>
-      <div class="ot-ctas">
+      <div class="ot-cta-bottom"><div class="ot-ctas">
         <a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>
         ${WA_URL ? `<a class="ot-btn ot-btn--ghost" href="${WA_URL}" target="_blank" rel="noopener noreferrer">WhatsApp ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
         ${S.instagramUrl ? `<a class="ot-btn ot-btn--ghost" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${esc(S.instagramHandle || "Instagram")} ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
       </div>
+      <div class="ot-cta-me">${meLine}<span class="ot-free">${esc(o.freeCall)}</span></div></div>
     </div>
   </div>
 </section>
@@ -908,6 +875,7 @@ function pageContact(lang) {
     <div class="field-row">${field("zeitraum", f.timeframe, "text", false)}${field("budget", f.budget, "text", false)}</div>
     <p class="pv">${esc(f.privacyNote)} <a href="${ROUTES[lang].privacy}">${esc(t.privacy)}</a>.</p>
     <div><button class="btn btn--primary" type="submit" data-submit>${esc(f.submit)}</button></div>
+    <p class="pv form-free">${esc(t.ot.freeCall)}</p>
     <div class="result" role="status" aria-live="polite" data-result></div>
   </form>
   <div class="form-done" tabindex="-1" hidden data-done>

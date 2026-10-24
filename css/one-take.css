@@ -23,18 +23,6 @@
 .page-home .site-header{transition:transform .5s cubic-bezier(.2,.8,.2,1),background-color .4s,border-color .4s}
 .page-home .site-header.solid{background:rgba(5,5,6,.94);border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
 .page-home .site-header.ot-away{transform:translateY(-100%)}
-.ot-snd{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:rgba(243,240,234,.12);color:var(--ink);font:500 14px var(--font);cursor:pointer;transition:background .2s;flex:none}
-.ot-snd:hover{background:rgba(243,240,234,.22)}
-.ot-bars{display:flex;gap:2px;align-items:flex-end;height:14px}
-.ot-bars i{width:2px;height:4px;background:currentColor;border-radius:1px}
-.ot-snd[aria-pressed="true"] .ot-bars i{animation:ot-eq .9s ease-in-out infinite alternate}
-.ot-snd[aria-pressed="true"] .ot-bars i:nth-child(2){animation-delay:-.3s}
-.ot-snd[aria-pressed="true"] .ot-bars i:nth-child(3){animation-delay:-.6s}
-.ot-snd[aria-pressed="true"] .ot-bars i:nth-child(4){animation-delay:-.15s}
-@keyframes ot-eq{from{height:3px}to{height:14px}}
-@media (min-width:900px){.ot-snd{margin-left:auto}}
-@media (max-width:899.98px){.ot-snd{margin-left:auto;padding:0 12px}.ot-snd-l{display:none}.page-home .header-cta{margin-left:0}}
-
 /* Knöpfe */
 .ot-btn{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:14px 26px;border-radius:999px;background:var(--ink);color:var(--void);font-weight:500;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:var(--font);transition:background .25s,transform .25s,color .25s;white-space:nowrap}
 .ot-btn:hover{background:var(--iris)}
@@ -86,29 +74,6 @@
 .ot-grain{position:absolute;inset:-50%;pointer-events:none;opacity:.055;animation:ot-grain .6s steps(4) infinite;background-size:180px}
 @keyframes ot-grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
 
-/* 1 · Einstieg */
-.ot-hero .ot-stage{height:100svh;min-height:560px}
-.ot-porthole{position:absolute;inset:0;clip-path:circle(24vmin at 50% 42%)}
-.ot-porthole canvas{width:100%;height:100%;display:block}
-.ot-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
-.ot-js .ot-hero.is-live .ot-fallback{display:none}
-.ot-rim{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
-.ot-rim i{position:absolute;width:7px;height:7px;margin:-3.5px;border-radius:50%;background:var(--rim)}
-.ot-rim::before{content:"";position:absolute;width:calc(var(--d,0px) + 30px);height:calc(var(--d,0px) + 30px);left:calc(var(--d,0px) / -2 - 15px);top:calc(var(--d,0px) / -2 - 15px);border-radius:50%;border:11px solid #23262c}
-.ot-hero h1{font:inherit;margin:0}
-.ot-wordmark{position:absolute;left:var(--m);bottom:calc(58px + env(safe-area-inset-bottom,0px));font-family:var(--ot-display);font-weight:900;text-transform:uppercase;line-height:.82;letter-spacing:-.045em;white-space:nowrap;font-size:12.6vw;display:inline-block;transform-origin:50% 100%}
-.ot-lede{position:absolute;left:var(--m);top:calc(var(--header-h) + 14vh);width:min(25vw,340px);display:flex;flex-direction:column;gap:24px;font-weight:500;font-size:clamp(17px,1.5vw,22px);line-height:1.35}
-.ot-cue{position:absolute;right:var(--m);top:calc(var(--header-h) + 14vh);width:min(22vw,280px);font-size:15px;color:var(--dim);display:flex;flex-direction:column;gap:14px;align-items:flex-start;line-height:1.5}
-.ot-cue b{color:var(--ink);font-weight:500;font-size:17px}
-.ot-line{width:2px;height:56px;background:var(--dim);position:relative;overflow:hidden}
-.ot-line::after{content:"";position:absolute;left:0;top:-30%;width:100%;height:30%;background:var(--ink);animation:ot-drop 1.8s cubic-bezier(.6,0,.3,1) infinite}
-@keyframes ot-drop{to{top:110%}}
-.ot-tagline{position:absolute;left:var(--m);right:var(--m);bottom:14vh;text-align:center;font-family:var(--ot-display);font-weight:800;font-size:clamp(28px,3.6vw,56px);letter-spacing:-.035em;line-height:1.05;opacity:0;text-wrap:balance}
-.ot-blackout{position:absolute;inset:0;background:var(--void);opacity:0;pointer-events:none}
-/* Ruhe: Einstieg als Bild mit Text */
-.ot-hero:not(.is-live) .ot-tagline{opacity:1;position:static;padding:0 var(--m) 40px}
-.ot-hero:not(.is-live) .ot-cue{display:none}
-
 /* 2 · Arbeiten im All */
 .ot-space .ot-stage{background:var(--void)}
 .ot-stars{position:absolute;inset:0;width:100%;height:100%}
@@ -139,39 +104,6 @@
 .ot-space:not(.is-live) .ot-world{display:flex;flex-direction:column;gap:96px;padding:140px var(--m)}
 .ot-space.is-live .ot-world{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 50%;transform-style:preserve-3d}
 .ot-space.is-live .ot-item{position:absolute;left:50%;top:50%;will-change:transform,opacity;transform-style:preserve-3d}
-
-/* 3 · Leistungen: Cockpit-Monitor */
-.ot-svcs .ot-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,4vw,72px);align-items:center;padding:calc(var(--header-h) + 20px) var(--m) 70px;min-height:100svh}
-.ot-svc-left{display:flex;flex-direction:column;gap:clamp(24px,3vw,40px);min-width:0}
-.ot-panel{display:flex;flex-direction:column;gap:4px}
-.ot-inst{display:grid;grid-template-columns:18px minmax(0,1fr);gap:18px;align-items:start;padding:12px 0;cursor:pointer}
-.ot-lamp{width:14px;height:14px;margin-top:.6em;border-radius:50%;background:#2a2b30;transition:background .3s,transform .3s}
-.ot-inst h3{font-size:clamp(28px,3.6vw,58px);opacity:.3;transition:opacity .4s,transform .5s cubic-bezier(.2,.8,.2,1)}
-.ot-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.2,.8,.2,1)}
-.ot-more > div{overflow:hidden;min-height:0}
-.ot-more p{font-size:clamp(16px,1.2vw,18px);max-width:46ch;padding-top:12px;line-height:1.55}
-.ot-more span{display:block;color:var(--dim);font-size:14px;padding-top:8px}
-.ot-inst.is-on .ot-lamp{background:var(--iris);transform:scale(1.15)}
-.ot-inst.is-on h3{opacity:1;transform:translateX(6px)}
-.ot-inst.is-on .ot-more{grid-template-rows:1fr}
-.ot-monitor{position:relative;justify-self:center;width:min(100%,520px);aspect-ratio:4/5;max-height:76svh;border-radius:28px;background:#18191c;padding:14px}
-.ot-screen{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;background:#000}
-.ot-feed{position:absolute;inset:0;opacity:0;transition:opacity .2s}
-.ot-feed.is-on{opacity:1}
-.ot-feed img,.ot-feed video{width:100%;height:100%;object-fit:cover;display:block}
-.ot-feed--kb.is-on img{animation:ot-kb 9s ease-out both}
-@keyframes ot-kb{from{transform:scale(1.2)}to{transform:scale(1)}}
-.ot-static{position:absolute;inset:0;opacity:0;background-size:160px;pointer-events:none}
-.ot-screen.zap .ot-static{animation:ot-zap .34s steps(3)}
-.ot-screen.zap .ot-feed.is-on{animation:ot-roll .34s cubic-bezier(.3,0,.2,1)}
-@keyframes ot-zap{0%{opacity:.85}100%{opacity:0}}
-@keyframes ot-roll{0%{transform:scaleY(.03) scaleX(1.15);filter:brightness(3)}60%{transform:scaleY(1.03)}100%{transform:none;filter:none}}
-.ot-osd{position:absolute;left:14px;right:14px;bottom:14px;display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:500;color:#fff;font-variant-numeric:tabular-nums}
-.ot-osd span{background:rgba(5,5,6,.66);padding:5px 11px;border-radius:999px}
-.ot-svcs.is-live .ot-screen{clip-path:inset(calc(50% - var(--on,1) * 50%) 0 calc(50% - var(--on,1) * 50%) 0 round 16px)}
-.ot-svcs:not(.is-live) .ot-inst h3{opacity:1}
-.ot-svcs:not(.is-live) .ot-more{grid-template-rows:1fr}
-.ot-svcs:not(.is-live) .ot-stage{padding-block:140px}
 
 /* Schon an Bord */
 .ot-board{padding-top:clamp(110px,12vw,180px)}
@@ -287,26 +219,14 @@
   .ot-cast .ot-stage{grid-template-columns:1fr;align-content:center;gap:12px;padding-top:80px}
   .ot-ringwrap{height:50vh}
   .ot-who{font-size:clamp(44px,13vw,80px)}
-  .ot-svcs .ot-stage{grid-template-columns:1fr;align-content:start;gap:18px;padding:calc(var(--header-h) + 8px) var(--m) 60px}
-  .ot-monitor{order:-1;width:100%;max-width:none;aspect-ratio:16/10;max-height:34svh;border-radius:18px;padding:8px}
-  .ot-svc-left{gap:10px}
-  .ot-svc-left h2{font-size:clamp(32px,9vw,48px)}
-  .ot-inst{padding:6px 0;gap:14px}
-  .ot-inst h3{font-size:clamp(24px,7vw,34px)}
-  .ot-more p{font-size:15px}
 }
 @media (max-width:767px){
-  .ot-lede{top:auto;bottom:calc(58px + 12vw + 22px);width:auto;right:var(--m);gap:16px;font-size:17px}
-  .ot-lede .ot-ctas{flex-wrap:nowrap;gap:8px}
-  .ot-lede .ot-btn{padding:14px 16px;font-size:14px}
-  .ot-cue{display:none}
   .ot-item{flex-direction:column!important;text-align:left!important;gap:16px}
   .ot-cap{align-items:flex-start!important;max-width:78vw}
   .ot-item--flip .ot-go{align-self:flex-start}
   .ot-pic--portrait{width:46vw}.ot-pic--tall{width:52vw}.ot-pic--square{width:62vw}
   .ot-item--end{align-items:center;text-align:center!important}
   .ot-item p{font-size:16px}
-  .ot-tagline{bottom:20vh}
   .ot-console{grid-template-columns:1fr;justify-items:start}
   .ot-ctext{padding-right:0}
   .ot-ufo{width:60px}
@@ -387,3 +307,26 @@
 .ot-phone-screen,.ot-cinema-screen{min-height:0}
 .ot-feed-item{min-height:0;overflow:hidden}
 .ot-feed-item video,.ot-feed-item img{height:100%;min-height:0}
+
+/* Handy: statt Zeitleiste der feste Kontakt-Button (site.css .m-cta) */
+@media (max-width:767px){.ot-tl{display:none}}
+
+/* Einstieg: nur die Schrift der Überschrift wie im Rest der Seite (Ablauf und Film unverändert) */
+.page-home .hero-title{font-family:var(--ot-display);font-weight:800;letter-spacing:-.04em;line-height:1;font-size:clamp(1.9rem,.4rem + 3.9vw,4.6rem);max-width:15ch}
+
+/* Startkonsole ohne Tor */
+.ot-preview{margin:0;padding:16px 18px;border-radius:6px;background:var(--void);font-size:15px;line-height:1.5}
+.ot-launch-btn{text-decoration:none;font-size:13px}
+.ot-ctext{gap:10px}
+.ot-me{display:inline-flex;align-items:center;gap:12px;color:var(--ink);font-weight:500;font-size:15px;line-height:1.35}
+.ot-me-img{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:50% 20%;flex:none}
+.ot-free{color:var(--iris);font-size:14px;font-weight:500}
+.ot-mail-link{color:var(--dim);font-size:14px;text-decoration:underline;text-decoration-color:var(--iris);text-underline-offset:4px}
+.ot-mail-link:hover{color:var(--ink)}
+.ot-cta-me{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:18px;pointer-events:auto}
+/* Logo-Laufband: Überschrift mit Satz */
+.ot-board-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 40px;padding-inline:var(--m);margin-bottom:48px}
+.ot-board-head h2{padding:0;margin:0}
+.ot-board-head p{max-width:44ch;color:var(--dim);font-size:clamp(16px,1.2vw,18px)}
+
+.ot-cta-bottom{display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto}

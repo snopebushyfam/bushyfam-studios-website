@@ -99,96 +99,16 @@
   })();
   $$(".ot-grain, .ot-static").forEach(function (g) { g.style.backgroundImage = "url(" + grainUrl + ")"; });
 
-  /* ---------- Ton: erst nach Klick, im Browser erzeugt ---------- */
-  var sound = (function () {
-    var ac = null, master, hum1, wn, bp, on = false, ducked = false;
-    function init() {
-      ac = new (window.AudioContext || window.webkitAudioContext)();
-      master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
-      var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 320; lp.connect(master);
-      hum1 = ac.createOscillator(); hum1.type = "sine"; hum1.frequency.value = 55;
-      var hum2 = ac.createOscillator(); hum2.type = "triangle"; hum2.frequency.value = 82.4;
-      var g1 = ac.createGain(); g1.gain.value = 0.16; var g2 = ac.createGain(); g2.gain.value = 0.05;
-      hum1.connect(g1).connect(lp); hum2.connect(g2).connect(lp); hum1.start(); hum2.start();
-      var lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 0.2; lg.gain.value = 40; lfo.connect(lg).connect(lp.frequency); lfo.start();
-      var buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = buf.getChannelData(0);
-      for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-      var src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
-      bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 500; bp.Q.value = 0.8;
-      wn = ac.createGain(); wn.gain.value = 0;
-      src.connect(bp).connect(wn).connect(master); src.start();
-    }
-    var level = function () { return on && !ducked ? 0.7 : 0; };
-    return {
-      toggle: function () { if (!ac) init(); on = !on; if (on) ac.resume(); master.gain.setTargetAtTime(level(), ac.currentTime, 0.3); return on; },
-      duck: function (v) { ducked = v; if (ac) master.gain.setTargetAtTime(level(), ac.currentTime, 0.2); },
-      update: function (v, heroP) {
-        if (!on || ducked) return;
-        var a = Math.min(Math.abs(v), 120);
-        wn.gain.setTargetAtTime(Math.min(0.32, a * 0.006), ac.currentTime, 0.08);
-        bp.frequency.setTargetAtTime(300 + a * 30, ac.currentTime, 0.1);
-        hum1.frequency.setTargetAtTime(55 + heroP * 18, ac.currentTime, 0.2);
-      },
-      blip: function (f) {
-        if (!on || ducked) return;
-        f = f || 880; var o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
-        o.type = "sine"; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f / 2, t + 0.18);
-        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
-        o.connect(g).connect(master); o.start(t); o.stop(t + 0.25);
-      },
-      whoosh: function () {
-        if (!on || ducked) return;
-        var t = ac.currentTime;
-        wn.gain.cancelScheduledValues(t); wn.gain.setValueAtTime(0.05, t); wn.gain.linearRampToValueAtTime(0.4, t + 0.5); wn.gain.linearRampToValueAtTime(0, t + 1.4);
-        bp.frequency.cancelScheduledValues(t); bp.frequency.setValueAtTime(200, t); bp.frequency.exponentialRampToValueAtTime(3000, t + 1.2);
-      }
-    };
-  })();
-  var sndBtn = $("[data-ot-snd]");
-  if (sndBtn) sndBtn.addEventListener("click", function () {
-    var v = sound.toggle(); sndBtn.setAttribute("aria-pressed", v);
-    var l = $(".ot-snd-l", sndBtn); if (l) l.textContent = v ? L.soundOff : L.soundOn;
-  });
+  /* Ton gibt es nicht mehr – Platzhalter, damit Aufrufe ins Leere gehen */
+  var sound = { blip: function () {}, update: function () {}, whoosh: function () {}, duck: function () {} };
 
   /* ---------- Szenen ---------- */
   var scenes = [];
   var scene = function (el, render, rest) { if (el) scenes.push({ el: el, render: render, rest: rest, last: -1 }); };
   function dirty() { scenes.forEach(function (s) { s.last = -1; }); }
 
-  /* 1 · Einstieg: Bullauge öffnet sich, die Kamera fährt in die Pupille */
-  var hero = $(".ot-hero"), hc = $('[data-ot-canvas="hero"]'), port = $(".ot-porthole"), rim = $(".ot-rim");
-  var heroFilm = null;
-  var wm = $(".ot-wordmark"), lede = $(".ot-lede"), cue = $(".ot-cue"), tag = $(".ot-tagline"), black = $(".ot-hero .ot-blackout");
-  var dots = [];
-  if (rim) for (var di = 0; di < 20; di++) dots.push(rim.appendChild(document.createElement("i")));
-  function heroRender(p) {
-    var cx = W / 2, cy = phone ? H * 0.4 : H * 0.42;
-    var r0 = phone ? Math.min(W * 0.37, H * 0.21) : Math.min(W * 0.19, H * 0.27);
-    var rMax = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 4;
-    var e = ease(seg(p, 0, 0.3)), r = lerp(r0, rMax, e);
-    port.style.clipPath = "circle(" + r + "px at " + cx + "px " + cy + "px)";
-    rim.style.transform = "translate(" + cx + "px," + cy + "px)";
-    rim.style.setProperty("--d", 2 * r + "px");
-    rim.style.opacity = 1 - seg(p, 0.04, 0.16);
-    var spin = p * 120;
-    dots.forEach(function (d, i) { var a = (i / dots.length * 360 + spin) * Math.PI / 180; d.style.transform = "translate(" + Math.cos(a) * (r + 9.5) + "px," + Math.sin(a) * (r + 9.5) + "px)"; });
-    var img = heroFilm && frameAt(heroFilm, seg(p, 0.04, 0.92));
-    if (img) {
-      var z = 1 + 2.4 * easeIn(seg(p, 0.8, 0.97));
-      var ctx = draw(hc, img, cover(img, W, H) * z, lerp(phone ? 0.55 : 0.6, 0.5, seg(p, 0, 0.35)), 0.5, W / 2, lerp(cy, H / 2, e));
-      var tt = seg(p, 0.4, 0.5) - seg(p, 0.68, 0.76);
-      if (tt > 0) { ctx.fillStyle = "rgba(5,5,6," + 0.42 * tt + ")"; ctx.fillRect(0, 0, hc.width, hc.height); }
-    }
-    var out = seg(p, 0.02, 0.2);
-    wm.style.transform = "translateY(" + out * 30 + "%) scale(" + (1 - out * 0.06) + ")"; wm.style.opacity = 1 - out;
-    var o2 = 1 - seg(p, 0, 0.1);
-    lede.style.opacity = o2; if (cue) cue.style.opacity = o2;
-    lede.style.transform = "translateY(" + -seg(p, 0, 0.1) * 40 + "px)"; if (cue) cue.style.transform = lede.style.transform;
-    lede.style.pointerEvents = o2 < 0.3 ? "none" : "";
-    if (tag) { var t = seg(p, 0.42, 0.5) - seg(p, 0.68, 0.76); tag.style.opacity = t; tag.style.transform = "translateY(" + ((1 - seg(p, 0.42, 0.5)) * 30 - seg(p, 0.68, 0.76) * 30) + "px)"; }
-    black.style.opacity = seg(p, 0.9, 0.98);
-  }
-  if (hero && hc) scene(hero, heroRender, function () { heroRender(0); });
+  /* Einstieg: Original-Film (js/hero-scrub.js) – hier nichts mehr zu tun */
+  var hero = null, hc = null, heroFilm = null;
 
   /* 2 · Arbeiten im All: die Kamera hält an jedem Projekt kurz an */
   var space = $(".ot-space"), stars = $(".ot-stars"), items = $$(".ot-space .ot-item");
@@ -281,36 +201,6 @@
     });
   }, 150);
 
-  /* 3 · Leistungen: der Monitor schaltet beim Scrollen durch die Kanäle */
-  var svcs = $(".ot-svcs"), insts = $$("[data-ot-inst]"), feeds = $$(".ot-feed"), screen = $(".ot-screen");
-  var osdC = $("[data-ot-osd-ch]"), osdN = $("[data-ot-osd-n]"), svcK = 0;
-  function setSvc(k) {
-    if (k === svcK) return;
-    svcK = k;
-    insts.forEach(function (el, i) { el.classList.toggle("is-on", i === k); });
-    feeds.forEach(function (el, i) {
-      el.classList.toggle("is-on", i === k);
-      var v = el.querySelector("video"); if (v) { if (i === k) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }
-    });
-    if (osdC) osdC.textContent = (L.channel || "{n}/{m}").replace("{n}", k + 1).replace("{m}", insts.length);
-    if (osdN) osdN.textContent = (L.labels || [])[k] || "";
-    screen.classList.remove("zap"); void screen.offsetWidth; screen.classList.add("zap");
-    sound.blip(520 + k * 120);
-  }
-  function svcRender(p) {
-    svcs.style.setProperty("--on", ease(seg(p, 0, 0.1)).toFixed(3));
-    setSvc(Math.min(insts.length - 1, Math.floor(seg(p, 0.06, 0.96) * insts.length)));
-    var v = feeds[svcK] && feeds[svcK].querySelector("video");
-    if (v && v.paused && p > 0 && p < 1) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
-  }
-  if (svcs && insts.length) {
-    scene(svcs, svcRender, null);
-    insts.forEach(function (el, i) { el.addEventListener("click", function () {
-      if (!svcs.classList.contains("is-live")) return;
-      go(svcs.offsetTop + (svcs.offsetHeight - H) * (0.06 + (i + 0.5) / insts.length * 0.9), 1);
-    }); });
-  }
-
   /* 4 · Besetzung: der Ring dreht sich mit */
   var cast = $(".ot-cast"), figs = $$(".ot-ring li"), who = $(".ot-who"), ring = $(".ot-ring"), R = 0, lastWho = 0;
   var names = figs.map(function (f) { return f.querySelector(".ot-ring-name").textContent; });
@@ -349,8 +239,8 @@
     var img = exitFilm && frameAt(exitFilm, seg(p, 0.02, 0.8));
     if (img) {
       var sc = cover(img, W, H) * lerp(2.4, 1, ease(seg(p, 0, 0.14)));
-      var sf = Math.min(W, H * (phone ? 0.62 : 0.5)) / dimW(img) * (phone ? 0.9 : 1);
-      var k = ease(seg(p, 0.5, 0.86)), s = lerp(sc, sf, k), cy = lerp(H / 2, H * (phone ? 0.5 : 0.55), k);
+      var sf = Math.min(W, H * (phone ? 0.5 : 0.42)) / dimW(img) * (phone ? 0.9 : 1);
+      var k = ease(seg(p, 0.5, 0.86)), s = lerp(sc, sf, k), cy = lerp(H / 2, H * (phone ? 0.46 : 0.5), k);
       var ctx = draw(ec, img, s, 0.5, 0.52, W / 2, cy);
       if (k > 0) {
         var dpr = ec.width / (ec.clientWidth || 1), size = dimW(img) * s * dpr;
@@ -419,6 +309,7 @@
       if (Math.abs(p - s.last) > 0.0003 || s.last < 0) { s.last = p; s.render(p); }
     }
     if (live) irisRender();
+    html.classList.toggle("ot-past", y > H * 0.9);
     if (header) {
       header.classList.toggle("solid", y > H * 0.6);
       if (Math.abs(y - navY) > 24) { header.classList.toggle("ot-away", y > navY && y > H && !document.querySelector("[data-menu]:not([hidden])")); navY = y; }
@@ -533,7 +424,8 @@
       var labels = [(L.today || "{t}").replace("{t}", fmtT(now)), fmtD(call), fmtD(offer)];
       whens.forEach(function (el, i) { if (labels[i]) el.textContent = labels[i]; });
       var what = $$('input[type="checkbox"]:checked', builder).map(function (i) { return i.value; });
-      var whenIn = $('input[type="radio"]:checked', builder), when = whenIn ? whenIn.value : "";
+      var whenIn = $('input[name="ot-when"]:checked', builder), when = whenIn ? whenIn.value : "";
+      var budIn = $('input[name="ot-budget"]:checked', builder), budget = budIn ? budIn.value : "";
       var note = $("#ot-note").value.trim(), list = what.length ? what.join(", ") : (L.open || "");
       mission.textContent = "";
       [[L.mission, list], [L.start, when]].forEach(function (pair, i) {
@@ -541,7 +433,7 @@
         mission.appendChild(document.createTextNode(pair[0] + ": "));
         var b = document.createElement("b"); b.textContent = pair[1]; mission.appendChild(b);
       });
-      var msg = (L.msg || "").replace("{list}", list).replace("{when}", when) + (note ? " " + note : "");
+      var msg = (L.msg || "").replace("{list}", list).replace("{when}", when) + (budget ? " " + (L.budgetMsg || "{b}").replace("{b}", budget) : "") + (note ? " " + note : "");
       if (preview) preview.textContent = msg;
       if (wa && L.wa) wa.href = L.wa + "?text=" + encodeURIComponent(msg);
       if (mail && L.email) mail.href = "mailto:" + L.email + "?subject=" + encodeURIComponent((L.subject || "").replace("{list}", list)) + "&body=" + encodeURIComponent(msg);
@@ -549,22 +441,13 @@
     plan(); setInterval(plan, 1000);
     builder.addEventListener("input", plan); builder.addEventListener("change", plan);
 
-    var launch = $("[data-ot-launch]"), lbl = $("[data-ot-lbl]"), lr = $(".ot-lr"), consoleEl = $("[data-ot-console]"), send = $("[data-ot-send]");
-    launch.addEventListener("click", function () {
-      launch.disabled = true;
-      var finish = function () {
-        consoleEl.classList.add("lift"); lbl.textContent = L.go || "Go!"; sound.whoosh();
-        setTimeout(function () { send.hidden = false; lbl.textContent = L.ready || ""; launch.classList.remove("counting"); var f = $("[data-ot-wa]") || $("[data-ot-mail]"); if (f) f.focus({ preventScroll: true }); }, reduced ? 0 : 900);
-      };
-      if (reduced) return finish();
-      launch.classList.add("counting");
-      var c = 3;
-      (function tick() {
-        if (c === 0) return finish();
-        lbl.textContent = c; sound.blip(c === 1 ? 990 : 660);
-        if (lr.animate) lr.animate([{ strokeDashoffset: 339.3 }, { strokeDashoffset: 0 }], { duration: 700, easing: "linear", fill: "forwards" });
-        c--; setTimeout(tick, 750);
-      })();
+    var consoleEl = $("[data-ot-console]"), lr = $(".ot-lr");
+    $$("[data-ot-send-link]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        if (!consoleEl || reduced) return;
+        consoleEl.classList.remove("lift"); void consoleEl.offsetWidth; consoleEl.classList.add("lift");
+        if (lr && lr.animate) lr.animate([{ strokeDashoffset: 339.3 }, { strokeDashoffset: 0 }], { duration: 900, easing: "cubic-bezier(.6,0,.4,1)", fill: "forwards" });
+      });
     });
     var copy = $("[data-ot-copy]");
     if (copy) copy.addEventListener("click", function () {
