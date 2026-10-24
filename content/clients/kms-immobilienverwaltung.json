@@ -2,5 +2,6 @@
   "name": "KMS Immobilienverwaltung",
   "logo": "/assets/clients/kms-immobilienverwaltung.webp",
   "url": "",
-  "order": 13
+  "order": 13,
+  "enabled": true
 }

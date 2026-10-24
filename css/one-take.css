@@ -1,0 +1,332 @@
+/* BushyFam Studios – Startseite „One Take“.
+   Eine Kamerafahrt ohne Schnitt: durch das Bullauge in die Pupille, durch die Arbeiten im All,
+   vorbei an Monitor, Besetzungs-Ring und Startkonsole, am Ende aus der Pupille hinaus zum UFO.
+   Ohne JavaScript oder mit reduzierter Bewegung (.ot-scene ohne .is-live) stehen alle Abschnitte ruhig untereinander. */
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin-ext.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+.page-home{
+  --void:#050506;      /* das Schwarz der Pupille */
+  --hull:#121315;      /* eine Stufe heller: Flächen */
+  --ink:#f3f0ea;
+  --dim:#a39e96;
+  --iris:#e39a4b;      /* Bernstein aus der Iris im Film */
+  --rim:#ffe9c9;       /* Lichter am Bullauge */
+  --ot-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --m:clamp(16px,2.6vw,40px);
+  background:var(--void);color:var(--ink);overflow-x:clip;color-scheme:dark}
+.page-home main{overflow-x:clip}
+.page-home h2,.page-home h3{font-family:var(--ot-display);font-weight:900;letter-spacing:-.03em;line-height:.95;text-wrap:balance}
+.page-home h2{font-size:clamp(40px,7vw,112px)}
+.page-home ::selection{background:var(--iris);color:var(--void)}
+
+/* Kopfleiste: durchsichtig, beim Runterscrollen weg, beim Hochscrollen da */
+.page-home .site-header{transition:transform .5s cubic-bezier(.2,.8,.2,1),background-color .4s,border-color .4s}
+.page-home .site-header.solid{background:rgba(5,5,6,.94);border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+.page-home .site-header.ot-away{transform:translateY(-100%)}
+/* Knöpfe */
+.ot-btn{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:14px 26px;border-radius:999px;background:var(--ink);color:var(--void);font-weight:500;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:var(--font);transition:background .25s,transform .25s,color .25s;white-space:nowrap}
+.ot-btn:hover{background:var(--iris)}
+.ot-btn:active{transform:scale(.96)}
+.ot-btn--ghost{background:rgba(243,240,234,.12);color:var(--ink)}
+.ot-btn--ghost:hover{background:var(--iris);color:var(--void)}
+.ot-arr{transition:transform .25s}
+.ot-btn:hover .ot-arr{transform:translateX(4px)}
+.ot-ctas{display:flex;flex-wrap:wrap;gap:10px}
+.ot-tri{width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
+
+/* Zeitleiste: Timecode, Kapitel, Springen */
+.ot-tl{position:fixed;z-index:45;left:var(--m);right:var(--m);bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:14px;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);mix-blend-mode:difference}
+.ot-tl-dot{width:9px;height:9px;border-radius:50%;background:#ff4433;animation:ot-rec 1.2s steps(1) infinite;flex:none}
+@keyframes ot-rec{50%{opacity:.15}}
+.ot-tl-ch{min-width:96px;opacity:.75}
+.ot-tl-track{position:relative;flex:1;height:30px;cursor:pointer}
+.ot-tl-track::before{content:"";position:absolute;left:0;right:0;top:14px;height:2px;background:rgba(243,240,234,.28)}
+.ot-tl-fill{position:absolute;left:0;top:14px;height:2px;width:0;background:var(--ink)}
+.ot-tl-head{position:absolute;top:8px;width:2px;height:14px;margin-left:-1px;background:var(--ink);left:0}
+.ot-tl-track button{position:absolute;top:0;height:30px;width:30px;margin-left:-15px;background:none;border:0;padding:0;cursor:pointer;color:var(--ink)}
+.ot-tl-track button i{position:absolute;left:12px;top:10px;width:6px;height:10px;background:var(--ink);border-radius:1px}
+.ot-tl-track button span{position:absolute;bottom:28px;left:50%;transform:translate(-50%,6px);white-space:nowrap;font-size:12px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.ot-tl-track:hover button span,.ot-tl-track button:focus-visible span{opacity:1;transform:translate(-50%,0)}
+@media (max-width:767px){.ot-tl-ch{display:none}.ot-tl{gap:10px}}
+
+/* Zeiger */
+.ot-cur,.ot-cur-ring{position:fixed;left:0;top:0;z-index:80;pointer-events:none;border-radius:50%;mix-blend-mode:difference;display:none;opacity:0;transition:opacity .3s}
+.ot-moved .ot-cur,.ot-moved .ot-cur-ring{opacity:1}
+.ot-cur{width:8px;height:8px;background:var(--ink);margin:-4px 0 0 -4px}
+.ot-cur-ring{width:46px;height:46px;margin:-23px 0 0 -23px;border:1.5px solid var(--ink);place-items:center;font-size:11px;font-weight:500;transition:width .3s,height .3s,margin .3s,background .3s,opacity .3s}
+.ot-cur-ring span{opacity:0;transition:opacity .2s;color:var(--void)}
+.ot-cur-ring.big{width:96px;height:96px;margin:-48px 0 0 -48px;background:var(--ink)}
+.ot-cur-ring.big span{opacity:1}
+@media (pointer:fine){.ot-js .ot-cur,.ot-js .ot-cur-ring{display:grid}.ot-js .page-home,.ot-js .page-home a,.ot-js .page-home button,.ot-js .page-home label{cursor:none}}
+
+/* Showreel */
+.ot-reel{position:fixed;inset:0;z-index:90;background:rgba(5,5,6,.97);display:grid;place-items:center;padding:calc(76px + env(safe-area-inset-top,0px)) var(--m) calc(30px + env(safe-area-inset-bottom,0px))}
+.ot-reel video{height:calc(100svh - 120px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));width:auto;max-width:100%;aspect-ratio:9/16;object-fit:contain;border-radius:6px;background:#000}
+.ot-reel-x{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:var(--m)}
+.ot-reel:not([hidden]){animation:ot-reel-in .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes ot-reel-in{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(75% at 50% 50%)}}
+
+/* Szenen-Bühne */
+.ot-scene{position:relative}
+.ot-stage{position:relative;overflow:clip}
+.ot-scene.is-live{height:calc((var(--hold) + 1) * 100svh)}
+.ot-scene.is-live > .ot-stage{position:sticky;top:0;height:100svh}
+.ot-grain{position:absolute;inset:-50%;pointer-events:none;opacity:.055;animation:ot-grain .6s steps(4) infinite;background-size:180px}
+@keyframes ot-grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
+
+/* 2 · Arbeiten im All */
+.ot-space .ot-stage{background:var(--void)}
+.ot-stars{position:absolute;inset:0;width:100%;height:100%}
+.ot-item{display:flex;gap:28px;align-items:center}
+.ot-pic{position:relative;overflow:hidden;border-radius:4px;background:var(--hull);flex:none}
+.ot-pic img,.ot-pic video{width:100%;height:100%;object-fit:cover;display:block}
+.ot-pic--contain img{object-fit:contain}
+.ot-pic--portrait{width:min(23vw,330px);aspect-ratio:9/16}
+.ot-pic--tall{width:min(26vw,380px);aspect-ratio:2/3}
+.ot-pic--square{width:min(30vw,440px);aspect-ratio:1/1}
+.ot-cap{display:flex;flex-direction:column;gap:14px;max-width:400px}
+.ot-item h3{font-size:clamp(32px,4vw,64px)}
+.ot-meta{font-size:15px;color:var(--iris);font-weight:500}
+.ot-item p{font-size:19px;line-height:1.5;margin:0}
+.ot-go{font-weight:500;font-size:15px;text-decoration:none;align-self:flex-start;border-bottom:2px solid var(--iris);padding-bottom:2px}
+.ot-item--title{flex-direction:column;align-items:flex-start;gap:20px}
+.ot-item--title h2{font-size:clamp(64px,13vw,220px)}
+.ot-item--title p{max-width:34ch;font-size:clamp(18px,1.5vw,22px)}
+.ot-item--flip{flex-direction:row-reverse;text-align:right}
+.ot-item--flip .ot-cap{align-items:flex-end}
+.ot-item--flip .ot-go{align-self:flex-end}
+.ot-item--end{flex-direction:column;gap:22px;text-align:center;align-items:center}
+.ot-item--end h3{font-size:clamp(34px,5vw,80px)}
+.ot-item--end .ot-ctas{justify-content:center}
+.ot-space .ot-pic{transition:transform .6s cubic-bezier(.2,.8,.2,1);transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.ot-warp-out{position:absolute;inset:0;background:var(--void);opacity:0;pointer-events:none}
+.ot-space:not(.is-live) .ot-stars{display:none}
+.ot-space:not(.is-live) .ot-world{display:flex;flex-direction:column;gap:96px;padding:140px var(--m)}
+.ot-space.is-live .ot-world{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 50%;transform-style:preserve-3d}
+.ot-space.is-live .ot-item{position:absolute;left:50%;top:50%;will-change:transform,opacity;transform-style:preserve-3d}
+
+/* Schon an Bord */
+.ot-board{padding-top:clamp(110px,12vw,180px)}
+.ot-board h2{padding-inline:var(--m);font-size:clamp(32px,4.6vw,72px);margin-bottom:48px}
+.ot-marq{overflow:hidden;background:var(--hull);padding-block:40px}
+.ot-marq-track{display:flex;gap:90px;width:max-content;align-items:center;animation:ot-run 40s linear infinite}
+.ot-marq img{height:52px;width:auto;filter:grayscale(1) brightness(2.2);opacity:.9;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.ot-marq img.sq{height:84px}
+.ot-marq:hover img{opacity:.3}
+.ot-marq img:hover{opacity:1;transform:scale(1.15)}
+.ot-marq:hover .ot-marq-track{animation-play-state:paused}
+@keyframes ot-run{to{transform:translateX(-50%)}}
+
+/* 4 · Besetzung: der Ring */
+.ot-cast .ot-stage{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:40px;padding:0 var(--m)}
+.ot-cast-text{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.ot-cast-text p{max-width:36ch;font-size:clamp(17px,1.3vw,19px)}
+.ot-who{font-family:var(--ot-display);font-weight:900;font-size:clamp(56px,8vw,140px);letter-spacing:-.04em;line-height:.9;color:var(--iris);min-height:1em}
+.ot-who small{display:block;font-family:var(--font);font-size:15px;font-weight:500;letter-spacing:0;color:var(--dim);margin-top:12px}
+.ot-ringwrap{position:relative;height:min(74vh,680px);perspective:1600px;perspective-origin:50% 40%}
+.ot-ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.ot-ring li{position:absolute;width:var(--cw,220px);aspect-ratio:3/4;left:calc(var(--cw,220px) / -2);top:calc(var(--cw,220px) * -.666);border-radius:4px;overflow:hidden;background:var(--hull)}
+.ot-ring a{display:block;width:100%;height:100%}
+.ot-ring img{width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.ot-ring-name{position:absolute;left:14px;bottom:12px;font-weight:500;font-size:15px;color:#fff}
+.ot-cast:not(.is-live) .ot-stage{grid-template-columns:1fr;padding-block:140px}
+.ot-cast:not(.is-live) .ot-ringwrap{height:auto;perspective:none}
+.ot-cast:not(.is-live) .ot-ring{position:static;width:auto;height:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.ot-cast:not(.is-live) .ot-ring li{position:relative;left:auto;top:auto;width:auto;transform:none!important}
+
+/* 5 · Startsequenz */
+.ot-block{padding:clamp(110px,12vw,180px) var(--m) 0}
+.ot-block-head{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:end;margin-bottom:clamp(40px,6vw,80px)}
+.ot-block-head p{font-size:clamp(17px,1.4vw,20px);max-width:42ch}
+.ot-launch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:start}
+.ot-builder{display:flex;flex-direction:column;gap:34px;align-items:flex-start}
+.ot-q{display:flex;flex-direction:column;gap:14px;border:0;padding:0;margin:0;width:100%}
+.ot-q legend,.ot-q > span{font-family:var(--ot-display);font-weight:700;font-size:22px;letter-spacing:-.02em;padding:0;margin-bottom:14px}
+.ot-chips{display:flex;flex-wrap:wrap;gap:10px}
+.ot-chips input{position:absolute;opacity:0;pointer-events:none}
+.ot-chips label{padding:12px 18px;border-radius:999px;background:var(--hull);font-size:15px;font-weight:500;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.ot-chips label:hover{transform:translateY(-2px)}
+.ot-chips input:checked + label{background:var(--ink);color:var(--void)}
+.ot-chips input:focus-visible + label{outline:2px solid var(--iris);outline-offset:3px}
+.ot-q textarea{width:100%;min-height:96px;background:var(--hull);border:0;border-radius:6px;padding:16px;color:var(--ink);font:inherit;font-size:16px;resize:vertical}
+.ot-q textarea:focus{outline:2px solid var(--iris)}
+.ot-plan{background:var(--hull);border-radius:8px;padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:28px;position:sticky;top:100px}
+.ot-now{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums;color:var(--dim);font-size:15px}
+.ot-now b{color:var(--ink);font-weight:500}
+.ot-track3{display:flex;flex-direction:column;gap:26px;position:relative}
+.ot-track3::before{content:"";position:absolute;left:11px;top:12px;bottom:12px;width:2px;background:#2a2b2f}
+.ot-track3 li{display:grid;grid-template-columns:24px 1fr;gap:18px;position:relative}
+.ot-pt{width:24px;height:24px;border-radius:50%;background:var(--void);border:2px solid var(--iris);margin-top:4px}
+.ot-track3 li:first-child .ot-pt{background:var(--iris)}
+.ot-when{font-family:var(--ot-display);font-weight:700;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ot-what{color:var(--dim);font-size:15px;line-height:1.5}
+.ot-what b{color:var(--ink);font-weight:500}
+.ot-mission{font-size:15px;line-height:1.5}
+.ot-mission b{color:var(--iris);font-weight:500}
+.ot-console{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;padding:26px 22px;border-radius:8px;background:var(--void);overflow:hidden;min-height:170px}
+.ot-launch-btn{position:relative;width:118px;height:118px;border-radius:50%;border:0;background:var(--iris);color:var(--void);font:700 14px/1.1 var(--ot-display);cursor:pointer;display:grid;place-items:center;transition:transform .2s;padding:0}
+.ot-launch-btn:hover{transform:scale(1.05)}
+.ot-launch-btn:active{transform:scale(.95)}
+.ot-launch-btn svg{position:absolute;inset:-9px;width:calc(100% + 18px);height:calc(100% + 18px);transform:rotate(-90deg);overflow:visible}
+.ot-launch-btn circle{fill:none;stroke-width:3}
+.ot-lr-bg{stroke:rgba(227,154,75,.25)}
+.ot-lr{stroke:var(--iris);stroke-dasharray:339.3;stroke-dashoffset:339.3}
+.ot-lbl{position:relative;padding:0 14px;text-align:center}
+.ot-launch-btn.counting .ot-lbl{font-size:46px;font-weight:900}
+.ot-launch-btn[disabled]{cursor:default}
+.ot-ctext{display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--dim);padding-right:70px;line-height:1.5}
+.ot-ctext b{color:var(--ink);font-family:var(--ot-display);font-size:20px;font-weight:700;letter-spacing:-.02em}
+.ot-ufo{position:absolute;right:16px;top:18px;width:64px;height:auto;pointer-events:none}
+.ot-console.lift .ot-ufo{animation:ot-lift 1.4s cubic-bezier(.6,0,.4,1) forwards}
+@keyframes ot-lift{0%{transform:none}25%{transform:translateY(6px) rotate(-4deg)}100%{transform:translateY(-240px) scale(.5);opacity:0}}
+.ot-send{display:flex;flex-direction:column;gap:14px;animation:ot-rise .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes ot-rise{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.ot-ready{color:var(--iris);font-weight:500}
+.ot-send blockquote{margin:0;padding:16px 18px;border-radius:6px;background:var(--void);font-size:15px;line-height:1.5}
+.ot-mailrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:15px;color:var(--dim)}
+.ot-mail{color:var(--ink);user-select:all}
+.ot-copy{background:none;border:0;color:var(--iris);font:inherit;font-weight:500;cursor:pointer;padding:0}
+
+/* 6 · Studio */
+.ot-studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,90px);align-items:center}
+.ot-iris{aspect-ratio:4/5;overflow:hidden;border-radius:4px;clip-path:circle(75% at 50% 45%)}
+.ot-iris img{width:100%;height:100%;object-fit:cover;transform:scale(1.15)}
+.ot-studio-txt{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.ot-role{color:var(--iris);font-weight:500}
+.ot-studio-txt p{max-width:52ch}
+
+/* 7 · Ausstieg */
+.ot-exit .ot-stage{height:100svh;min-height:560px}
+.ot-exit canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ot-cta{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:13vh var(--m) calc(76px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.ot-cta > *{pointer-events:auto}
+.ot-cta h2{font-size:clamp(36px,5.6vw,92px);max-width:16ch;margin:0 auto}
+.ot-cta p{color:var(--dim);margin-top:16px;font-size:clamp(16px,1.3vw,19px)}
+.ot-cta .ot-ctas{justify-content:center}
+.ot-front{position:absolute;inset:0;background:var(--void);pointer-events:none}
+.ot-exit:not(.is-live) .ot-front{opacity:0}
+.ot-exit:not(.is-live) .ot-cta{position:relative;padding-block:140px;gap:40px}
+.ot-fwm{font-family:var(--ot-display);font-weight:900;text-transform:uppercase;letter-spacing:-.045em;line-height:.82;font-size:12.6vw;white-space:nowrap;display:inline-block;margin:clamp(80px,10vw,160px) var(--m) 0}
+.page-home .site-footer{background:var(--void);padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+
+/* Einblenden aus einer sichtbaren Ruhelage */
+.ot-js [data-ot-reveal]{transform:translateY(40px);opacity:.15;transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity 1s;transition-delay:var(--d,0s)}
+.ot-js [data-ot-reveal].in{transform:none;opacity:1}
+
+@media (max-width:900px){
+  .ot-block-head,.ot-launch,.ot-studio{grid-template-columns:1fr}
+  .ot-plan{position:static}
+  .ot-cast .ot-stage{grid-template-columns:1fr;align-content:center;gap:12px;padding-top:80px}
+  .ot-ringwrap{height:50vh}
+  .ot-who{font-size:clamp(44px,13vw,80px)}
+}
+@media (max-width:767px){
+  .ot-item{flex-direction:column!important;text-align:left!important;gap:16px}
+  .ot-cap{align-items:flex-start!important;max-width:78vw}
+  .ot-item--flip .ot-go{align-self:flex-start}
+  .ot-pic--portrait{width:46vw}.ot-pic--tall{width:52vw}.ot-pic--square{width:62vw}
+  .ot-item--end{align-items:center;text-align:center!important}
+  .ot-item p{font-size:16px}
+  .ot-console{grid-template-columns:1fr;justify-items:start}
+  .ot-ctext{padding-right:0}
+  .ot-ufo{width:60px}
+  .ot-cta .ot-ctas .ot-btn:first-child{flex-basis:100%;justify-content:center;max-width:280px}
+  .ot-cta .ot-ctas .ot-btn--ghost{padding:12px 16px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .page-home *{animation:none!important;transition:none!important}
+  .ot-js [data-ot-reveal]{transform:none;opacity:1}
+}
+
+
+
+/* Touch-Geräte: kein animiertes Filmkorn und kein Mischmodus über dem bewegten Film (kostet Safari pro Bild) */
+@media (pointer:coarse){
+  .ot-grain{display:none}
+  .ot-tl{mix-blend-mode:normal;background:rgba(5,5,6,.62);padding:2px 12px;border-radius:999px;left:calc(var(--m) - 6px);right:calc(var(--m) - 6px)}
+}
+
+/* Stationen im All: Breite nach Inhalt (nicht nach der halben Bühne), nie breiter als der Bildschirm */
+.ot-space.is-live .ot-item{width:max-content;max-width:min(94vw,1200px)}
+.ot-space.is-live .ot-item--title,.ot-space.is-live .ot-item--end{width:min(92vw,1100px)}
+.ot-item--title h2{font-size:clamp(36px,9vw,170px);overflow-wrap:anywhere}
+@media (max-width:767px){.ot-space.is-live .ot-item{max-width:88vw}}
+.ot-pic--wide{width:min(38vw,560px);aspect-ratio:16/9}
+@media (max-width:767px){.ot-pic--wide{width:84vw}}
+
+/* ---------- Geräte im All: Leistungen, gezeigt mit eigener Arbeit als Dekoration ---------- */
+.ot-item--dev .ot-cap{max-width:380px}
+.ot-item--dev h3{font-size:clamp(30px,3.6vw,58px)}
+.ot-dev{position:relative;flex:none}
+.ot-dev video,.ot-dev img{display:block;width:100%;height:100%;object-fit:cover}
+/* Smartphone mit laufendem Feed */
+.ot-phone{width:min(21vw,290px);aspect-ratio:9/19.5;border-radius:42px;background:#0d0e10;padding:9px;border:2px solid #2a2c31}
+.ot-phone::before{content:"";position:absolute;top:18px;left:50%;width:28%;height:22px;margin-left:-14%;border-radius:12px;background:#000;z-index:3}
+.ot-phone-screen{position:relative;width:100%;height:100%;border-radius:33px;overflow:hidden;background:#000}
+.ot-phone-screen::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);pointer-events:none;z-index:1}
+.ot-feed-track{display:flex;flex-direction:column;height:100%;transition:transform .65s cubic-bezier(.7,0,.2,1)}
+.ot-feed-item{flex:none;height:100%}
+.ot-feed-ui{position:absolute;right:10px;bottom:24%;display:flex;flex-direction:column;gap:18px;color:#fff;z-index:2}
+.ot-feed-ui svg{width:26px;height:26px;display:block}
+.ot-feed-ui span:first-child{transition:transform .3s,color .3s}
+.ot-feed-ui span.pop{color:#ff3b5c;transform:scale(1.25)}
+.ot-feed-handle{position:absolute;left:14px;bottom:28px;color:#fff;font:500 13px var(--font);z-index:2}
+.ot-feed-bar{position:absolute;left:14px;right:14px;bottom:16px;height:2px;background:rgba(255,255,255,.3);z-index:2;border-radius:2px;overflow:hidden}
+.ot-feed-bar i{display:block;height:100%;width:0;background:#fff}
+/* Kinoleinwand mit wechselnden Spots */
+.ot-cinema{width:min(44vw,660px);aspect-ratio:16/9;padding:10px;background:#0d0e10;border-radius:14px;border:2px solid #2a2c31}
+.ot-cinema-screen{position:relative;width:100%;height:100%;border-radius:6px;overflow:hidden;background:#000}
+.ot-cine-shot{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.ot-cine-shot.is-on{opacity:1}
+/* Kartenstapel */
+.ot-cards{width:min(24vw,340px);aspect-ratio:4/5}
+.ot-card{position:absolute;inset:0;border-radius:12px;overflow:hidden;background:#161719;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s;transform:scale(.8);opacity:0;z-index:0}
+.ot-card[data-pos="0"]{transform:none;opacity:1;z-index:4}
+.ot-card[data-pos="1"]{transform:translate(10%,-6%) rotate(6deg) scale(.93);opacity:.8;z-index:3}
+.ot-card[data-pos="2"]{transform:translate(-10%,-9%) rotate(-7deg) scale(.87);opacity:.55;z-index:2}
+.ot-fit-contain .ot-card img{object-fit:contain}
+/* Bild, schwebt leicht */
+.ot-still{width:min(26vw,360px);animation:ot-float 7s ease-in-out infinite}
+.ot-still img{border-radius:12px;height:auto}
+@keyframes ot-float{50%{transform:translateY(-12px)}}
+/* Bullauge */
+.ot-port{width:min(26vw,360px);aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:11px solid #23262c;background:#000}
+@media (max-width:767px){
+  .ot-phone{width:54vw;border-radius:34px;padding:7px}
+  .ot-phone-screen{border-radius:27px}
+  .ot-cinema{width:86vw;padding:6px}
+  .ot-cards{width:60vw}
+  .ot-still,.ot-port{width:62vw}
+}
+@media (prefers-reduced-motion:reduce){.ot-still{animation:none}}
+.ot-card{box-shadow:0 0 0 1px rgba(243,240,234,.14) inset}
+.ot-card::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(243,240,234,.16) inset;pointer-events:none}
+.ot-item--end .ot-go{align-self:center}
+/* Seitenverhältnis fest: Inhalte (Videos) dürfen Telefon, Leinwand und Stapel nicht strecken */
+.ot-phone,.ot-cinema,.ot-cards,.ot-port{min-height:0;overflow:hidden}
+.ot-phone-screen,.ot-cinema-screen{min-height:0}
+.ot-feed-item{min-height:0;overflow:hidden}
+.ot-feed-item video,.ot-feed-item img{height:100%;min-height:0}
+
+/* Handy: statt Zeitleiste der feste Kontakt-Button (site.css .m-cta) */
+@media (max-width:767px){.ot-tl{display:none}}
+
+/* Einstieg: nur die Schrift der Überschrift wie im Rest der Seite (Ablauf und Film unverändert) */
+.page-home .hero-title{font-family:var(--ot-display);font-weight:800;letter-spacing:-.04em;line-height:1;font-size:clamp(1.9rem,.4rem + 3.9vw,4.6rem);max-width:15ch}
+
+/* Startkonsole ohne Tor */
+.ot-preview{margin:0;padding:16px 18px;border-radius:6px;background:var(--void);font-size:15px;line-height:1.5}
+.ot-launch-btn{text-decoration:none;font-size:13px}
+.ot-ctext{gap:10px}
+.ot-me{display:inline-flex;align-items:center;gap:12px;color:var(--ink);font-weight:500;font-size:15px;line-height:1.35}
+.ot-me-img{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:50% 20%;flex:none}
+.ot-free{color:var(--iris);font-size:14px;font-weight:500}
+.ot-mail-link{color:var(--dim);font-size:14px;text-decoration:underline;text-decoration-color:var(--iris);text-underline-offset:4px}
+.ot-mail-link:hover{color:var(--ink)}
+.ot-cta-me{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:18px;pointer-events:auto}
+/* Logo-Laufband: Überschrift mit Satz */
+.ot-board-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 40px;padding-inline:var(--m);margin-bottom:48px}
+.ot-board-head h2{padding:0;margin:0}
+.ot-board-head p{max-width:44ch;color:var(--dim);font-size:clamp(16px,1.2vw,18px)}
+
+.ot-cta-bottom{display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto}

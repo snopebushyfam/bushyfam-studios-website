@@ -1,0 +1,138 @@
+{
+  "title_de": "Was wir machen",
+  "title_en": "What we do",
+  "title_tr": "Ne yapıyoruz",
+  "lead_de": "Hinter der Pupille liegt alles, was wir für Unternehmen machen. Scroll weiter – du fliegst mitten hindurch.",
+  "lead_en": "Behind the pupil lies everything we make for businesses. Keep scrolling – you fly right through it.",
+  "lead_tr": "Gözbebeğinin arkasında işletmeler için yaptığımız her şey var. Kaydırmaya devam et – tam içinden geçiyorsun.",
+  "stations": [
+    {
+      "kind": "feed",
+      "title_de": "Social Content, der gesehen wird",
+      "title_en": "Social content that gets watched",
+      "title_tr": "İzlenen sosyal içerik",
+      "text_de": "Kurze Clips für Instagram und TikTok, die im Feed hängen bleiben – Idee, Dreh und Schnitt aus einer Hand.",
+      "text_en": "Short clips for Instagram and TikTok that stop the scroll – idea, shoot and edit from one team.",
+      "text_tr": "Akışta durduran Instagram ve TikTok klipleri – fikir, çekim ve kurgu tek elden.",
+      "media": [
+        {
+          "src": "/assets/showcase/feed-zwei-drinks.mp4",
+          "poster": "/assets/showcase/feed-zwei-drinks.jpg"
+        },
+        {
+          "src": "/assets/showcase/feed-gastro.mp4",
+          "poster": "/assets/showcase/feed-gastro.jpg"
+        },
+        {
+          "src": "/assets/showcase/feed-location.mp4",
+          "poster": "/assets/showcase/feed-location.jpg"
+        },
+        {
+          "src": "/assets/showcase/feed-kellnerin.mp4",
+          "poster": "/assets/showcase/feed-kellnerin.jpg"
+        },
+        {
+          "src": "/assets/showcase/feed-oreo.mp4",
+          "poster": "/assets/showcase/feed-oreo.jpg"
+        },
+        {
+          "src": "/assets/showcase/feed-bar.mp4",
+          "poster": "/assets/showcase/feed-bar.jpg"
+        }
+      ]
+    },
+    {
+      "kind": "cinema",
+      "title_de": "Werbefilme",
+      "title_en": "Commercials",
+      "title_tr": "Reklam filmleri",
+      "text_de": "Spots für Social Media, Anzeigen und Bildschirme – vom Konzept bis zum fertigen Schnitt.",
+      "text_en": "Spots for social media, ads and screens – from concept to final cut.",
+      "text_tr": "Sosyal medya, reklam ve ekranlar için spotlar – konseptten son kurguya.",
+      "media": [
+        {
+          "src": "/assets/showcase/spot-churchill.mp4",
+          "poster": "/assets/showcase/spot-churchill.jpg"
+        },
+        {
+          "src": "/assets/showcase/spot-cheesecake.mp4",
+          "poster": "/assets/showcase/spot-cheesecake.jpg"
+        },
+        {
+          "src": "/assets/showcase/spot-cay.mp4",
+          "poster": "/assets/showcase/spot-cay.jpg"
+        }
+      ]
+    },
+    {
+      "kind": "cards",
+      "title_de": "Produkt- & Food-Fotografie",
+      "title_en": "Product & food photography",
+      "title_tr": "Ürün ve yemek fotoğrafçılığı",
+      "text_de": "Bilder, die Lust machen – für Karte, Website, Anzeigen und Social Media.",
+      "text_en": "Images that make people want it – for menus, websites, ads and social media.",
+      "text_tr": "İştah açan görseller – menü, web sitesi, reklam ve sosyal medya için.",
+      "media": [
+        {
+          "src": "/assets/work/masons/photos/masons-martini-kiwi-800.webp"
+        },
+        {
+          "src": "/assets/work/masons/photos/masons-longdrink-orange-800.webp"
+        },
+        {
+          "src": "/assets/work/masons/photos/masons-eisbecher-800.webp"
+        },
+        {
+          "src": "/assets/work/masons/photos/masons-cocktail-melone-800.webp"
+        }
+      ]
+    },
+    {
+      "kind": "cards",
+      "fit": "contain",
+      "title_de": "Marke & Design",
+      "title_en": "Brand & design",
+      "title_tr": "Marka ve tasarım",
+      "text_de": "Logos und Erscheinungsbilder mit einer eigenen, wiedererkennbaren Bildsprache.",
+      "text_en": "Logos and identities with their own recognisable visual language.",
+      "text_tr": "Kendine has, akılda kalan bir görsel dile sahip logolar ve kimlikler.",
+      "media": [
+        {
+          "src": "/assets/work/nelvie-tiafack/nev3-logo-gelb.png"
+        },
+        {
+          "src": "/assets/work/nelvie-tiafack/nev-logo-lila.png"
+        }
+      ]
+    },
+    {
+      "kind": "still",
+      "title_de": "Websites & Digital",
+      "title_en": "Websites & digital",
+      "title_tr": "Web siteleri ve dijital",
+      "text_de": "Websites, Social-Media-Auftritte und Anzeigen – als ein zusammenhängendes System gedacht.",
+      "text_en": "Websites, social media presence and ads – designed as one connected system.",
+      "text_tr": "Web siteleri, sosyal medya ve reklamlar – tek bir bütün olarak düşünülmüş.",
+      "media": [
+        {
+          "src": "/assets/services/digital-website.webp"
+        }
+      ]
+    },
+    {
+      "kind": "porthole",
+      "title_de": "Eigene Ideen",
+      "title_en": "Our own ideas",
+      "title_tr": "Kendi fikirlerimiz",
+      "text_de": "Wir machen auch Filme, die niemand bestellt hat – wie den UFO-Kurzfilm, mit dem diese Seite beginnt.",
+      "text_en": "We also make films nobody ordered – like the UFO short film this page opens with.",
+      "text_tr": "Kimsenin sipariş etmediği filmler de yapıyoruz – bu sayfanın başladığı UFO kısa filmi gibi.",
+      "media": [
+        {
+          "src": "/assets/showcase/ufo-bullauge.mp4",
+          "poster": "/assets/showcase/ufo-bullauge.jpg"
+        }
+      ]
+    }
+  ]
+}

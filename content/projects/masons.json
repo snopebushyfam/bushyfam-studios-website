@@ -8,8 +8,8 @@
   "title_de": "MASON’S",
   "title_en": "MASON’S",
   "title_tr": "MASON’S",
-  "summary_de": "Laufende visuelle Partnerschaft: Werbeclips, Social Content und Produktfotografie für MASON’S.",
-  "summary_en": "An ongoing visual partnership — commercial films, social content and product photography for MASON’S.",
+  "summary_de": "Langfristige Partnerschaft: Werbeclips, Social Content und Produktfotografie für MASON’S.",
+  "summary_en": "Ongoing partnership: commercials, social content and product photography for MASON’S.",
   "summary_tr": "Süregelen bir görsel ortaklık — MASON’S için reklam filmleri, sosyal medya içerikleri ve ürün fotoğrafları.",
   "disciplines_de": "Film · Fotografie · Social Media",
   "disciplines_en": "Film · Photography · Social",
@@ -17,6 +17,15 @@
   "body_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
   "body_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
   "body_tr": "Tek seferlik bir iş değil, süregelen bir iş birliği. Filmler lounge’da ve barda çekiliyor, dikey ve sosyal medyaya uygun izlenmek üzere kurgulanıyor. Fotoğraflar her içeceği ve tatlıyı başlı başına bir ürün olarak ele alıyor – siyah fon üzerinde dekupe.",
+  "industry_de": "Gastronomie",
+  "industry_en": "Hospitality",
+  "task_de": "Laufend Bild- und Videocontent für Social Media, Werbung und Karte: Drinks und Speisen so zeigen, dass man sie bestellen will.",
+  "task_en": "Ongoing photo and video content for social media, ads and the menu, showing drinks and dishes in a way that makes people want to order them.",
+  "solution_de": "Kein einzelner Auftrag, sondern eine laufende Zusammenarbeit. Die Filme entstehen in der Lounge und an der Bar und sind fürs Hochformat und für Social Media geschnitten. Die Fotos zeigen jeden Drink und jedes Dessert als eigenes Produkt – freigestellt vor Schwarz.",
+  "solution_en": "Not a single commission but an ongoing collaboration. The films are shot in the lounge and at the bar and cut for vertical, social-first viewing. The photographs treat every drink and dessert as a product in its own right – isolated against black.",
+  "solution_tr": "Tek seferlik bir iş değil, süregelen bir iş birliği. Filmler lounge’da ve barda çekiliyor, dikey ve sosyal medyaya uygun izlenmek üzere kurgulanıyor. Fotoğraflar her içeceği ve tatlıyı başlı başına bir ürün olarak ele alıyor – siyah fon üzerinde dekupe.",
+  "result_de": "",
+  "result_en": "",
   "cover": {
     "src": "/assets/work/masons/masons-cover-einschenken.jpg",
     "alt_de": "Standbild aus dem MASON’S-Drink-Clip: Ein gelber Drink fließt in ein kopfüber gehaltenes Martiniglas, vor rotem Licht",
@@ -24,6 +33,18 @@
     "alt_tr": "MASON’S içecek klibinden bir kare: kırmızı ışık önünde sarı bir içecek ters çevrilmiş martini kadehine dökülüyor"
   },
   "media": [
+    {
+      "type": "video",
+      "src": "/assets/work/masons/videos/masons-location.mp4",
+      "poster": "/assets/work/masons/videos/masons-location.jpg",
+      "title_de": "Location-Film",
+      "title_en": "Location film",
+      "title_tr": "Mekân filmi",
+      "duration": "15 s",
+      "audio": true,
+      "alt_de": "",
+      "alt_en": ""
+    },
     {
       "type": "video",
       "src": "/assets/work/masons/videos/masons-lounge.mp4",

@@ -11,11 +11,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { T, ROUTES, CATEGORIES, LANG_NAMES } from "./i18n.mjs";
+import { T, ROUTES, CATEGORIES, LANG_NAMES, PUBLIC_LANGS, DEFAULT_LANG, LEGACY_ROUTES } from "./i18n.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "dist");
-const LANGS = ["en", "de", "tr"];
+const LANGS = ["de", "en", "tr"];
 const ON_NETLIFY = process.env.NETLIFY === "true";
 const errors = [];
 
@@ -35,8 +35,11 @@ export const esc = (v) => String(v ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 /** Feld in der gewünschten Sprache, sonst Deutsch als Rückfall */
 /* Fehlt ein Text in der gewählten Sprache: Türkisch fällt auf Englisch zurück, sonst auf Deutsch */
-const tr = (obj, key, lang) => (obj && (obj[`${key}_${lang}`] || (lang === "tr" && obj[`${key}_en`]) || obj[`${key}_de`])) || "";
-const pick = (obj, lang) => (obj && (obj[lang] || (lang === "tr" && obj.en) || obj.de)) || "";
+/* Platzhalter „[TODO: …]“ gelten als leer: Sie erscheinen nie auf der Website, der Abschnitt wird ausgeblendet */
+const isTodo = (v) => typeof v === "string" && /\[\s*TODO\b/i.test(v);
+const filled = (v) => (v && !isTodo(v) ? v : "");
+const tr = (obj, key, lang) => (obj && (filled(obj[`${key}_${lang}`]) || (lang === "tr" && filled(obj[`${key}_en`])) || filled(obj[`${key}_de`]))) || "";
+const pick = (obj, lang) => (obj && (filled(obj[lang]) || (lang === "tr" && filled(obj.en)) || filled(obj.de))) || "";
 const url = (p) => (!p ? "" : /^https?:\/\//.test(p) ? p : "/" + String(p).replace(/^\/+/, ""));
 const assetExists = (p) => !p || /^https?:\/\//.test(p) || fs.existsSync(path.join(ROOT, url(p)));
 const paras = (text) => String(text || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
@@ -69,11 +72,35 @@ function imageSize(p) {
 function img(src, alt, { sizes = "100vw", cls = "", lazy = true, widths = [480, 960, 1600] } = {}) {
   const s = url(src), dim = imageSize(src) || {};
   let srcset = "";
-  if (ON_NETLIFY && s.startsWith("/assets/uploads/") && /\.(jpe?g|png|webp)$/i.test(s)) {
-    srcset = ` srcset="${widths.map((w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w} ${w}w`).join(", ")}" sizes="${sizes}"`;
+  /* Auf Netlify: JPG/PNG (und hochgeladene WebP) laufen über das Image CDN – passende Breite, als WebP.
+     Die Originaldateien bleiben unverändert im Repository; künftige Uploads werden automatisch genauso ausgeliefert. */
+  let out = s;
+  if (ON_NETLIFY && s.startsWith("/assets/") && (/\.(jpe?g|png)$/i.test(s) || (s.startsWith("/assets/uploads/") && /\.webp$/i.test(s)))) {
+    const cdn = (w) => `/.netlify/images?url=${encodeURIComponent(s)}&amp;w=${w}&amp;fm=webp`;
+    srcset = ` srcset="${widths.map((w) => `${cdn(w)} ${w}w`).join(", ")}" sizes="${sizes}"`;
+    out = cdn(960);
   }
-  return `<img${cls ? ` class="${cls}"` : ""} src="${esc(s)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
+  return `<img${cls ? ` class="${cls}"` : ""} src="${out.startsWith("/.netlify/") ? out : esc(out)}"${srcset}${dim.w ? ` width="${dim.w}" height="${dim.h}"` : ""} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} decoding="async">`;
 }
+/* Pakete: nur mit Namen UND Preis sichtbar; Leistungspunkte mit [TODO] fallen weg */
+const trList = (obj, key, lang) => {
+  const pickList = (k) => (Array.isArray(obj[k]) ? obj[k].map(filled).filter(Boolean) : []);
+  const own = pickList(`${key}_${lang}`);
+  return own.length ? own : (lang === "tr" && pickList(`${key}_en`).length ? pickList(`${key}_en`) : pickList(`${key}_de`));
+};
+/* Preis: ausgeschriebener Preis je Sprache (z. B. „ab 1.190 € / Monat“); sonst nur die Zahl im Feld „price“ */
+const pkgPrice = (k, lang) => tr(k, "price", lang) ? esc(tr(k, "price", lang)) : filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", esc(String(k.price).replace(/€/g, "").trim())) : "";
+/* Preis in Teile zerlegen: kleines „ab/from“, große Summe, leises „/ Monat“ – wie im Kartenstil der Pakete */
+const pkgPriceParts = (k, lang) => {
+  const raw = tr(k, "price", lang) || (filled(String(k.price ?? "").trim()) ? T[lang].priceFrom.replace("{p}", String(k.price).replace(/€/g, "").trim()) : "");
+  const m = raw.match(/^\s*(ab|from|itibaren)?\s*(.+?)\s*(\/\s*.+)?$/i);
+  if (!m) return esc(raw);
+  return `${m[1] ? `<span class="pkg-price-pre">${esc(m[1])}</span> ` : ""}<span class="pkg-price-amount">${esc(m[2])}</span>${m[3] ? ` <span class="pkg-price-per">${esc(m[3])}</span>` : ""}`;
+};
+const CHECK_ICON = `<svg class="pkg-check" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="10" fill="currentColor"/><path d="M6 10.3l2.6 2.5L14 7.4" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// „Pakete auf der Website zeigen“ aus = kein Paket-Bereich auf der Startseite und keine Paketauswahl im Formular
+const visiblePackages = (lang) => PKG.enabled === false ? [] : (PKG.items || []).filter((k) => tr(k, "name", lang) && pkgPrice(k, lang));
+
 /* Leistungs-Kachel: Bild oder stummes Loop-Video, unten der Titel; Antippen/Draufhalten klappt Text und Stichworte auf */
 function svcCard(s, i, lang) {
   const id = `svc-more-${i + 1}`, alt = tr(s, "imageAlt", lang);
@@ -115,6 +142,7 @@ const WA_DIGITS = String(S.whatsapp || "").replace(/\D/g, "").replace(/^00/, "")
 const WA_URL = WA_DIGITS ? `https://wa.me/${WA_DIGITS}` : "";
 const HOME = readJson("content/home.json");
 const SERV = readJson("content/services.json");
+const PKG = fs.existsSync(path.join(ROOT, "content/packages.json")) ? readJson("content/packages.json") : { items: [] };
 const STU = readJson("content/studio.json");
 const CON = readJson("content/contact.json");
 const LEGAL = readJson("content/legal.json");
@@ -197,24 +225,33 @@ const hrefFor = (lang, key, slug) => {
 /* Instagram-Symbol (Umriss, weiß über currentColor) für den Header */
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
-function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
-  const t = T[lang], others = LANGS.filter((l) => l !== lang);
+function layout({ lang, key, slug, title, description, body, scripts = [], styles = [], headerExtra = "", ogImage = S.seo?.image }) {
+  const t = T[lang], others = PUBLIC_LANGS.filter((l) => l !== lang);
+  /* Eingefrorene Sprache (Türkisch): erreichbar, aber noindex, ohne canonical/hreflang */
+  const indexable = PUBLIC_LANGS.includes(lang);
   const site = (S.siteUrl || "").replace(/\/+$/, "");
   const here = hrefFor(lang, key, slug), hrefIn = (l) => (key === "home404" ? ROUTES[l].home : hrefFor(l, key, slug));
   const abs = (p) => site + p;
   /* Sprachauswahl: kleiner Knopf mit dem aktuellen Kürzel, darunter die Sprachen (funktioniert auch ohne JavaScript) */
   const langSwitch = (where) => `<details class="lang-switch lang-switch--${where}" data-lang-switch>
       <summary class="lang"><span aria-hidden="true">${lang.toUpperCase()}</span><span class="vh">${esc(t.switchTo)} – ${LANG_NAMES[lang]}</span></summary>
-      <ul class="lang-menu">${LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
+      <ul class="lang-menu">${PUBLIC_LANGS.map((l) => `<li><a href="${hrefIn(l)}" hreflang="${l}" lang="${l}"${l === lang ? ' aria-current="true"' : ""}><span class="lang-code" aria-hidden="true">${l.toUpperCase()}</span>${LANG_NAMES[l]}</a></li>`).join("")}</ul>
     </details>`;
   const nav = [["work", t.nav.work], ...(CAST.length ? [["cast", t.nav.cast]] : []), ["services", t.nav.services], ["studio", t.nav.studio]];
   const navHref = (k) => (k === "services" ? ROUTES[lang].home + "#" + t.servicesId : ROUTES[lang][k]);
   const cur = (k) => (k === key || (k === "work" && key === "project") || (k === "cast" && key === "person") ? ' aria-current="page"' : "");
-  const ld = {
-    "@context": "https://schema.org", "@type": "ProfessionalService", name: S.brandName,
-    address: { "@type": "PostalAddress", addressLocality: tr(S, "location", lang), addressCountry: "DE" },
-    areaServed: "DE", sameAs: [S.instagramUrl].filter(Boolean), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}), ...(site ? { url: abs(ROUTES[lang].home) } : {})
-  };
+  /* Strukturierte Daten: LocalBusiness nur auf der Startseite (Adresse wie im Impressum) */
+  const A = S.address || {};
+  const ld = key === "home" ? {
+    "@context": "https://schema.org", "@type": "LocalBusiness", name: S.brandName,
+    ...(site ? { url: abs(ROUTES[lang].home), "@id": site + "/#business" } : {}),
+    ...(A.street ? { address: { "@type": "PostalAddress", streetAddress: A.street, postalCode: A.postalCode, addressLocality: A.city, addressCountry: A.country || "DE" } } : {}),
+    ...(S.email ? { email: S.email } : {}), ...(WA_DIGITS ? { telephone: "+" + WA_DIGITS } : {}),
+    ...(site && S.seo?.image ? { image: abs(url(S.seo.image)) } : {}),
+    sameAs: [S.instagramUrl].filter(Boolean), areaServed: { "@type": "Country", name: "Deutschland" },
+    hasOfferCatalog: { "@type": "OfferCatalog", name: tr(SERV, "title", lang) || t.nav.services,
+      itemListElement: (SERV.items || []).map((it) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: tr(it, "title", lang), description: tr(it, "text", lang) } })) }
+  } : null;
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -222,22 +259,22 @@ function layout({ lang, key, slug, title, description, body, scripts = [], ogIma
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${S.launch ? "" : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#000000">
-${site && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
-${LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
-<link rel="alternate" hreflang="x-default" href="${abs(hrefFor("en", key, slug))}">
+${!S.launch ? '<meta name="robots" content="noindex, nofollow">\n' : !indexable ? '<meta name="robots" content="noindex">\n' : ""}<meta name="theme-color" content="#000000">
+${site && indexable && !NO_ALT.has(key) ? `<link rel="canonical" href="${abs(here)}">
+${PUBLIC_LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${abs(hrefIn(l))}">`).join("\n")}
+<link rel="alternate" hreflang="x-default" href="${abs(hrefIn(DEFAULT_LANG))}">
 ` : ""}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brandName)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${{ de: "de_DE", en: "en_GB", tr: "tr_TR" }[lang]}">
-${site && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
+${site && indexable && !NO_ALT.has(key) ? `<meta property="og:url" content="${abs(here)}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
 ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n${imageSize(ogImage) ? `<meta property="og:image:width" content="${imageSize(ogImage).w}">\n<meta property="og:image:height" content="${imageSize(ogImage).h}">\n` : ""}` : ""}<link rel="icon" href="/assets/brand/icons/favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icons/icon-32.png?v=2">
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
-<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${styles.map((f) => `<link rel="stylesheet" href="/css/${f}">\n`).join("")}${styles.length ? `<link rel="preload" href="/assets/fonts/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin>\n` : ""}${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
 </head>
 <body class="page-${key}">
 <a class="skip" href="#main">${esc(t.skip)}</a>
@@ -252,6 +289,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
         <li>${langSwitch("nav")}</li>
       </ul>
     </nav>
+    ${headerExtra}
     <a class="btn btn--primary header-cta" href="${ROUTES[lang].contact}">${esc(t.cta)}</a>
     ${igLink(lang, "ig-link header-ig")}
     ${langSwitch("header")}
@@ -269,6 +307,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
 <main id="main" tabindex="-1">
 ${body}
 </main>
+${key !== "contact" && key !== "thanks" ? `<div class="m-cta" data-m-cta>${WA_URL ? `<a class="m-cta-wa" href="${WA_URL}" target="_blank" rel="noopener noreferrer">${esc(t.ot.mobileWa)}<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}<a class="m-cta-go" href="${ROUTES[lang].contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a></div>` : ""}
 ${footer(lang)}
 <script src="/js/site.js" defer></script>
 ${scripts.map((s) => `<script src="/js/${s}" defer></script>`).join("\n")}
@@ -341,20 +380,87 @@ function projectCard(p, lang, { headingLevel = 3 } = {}) {
 const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ...s, src: url(s.src) }))));
 
 /* ---------- Seiten ---------- */
+
+/* ---------- Startseite „One Take“ ----------
+   Die ganze Startseite ist eine Kamerafahrt: durch das Bullauge in die Pupille (Einstiegsfilm),
+   durch die Arbeiten im All, vorbei an Monitor, Besetzungs-Ring und Startkonsole, und am Ende
+   aus einer Pupille hinaus zum UFO (Schlussfilm). Alle Inhalte kommen aus dem Admin.
+   Ohne JavaScript oder mit reduzierter Bewegung stehen alle Abschnitte ruhig untereinander. */
+const frameSet = (folder, count) => {
+  if (!fs.existsSync(path.join(ROOT, folder))) return null;
+  for (let i = 1; i <= count; i++) if (!assetExists(`${folder}/${frameName(i)}`)) return null;
+  return { base: url(folder) + "/", count };
+};
+/* Die beiden Filme laufen als Bildfolge auf einer Zeichenfläche: 85 bzw. 76 Bilder, zwischen zwei Bildern
+   wird weich übergeblendet. Handys bekommen kleinere Bilder (wenig Arbeitsspeicher, Safari wirft sonst Bilder
+   aus dem Speicher); Videos werden hier bewusst nicht gespult – Safari springt darin zu langsam. */
+const OT_FRAMES = {
+  exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
+};
+
+/* Stationen im All: je eine Leistung, gezeigt in einem „Gerät“ (Smartphone-Feed, Kinoleinwand, Kartenstapel,
+   Bild, Bullauge). Inhalte aus content/showcase.json (Admin: Seiten → Leistungen im All). Keine Kundennamen. */
+const SHOW = fs.existsSync(path.join(ROOT, "content/showcase.json")) ? readJson("content/showcase.json") : { stations: [] };
+const STATIONS = (SHOW.stations || []).filter((s) => s.kind && (s.media || []).length);
+for (const s of STATIONS) for (const m of s.media) need(assetExists(m.src), `Leistungen im All → „${s.title_de}“: Datei nicht gefunden: ${m.src}`);
+if (errors.length) { console.error("\n✖ Build abgebrochen – bitte im Admin korrigieren:\n" + errors.map((e) => "  • " + e).join("\n") + "\n"); process.exit(1); }
+const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src || "");
+const posterFor = (m) => m.poster || (isVideo(m.src) && assetExists(m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg")) ? m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg") : "");
+function stationMedia(m, cls, lang, sizes) {
+  if (isVideo(m.src)) {
+    const p = posterFor(m);
+    return `<video class="${cls}" muted loop playsinline preload="none"${p ? ` poster="${esc(url(p))}"` : ""}><source src="${esc(url(m.src))}" type="video/mp4"></video>`;
+  }
+  return img(m.src, tr(m, "alt", lang), { sizes, cls, widths: [480, 960] });
+}
+const HEART = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.2 5.2 3 1.6-1.8 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>`;
+const BUBBLE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c5 0 9 3.4 9 7.7s-4 7.7-9 7.7c-1 0-2-.1-2.9-.4L4 20l1.4-4C4 14.6 3 12.8 3 10.7 3 6.4 7 3 12 3z" fill="currentColor"/></svg>`;
+const PLANE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.8 10.6c-.8.3-.8 1.4 0 1.7l6.6 2.3 2.3 6.6c.3.8 1.4.8 1.7 0L21.5 3.5z" fill="currentColor"/></svg>`;
+function stationDevice(s, lang) {
+  const media = s.media || [], fit = s.fit === "contain" ? " ot-fit-contain" : "";
+  if (s.kind === "feed") return `<div class="ot-dev ot-phone" data-dev="feed" aria-hidden="true"><div class="ot-phone-screen">
+      <div class="ot-feed-track">${media.map((m) => `<div class="ot-feed-item">${stationMedia(m, "", lang, "300px")}</div>`).join("")}</div>
+      <div class="ot-feed-ui"><span>${HEART}</span><span>${BUBBLE}</span><span>${PLANE}</span></div>
+      <div class="ot-feed-handle">${esc(S.instagramHandle || "@bushyfamstudios")}</div>
+      <div class="ot-feed-bar"><i></i></div>
+    </div></div>`;
+  if (s.kind === "cinema") return `<div class="ot-dev ot-cinema" data-dev="cinema" aria-hidden="true"><div class="ot-cinema-screen">${media.map((m, i) => `<div class="ot-cine-shot${i ? "" : " is-on"}">${stationMedia(m, "", lang, "(min-width: 900px) 46vw, 88vw")}</div>`).join("")}</div></div>`;
+  if (s.kind === "cards") return `<div class="ot-dev ot-cards${fit}" data-dev="cards" aria-hidden="true">${media.map((m, i) => `<div class="ot-card" data-pos="${i}">${stationMedia(m, "", lang, "(min-width: 900px) 26vw, 62vw")}</div>`).join("")}</div>`;
+  if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px")}</div>`;
+  return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
+}
+
 function pageHome(lang) {
-  const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
-  const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name);
+  const t = T[lang], o = t.ot, R = ROUTES[lang], H = S.hero, V = H.video;
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
+  const namedClients = CLIENTS.filter((c) => c.name && c.enabled !== false && c.logo);
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  const services = SERV.items || [];
+  const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
+  const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
+  const meLine = `<span class="ot-me">${img(STU.portrait.src, "", { cls: "ot-me-img", sizes: "48px", widths: [96, 192] })}<span>${esc(o.directMe.replace("{name}", String(STU.name || "").split(" ")[0]))}</span></span>`;
+  const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
+
   const body = `
-<section class="hero${V.height > V.width ? " hero--tall" : ""}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
+<nav class="ot-tl" aria-label="${esc(o.timeline)}">
+  <span class="ot-tl-dot" aria-hidden="true"></span><span class="ot-tl-tc" aria-hidden="true">00:00:00:00</span><span class="ot-tl-ch" aria-hidden="true">${esc(o.chIntro)}</span>
+  <div class="ot-tl-track" data-ot-track><div class="ot-tl-fill"></div><div class="ot-tl-head"></div></div>
+</nav>
+<div class="ot-cur" aria-hidden="true"></div><div class="ot-cur-ring" aria-hidden="true"><span></span></div>
+${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="true" aria-label="${esc(tr(SR, "title", lang) || o.showreel)}">
+  <video data-ot-reel-video src="${esc(url(SR.src))}"${SR.poster ? ` poster="${esc(url(SR.poster))}"` : ""} controls playsinline preload="none"></video>
+  <button class="ot-btn ot-btn--ghost ot-reel-x" type="button" data-ot-reel-close>${esc(o.close)}</button>
+</div>` : ""}
+
+<!-- Einstieg: unverändert wie auf der bisherigen Seite (auf iPhones optimiertes Scroll-Video, js/hero-scrub.js) -->
+<section class="hero${V.height > V.width ? " hero--tall" : ""}" id="top" data-chapter="${esc(o.chIntro)}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
   <div class="hero-copy" data-hero-copy>
     <div class="hero-copy-inner">
-      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)} – </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
         ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
-        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${SR ? `<button class="btn btn--ghost" type="button" data-ot-reel><span class="ot-tri" aria-hidden="true"></span>${esc(o.showreel)}</button>` : ""}</div>
       </div>
     </div>
   </div>
@@ -369,106 +475,139 @@ function pageHome(lang) {
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
-<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
-  <div class="wrap">
-    <p class="eyebrow">${esc(t.nav.services)}</p>
-    <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
-  </div>
-  <ul class="svc-cards">
-    ${(SERV.items || []).map((s, i) => svcCard(s, i, lang)).join("\n    ")}
-  </ul>
-  <div class="wrap">
-    ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
+<section class="ot-scene ot-space" id="${t.servicesId}" data-ot-scene="space" data-chapter="${esc(o.chServices)}" style="--hold:${flightHold}" aria-labelledby="h-svc" tabindex="-1">
+  <div class="ot-stage">
+    <canvas class="ot-stars" aria-hidden="true"></canvas>
+    <div class="ot-world">
+      <div class="ot-item ot-item--title" data-z="0" data-x="0">
+        <h2 id="h-svc">${esc(tr(SHOW, "title", lang) || tr(SERV, "title", lang) || t.nav.services)}</h2>
+        ${tr(SHOW, "lead", lang) ? `<p>${esc(tr(SHOW, "lead", lang))}</p>` : ""}
+      </div>
+      ${STATIONS.map((s, k) => `<div class="ot-item ot-item--dev${k % 2 ? " ot-item--flip" : ""}" data-z="${-1900 * (k + 1)}" data-x="${k % 2 ? 0.12 : -0.12}">
+        ${stationDevice(s, lang)}
+        <div class="ot-cap"><h3>${esc(tr(s, "title", lang))}</h3>${tr(s, "text", lang) ? `<p>${esc(tr(s, "text", lang))}</p>` : ""}</div>
+      </div>`).join("\n      ")}
+      <div class="ot-item ot-item--end" data-z="${-1900 * (STATIONS.length + 1)}" data-x="0">
+        <h3>${esc(o.endTitle)}</h3>
+        <div class="ot-ctas"><a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreelLong)}</div>
+        <a class="ot-go" href="${R.work}">${esc(t.allWork)} →</a>
+      </div>
+    </div>
+    <div class="ot-warp-out" aria-hidden="true"></div>
   </div>
 </section>
 
-${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
-  <div class="wrap cast-head">
-    <div><p class="eyebrow">${esc(t.nav.cast)}</p><h2 class="h2" id="h-cast-home">${esc(t.castHomeTitle)}</h2></div>
-    <p class="lead">${esc(t.castLead)}</p>
-  </div>
-  ${castRow(lang)}
-  <div class="wrap cast-more"><a class="link-arrow" href="${R.cast}">${esc(t.exploreCast)} <span aria-hidden="true">→</span></a></div>
-</section>` : ""}
-${!CAST.length && featured.length ? `<section class="section work-feature" aria-labelledby="h-picks">
-  <div class="wrap head-row">
-    <div><p class="eyebrow">${esc(t.nav.work)}</p><h2 class="h2" id="h-picks">${esc(tr(HOME, "workTitle", lang))}</h2></div>
-    <a class="link-arrow" href="${R.work}">${esc(t.allWork)} <span aria-hidden="true">→</span></a>
-  </div>
-  <ul class="feature-list">
-    ${featured.map((p, i) => featureBlock(p, lang, i)).join("\n    ")}
-  </ul>
+${namedClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
+  <div class="ot-board-head"><h2 id="h-clients" data-ot-reveal>${esc(o.clientsTitle)}</h2><p data-ot-reveal style="--d:.08s">${esc(o.clientsLead)}</p></div>
+  <div class="ot-marq"><div class="ot-marq-track">${[0, 1].map((copy) => namedClients.map((c) => {
+    const d = imageSize(c.logo) || { w: 2, h: 1 };
+    return `<img${d.h / d.w > 0.55 ? ' class="sq"' : ""} src="${esc(url(c.logo))}" width="${d.w}" height="${d.h}" alt="${copy ? "" : esc(c.name)}" loading="lazy" decoding="async"${copy ? ' aria-hidden="true"' : ""}>`;
+  }).join("")).join("")}</div></div>
 </section>` : ""}
 
-${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
-  <div class="wrap objects-ctrl">
-    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
-  </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
+${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene="cast" data-chapter="${esc(o.chCast)}" style="--hold:0.9" aria-labelledby="h-cast-home">
+  <div class="ot-stage">
+    <div class="ot-cast-text">
+      <h2 id="h-cast-home">${esc(t.castHomeTitle)}</h2>
+      <p>${esc(o.castLeadHome)}</p>
+      <div class="ot-who" aria-live="polite">${esc(CAST[0].name)}<small>${esc(tr(CAST[0], "role", lang))}</small></div>
+      <a class="ot-btn ot-btn--ghost" href="${R.cast}" data-cursor="Alle">${esc(t.exploreCast)} <span class="ot-arr" aria-hidden="true">→</span></a>
     </div>
+    <div class="ot-ringwrap"><ul class="ot-ring">
+      ${CAST.map((p, i) => `<li data-role="${esc(tr(p, "role", lang))}"><a href="${hrefFor(lang, "person", p.slug)}">${img(p.photos[0].src, tr(p.photos[0], "alt", lang) || p.name, { sizes: "(min-width: 900px) 20vw, 46vw", widths: [480, 960], lazy: i > 2 })}<span class="ot-ring-name">${esc(p.name)}</span></a></li>`).join("\n      ")}
+    </ul></div>
   </div>
 </section>` : ""}
 
-${SR ? `<section class="section showreel" aria-labelledby="h-reel">
-  <div class="wrap">
-    <div class="head-row"><h2 class="h2" id="h-reel">${esc(tr(SR, "title", lang))}${SR.duration ? ` <span class="muted">${esc(SR.duration)}</span>` : ""}</h2></div>
-    <div class="clip-frame clip-frame--wide" data-clip data-src="${esc(url(SR.src))}">
-      ${SR.poster ? img(SR.poster, "", { sizes: "100vw" }) : ""}
-      <button class="clip-play" type="button" data-clip-play data-title="${esc(tr(SR, "title", lang))}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.play)}</span><span class="vh">: ${esc(tr(SR, "title", lang))}</span></button>
-    </div>
+<section class="ot-block" id="anfrage" data-chapter="${esc(o.chLaunch)}" aria-labelledby="h-launch">
+  <div class="ot-block-head">
+    <h2 id="h-launch" data-ot-reveal>${esc(o.launchTitle)}</h2>
+    <p data-ot-reveal style="--d:.1s">${esc(o.launchLead)}</p>
   </div>
-</section>` : ""}
+  <div class="ot-launch">
+    <form class="ot-builder" data-ot-builder onsubmit="return false">
+      <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-chips">
+        ${(CON.options || []).filter((op) => !/^(noch offen|still open|henüz belli değil)/i.test(pick(op, "de")) && !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
+      </div></fieldset>
+      <fieldset class="ot-q"><legend>${esc(o.qWhen)}</legend><div class="ot-chips">
+        ${o.when.map((w, i) => `<input type="radio" name="ot-when" id="ot-t${i}" value="${esc(w)}"${i ? "" : " checked"}><label for="ot-t${i}">${esc(w)}</label>`).join("")}
+      </div></fieldset>
+      <fieldset class="ot-q"><legend>${esc(o.qBudget)}</legend><div class="ot-chips">
+        ${o.budgets.map((b, i) => `<input type="radio" name="ot-budget" id="ot-b${i}" value="${esc(b)}"><label for="ot-b${i}">${esc(b)}</label>`).join("")}
+      </div></fieldset>
+      <label class="ot-q" for="ot-note"><span>${esc(o.qNote)}</span><textarea id="ot-note" placeholder="${esc(o.notePh)}"></textarea></label>
+      <a class="link-arrow" href="${R.contact}">${esc(o.formLink)} <span aria-hidden="true">→</span></a>
+    </form>
+    <aside class="ot-plan" aria-label="${esc(o.plan)}">
+      <div class="ot-now"><span>${esc(o.plan)}</span><span>${esc(o.now)}: <b data-ot-now>–</b></span></div>
+      <ol class="ot-track3">
+        ${steps.map((s, i) => `<li><span class="ot-pt"></span><div><div class="ot-when" data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</div><div class="ot-what"><b>${esc(tr(s, "title", lang))}</b> · ${esc(tr(s, "text", lang))}</div></div></li>`).join("\n        ")}
+      </ol>
+      <p class="ot-mission" data-ot-mission></p>
+      <blockquote class="ot-preview" data-ot-preview></blockquote>
+      <div class="ot-console" data-ot-console>
+        ${WA_URL ? `<a class="ot-launch-btn" data-ot-wa data-ot-send-link href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl">${esc(o.sendNow)}</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+        <div class="ot-ctext">${meLine}<span class="ot-free">${esc(o.freeCall)}</span>${S.email ? `<a class="ot-mail-link" data-ot-mail data-ot-send-link href="mailto:${esc(S.email)}">${esc(o.orMail)}: ${esc(S.email)}</a>` : ""}</div>
+        <img class="ot-ufo" src="/assets/brand/bushyfam-logo-weiss.png" width="664" height="362" alt="" aria-hidden="true">
+      </div>
+    </aside>
+  </div>
+</section>
 
-
-
-<section class="section founder" aria-labelledby="h-about">
-  <div class="wrap about">
-    ${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { cls: "about-img", sizes: "(min-width: 900px) 34vw, 90vw" })}
-    <div class="about-text">
-      <p class="eyebrow">${esc(t.nav.studio)}</p>
-      <h2 class="h2" id="h-about">${esc(STU.name)}</h2>
-      <p class="role">${esc(tr(STU, "role", lang))}</p>
-      <p class="body">${esc(tr(HOME, "aboutText", lang))}</p>
-      <p class="more"><a class="link-arrow" href="${R.studio}">${esc(t.discoverStory)} <span aria-hidden="true">→</span></a></p>
+<section class="ot-block" id="studio" data-chapter="${esc(o.chStudio)}" aria-labelledby="h-about">
+  <div class="ot-studio">
+    <div class="ot-iris" data-ot-iris>${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { sizes: "(min-width: 900px) 45vw, 92vw" })}</div>
+    <div class="ot-studio-txt">
+      <h2 id="h-about" data-ot-reveal>${esc(STU.name)}</h2>
+      <p class="ot-role" data-ot-reveal style="--d:.08s">${esc(tr(STU, "role", lang))}</p>
+      <p data-ot-reveal style="--d:.16s">${esc(tr(HOME, "aboutText", lang))}</p>
+      <a class="ot-btn ot-btn--ghost" href="${R.studio}" data-ot-reveal style="--d:.24s">${esc(t.discoverStory)} <span class="ot-arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
 
-${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
-  <div class="wrap"><h2 class="clients-title" id="h-clients">${esc(t.clients)}</h2>
-    <ul class="client-row">${namedClients.map((c) => {
-      const mark = c.logo ? img(c.logo, c.name, { cls: "client-logo", sizes: "200px" }) : `<span class="client-word">${esc(c.name)}</span>`;
-      return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
-    }).join("")}</ul>
-  </div>
-</section>` : ""}
-
-${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).toFixed(4)}" aria-label="${esc(t.ending)}">
-  <div class="ending-track" data-ending-track>
-    <div class="ending-stage">
-      <figure class="ending-media" data-ending-media data-sources="${sourcesAttr(E)}">
-        <img class="ending-poster" src="${esc(url(E.poster))}" width="${E.width}" height="${E.height}" alt="${esc(tr(E, "description", lang))}" loading="lazy" decoding="async">
-        <video class="ending-video" muted playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" width="${E.width}" height="${E.height}"></video>
-      </figure>
-    </div>
-  </div>
-</section>` : ""}
-
-<section class="section cta cta--final" aria-labelledby="h-cta">
+${visiblePackages(lang).length ? `<section class="section packages-home" aria-labelledby="h-pkg">
   <div class="wrap">
-    <h2 class="cta-title" id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>
-    <div class="cta-foot">
-      <p class="lead">${esc(tr(HOME, "ctaText", lang))}</p>
-      <a class="cta-go" href="${R.contact}"><span>${esc(t.cta)}</span><span class="cta-go-arrow" aria-hidden="true">→</span></a>
-    </div>
-    ${WA_URL || S.instagramUrl || S.email ? `<div class="cta-direct"><span class="cta-direct-label">${esc(t.direct)}</span>${S.email ? `<a href="mailto:${esc(S.email)}">${esc(S.email)}</a>` : ""}${WA_URL ? ext(WA_URL, "WhatsApp", lang, "") : ""}${S.instagramUrl ? ext(S.instagramUrl, esc(S.instagramHandle || "Instagram"), lang, "") : ""}</div>` : ""}
+    <h2 class="h2" id="h-pkg">${esc(tr(PKG, "title", lang) || t.pkgTitle)}</h2>
+    <ul class="pkg-grid">
+      ${visiblePackages(lang).map((k) => `<li class="pkg${k.highlight ? " pkg--featured" : ""}" data-pixel-card${k.highlight ? ' data-pc-opacity="0.45" data-pc-glow="0.6"' : ""}>
+        <h3 class="pkg-name">${esc(tr(k, "name", lang))}</h3>
+        ${tr(k, "text", lang) ? `<p class="pkg-text">${esc(tr(k, "text", lang))}</p>` : ""}
+        <div class="pkg-price-wrap" aria-live="polite">
+          <p class="pkg-price" data-pkg-price="base">${pkgPriceParts(k, lang)}</p>
+          ${k.addon && tr(k.addon, "price", lang) ? `<p class="pkg-price" data-pkg-price="addon" hidden>${pkgPriceParts(k.addon, lang)}</p>` : ""}
+        </div>
+        ${tr(k, "note", lang) ? `<p class="pkg-note">${esc(tr(k, "note", lang))}</p>` : ""}
+        ${trList(k, "points", lang).length ? `<ul class="pkg-points">${trList(k, "points", lang).map((x) => `<li>${CHECK_ICON}<span>${esc(x)}</span></li>`).join("")}</ul>` : ""}
+        ${k.addon && tr(k.addon, "price", lang) ? `<label class="pkg-addon"><input type="checkbox" data-pkg-addon data-addon-id="${esc(k.addon.id || "")}"><span class="pkg-switch" aria-hidden="true"></span><span class="pkg-addon-label">${esc(tr(k.addon, "label", lang))}</span>${tr(k.addon, "extra", lang) ? `<span class="pkg-addon-extra">${esc(tr(k.addon, "extra", lang))}</span>` : ""}</label>` : ""}
+        <a class="pkg-cta" data-pkg-link data-base-id="${esc(k.id || "")}" href="${R.contact}?paket=${encodeURIComponent(k.id || "")}">${esc(t.pkgEnquire)}<span class="vh">: ${esc(tr(k, "name", lang))}</span> <span aria-hidden="true">→</span></a>
+      </li>`).join("\n      ")}
+    </ul>
+    ${tr(PKG, "vatNote", lang) ? `<p class="pkg-vat">${esc(tr(PKG, "vatNote", lang))}</p>` : ""}
+    <div class="pkg-foot">${tr(PKG, "note", lang) ? `<p>${esc(tr(PKG, "note", lang))}</p>` : ""}<a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
   </div>
-</section>`;
+</section>` : ""}
+
+<section class="ot-scene ot-exit" id="kontakt" data-ot-scene="exit" data-chapter="${esc(o.chExit)}" style="--hold:1.3" aria-labelledby="h-cta">
+  <div class="ot-stage">
+    ${E ? `<canvas data-ot-canvas="exit" role="img" aria-label="${esc(tr(E, "description", lang))}" data-poster="${esc(url(E.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.exit.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.exit.m || ""))}"></canvas>` : ""}
+    <div class="ot-grain" aria-hidden="true"></div>
+    <div class="ot-front" aria-hidden="true"></div>
+    <div class="ot-cta">
+      <div><h2 id="h-cta">${esc(tr(HOME, "ctaTitle", lang))}</h2>${tr(HOME, "ctaText", lang) ? `<p>${esc(tr(HOME, "ctaText", lang))}</p>` : ""}</div>
+      <div class="ot-cta-bottom"><div class="ot-ctas">
+        <a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>
+        ${WA_URL ? `<a class="ot-btn ot-btn--ghost" href="${WA_URL}" target="_blank" rel="noopener noreferrer">WhatsApp ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+        ${S.instagramUrl ? `<a class="ot-btn ot-btn--ghost" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${esc(S.instagramHandle || "Instagram")} ↗<span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+      </div>
+      <div class="ot-cta-me">${meLine}<span class="ot-free">${esc(o.freeCall)}</span></div></div>
+    </div>
+  </div>
+</section>
+<p class="ot-fwm" aria-hidden="true">BushyFam</p>
+<script type="application/json" id="ot-i18n">${JSON.stringify(i18n).replace(/</g, "\\u003c")}</script>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    styles: ["one-take.css"], scripts: ["hero-scrub.js", "lenis.min.js", "one-take.js", ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -507,7 +646,7 @@ function pageProject(p, lang, i) {
     const ttl = tr(m, "title", lang) || title;
     const meta = [m.duration, m.audio === true ? t.withSound : m.audio === false ? t.noSound : ""].filter(Boolean).join(" · ");
     const dim = m.poster ? imageSize(m.poster) || {} : {};
-    return `<li class="clip"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
+    return `<li class="clip${dim.w && dim.w / dim.h > 1.2 ? " clip--wide" : ""}"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
         ${m.poster ? img(m.poster, "", { sizes: "(min-width: 900px) 30vw, 78vw" }) : ""}
         <button class="clip-play" type="button" data-clip-play data-title="${esc(ttl)}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.play)}</span><span class="vh">: ${esc(ttl)}</span></button>
       </div><p class="m-cap"><strong>${esc(ttl)}</strong>${meta ? ` <span>${esc(meta)}</span>` : ""}</p></li>`;
@@ -529,14 +668,21 @@ function pageProject(p, lang, i) {
     const head = `<div class="wrap chapter-head"><span class="chapter-no" aria-hidden="true">${String(ci + 1).padStart(2, "0")}</span><h2 class="chapter-title" id="${id}">${esc(label)}</h2>${n > 1 ? `<span class="chapter-n">${n}</span>` : ""}</div>`;
     return kind === "film"
       ? `<section class="chapter chapter--film" aria-labelledby="${id}">${head}
-    <ul class="film-row${films.length > 1 ? "" : " film-row--single"}">${films.map(film).join("\n      ")}</ul>
+    <ul class="film-row${films.length > 1 ? "" : " film-row--single"}${(() => { const w = films.map((m) => { const d = m.poster ? imageSize(m.poster) : null; return d ? d.w / d.h > 1.2 : false; }); return w.some(Boolean) && !w.every(Boolean) ? " film-row--mixed" : ""; })()}">${films.map(film).join("\n      ")}</ul>
   </section>`
       : `<section class="chapter chapter--stills" aria-labelledby="${id}">${head}
     <ul class="wrap stills">${images.map(still).join("\n      ")}</ul>
   </section>`;
   }).join("\n  ");
 
-  const facts = [[t.factClient, p.client], [t.factYear, p.year], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  const facts = [[t.factClient, filled(p.client)], [t.factIndustry, tr(p, "industry", lang)], [t.factYear, filled(p.year)], [t.factDisciplines, tr(p, "disciplines", lang), "wide"]].filter(([, v]) => v);
+  /* Case-Aufbau: Aufgabe – Lösung – Ergebnis (+ optional Kundenzitat). Leere oder [TODO]-Felder werden ausgeblendet;
+     ohne Aufgabe und Lösung erscheint wie bisher der ausführliche Text. */
+  const blocks = [["task", t.caseTask], ["solution", t.caseSolution], ["result", t.caseResult]].map(([k, label]) => [label, paras(tr(p, k, lang))]).filter(([, ps]) => ps.length);
+  const Q = p.quote || {};
+  const quote = tr(Q, "text", lang) && filled(Q.name) ? `<figure class="case-quote"><blockquote><p>${esc(tr(Q, "text", lang))}</p></blockquote><figcaption>${esc(Q.name)}${tr(Q, "role", lang) ? `, ${esc(tr(Q, "role", lang))}` : ""}</figcaption></figure>` : "";
+  const caseHtml = blocks.length ? `<div class="case-blocks">${blocks.map(([label, ps]) => `<section class="case-block"><h2 class="case-label">${esc(label)}</h2>${ps.map((x) => `<p>${esc(x)}</p>`).join("")}</section>`).join("")}${quote}</div>`
+    : `${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}${quote}`;
   const nextSame = next && next.client && next.client === tr(next, "title", lang);
   const body = `
 <article class="project">
@@ -547,7 +693,7 @@ function pageProject(p, lang, i) {
   </header>
   <div class="wrap project-intro">
     ${facts.length ? `<dl class="facts">${facts.map(([k, v, w]) => `<div${w ? ` class="fact--${w}"` : ""}><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-    ${paras(tr(p, "body", lang)).length ? `<div class="project-body">${paras(tr(p, "body", lang)).map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
+    ${caseHtml}
   </div>
   ${chapterHtml}
   ${next && next.slug !== p.slug ? `<nav class="project-next" aria-label="${esc(t.moreWork)}">
@@ -586,14 +732,15 @@ function pageCast(lang) {
   <p class="eyebrow">${esc(t.nav.cast)}</p>
   <h1 class="page-title" id="h-cast">${esc(t.nav.cast)}</h1>
   <p class="lead">${esc(t.castLead)}</p>
+  <p class="cast-note">${esc(t.castNote)}</p>
 </section>
-<section class="wrap work-list">
-  ${roles.length > 1 ? `<div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
+${roles.length > 1 ? `<section class="wrap work-list">
+  <div class="filters" role="group" aria-label="${esc(t.chooseRole)}" data-filters>
     <button class="filter" type="button" data-cat="all" aria-pressed="true">${esc(t.all)}<span class="n">${CAST.length}</span></button>
     ${roles.map((r) => `<button class="filter" type="button" data-cat="${esc(r.id)}" aria-pressed="false">${esc(r.label)}<span class="n">${r.n}</span></button>`).join("\n    ")}
   </div>
-  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>` : ""}
-</section>
+  <p class="vh" aria-live="polite" data-filter-status data-tpl="${esc(t.castStatus)}" data-tpl-one="${esc(t.castStatusOne)}"></p>
+</section>` : ""}
 <section class="cast-page">
   ${castRow(lang, { page: true })}
 </section>
@@ -719,11 +866,16 @@ function pageContact(lang) {
     <fieldset class="field"><legend>${esc(f.services)} <span class="opt">(${esc(f.optional)})</span></legend><div class="chips">
       ${(CON.options || []).map((o) => `<label class="chip"><input type="checkbox" name="leistungen" value="${esc(o.de)}"${o.cast ? " data-cast-option" : ""}><span class="box" aria-hidden="true"></span>${esc(pick(o, lang))}</label>`).join("\n      ")}
     </div></fieldset>
+    ${visiblePackages(lang).length ? `<div class="field"><label for="f-paket">${esc(f.package)} <span class="opt">(${esc(f.optional)})</span></label><select id="f-paket" name="paket">
+      <option value="">${esc(f.packageNone)}</option>
+      ${visiblePackages(lang).map((k) => `<option value="${esc(tr(k, "name", "de"))}" data-id="${esc(k.id || "")}">${esc(tr(k, "name", lang))} – ${pkgPrice(k, lang)}</option>${k.addon && tr(k.addon, "price", lang) && tr(k.addon, "name", lang) ? `<option value="${esc(tr(k.addon, "name", "de"))}" data-id="${esc(k.addon.id || "")}">${esc(tr(k.addon, "name", lang))} – ${esc(tr(k.addon, "price", lang))}</option>` : ""}`).join("")}
+    </select></div>` : ""}
     <div class="field field--talent" data-talent-field hidden><label for="f-talent">${esc(f.talent)} <span class="opt">(${esc(f.optional)})</span></label><input id="f-talent" name="talent" type="text" autocomplete="off" aria-describedby="e-talent"><p class="err" id="e-talent" hidden></p></div>
     ${field("nachricht", f.message, "textarea", true)}
     <div class="field-row">${field("zeitraum", f.timeframe, "text", false)}${field("budget", f.budget, "text", false)}</div>
     <p class="pv">${esc(f.privacyNote)} <a href="${ROUTES[lang].privacy}">${esc(t.privacy)}</a>.</p>
     <div><button class="btn btn--primary" type="submit" data-submit>${esc(f.submit)}</button></div>
+    <p class="pv form-free">${esc(t.ot.freeCall)}</p>
     <div class="result" role="status" aria-live="polite" data-result></div>
   </form>
   <div class="form-done" tabindex="-1" hidden data-done>
@@ -769,13 +921,12 @@ function page404() {
   const body = `
 <section class="wrap page-head" aria-labelledby="h-404">
   <p class="eyebrow">404</p>
-  <h1 class="page-title" id="h-404">${esc(T.en.notFound)}</h1>
-  <p class="lead">${esc(T.en.notFoundText)}</p>
-  <p class="lead" lang="de">${esc(T.de.notFound)} – ${esc(T.de.notFoundText)}</p>
-  <p class="lead" lang="tr">${esc(T.tr.notFound)} – ${esc(T.tr.notFoundText)}</p>
-  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.en.home}">${esc(T.en.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.de.home}" hreflang="de" lang="de">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.tr.home}" hreflang="tr" lang="tr">${esc(T.tr.backHome)}</a></div>
+  <h1 class="page-title" id="h-404">${esc(T.de.notFound)}</h1>
+  <p class="lead">${esc(T.de.notFoundText)}</p>
+  <p class="lead" lang="en">${esc(T.en.notFound)} – ${esc(T.en.notFoundText)}</p>
+  <div class="btn-row" style="margin-top:2rem"><a class="btn btn--primary" href="${ROUTES.de.home}">${esc(T.de.backHome)}</a><a class="btn btn--ghost" href="${ROUTES.en.home}" hreflang="en" lang="en">${esc(T.en.backHome)}</a></div>
 </section>`;
-  return layout({ lang: "en", key: "home404", title: `404 – ${S.brandName}`, description: T.en.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
+  return layout({ lang: "de", key: "home404", title: `404 – ${S.brandName}`, description: T.de.notFoundText, body }).replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"');
 }
 
 /* ---------- Schreiben ---------- */
@@ -803,14 +954,34 @@ for (const lang of LANGS) {
   write(R.thanks, pageThanks(lang)); unlisted.add(R.thanks);
   write(R.imprint, pageLegal(lang, "imprint"));
   write(R.privacy, pageLegal(lang, "privacy"));
+  if (!PUBLIC_LANGS.includes(lang)) for (const r of written) if (r.startsWith(R.home)) unlisted.add(r);
 }
 write("/404.html", page404());
 
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "pixel-card.js", "process.js", "one-take.js", "lenis.min.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
+
+// 301-Weiterleitungen von den früheren Adressen (Englisch an der Wurzel, Deutsch unter /de/).
+// Jede alte Seite zeigt auf dieselbe Seite in der neuen Struktur; Unterseiten (Projekte, Personen) per :splat.
+{
+  const lines = ["# Automatisch erzeugt von build/build.mjs – frühere Adressen → neue Struktur (Deutsch an der Wurzel, Englisch unter /en/)"];
+  for (const lang of ["en", "de"]) {
+    const covered = [];
+    for (const [k, from] of Object.entries(LEGACY_ROUTES[lang]).sort((a, b) => a[1].length - b[1].length)) {
+      const to = ROUTES[lang][k];
+      if (!to || from === to) continue;
+      // Unterseite einer schon weitergeleiteten Adresse mit gleichem Ziel-Muster (z. B. /de/kontakt/ unter /de/*): keine eigene Regel nötig
+      if (covered.some(([f, t2]) => from.startsWith(f) && to === t2 + from.slice(f.length))) continue;
+      covered.push([from, to]);
+      const bare = from.replace(/\/$/, "");
+      lines.push(`${bare}  ${to}  301`, `${from}*  ${to}:splat  301`);
+    }
+  }
+  fs.writeFileSync(path.join(OUT, "_redirects"), lines.join("\n") + "\n");
+}
 
 // robots.txt und sitemap.xml
 const site = (S.siteUrl || "").replace(/\/+$/, "");
