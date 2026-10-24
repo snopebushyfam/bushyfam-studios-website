@@ -335,3 +335,5 @@
 .ot-space.is-live .ot-item--title,.ot-space.is-live .ot-item--end{width:min(92vw,1100px)}
 .ot-item--title h2{font-size:clamp(36px,9vw,170px);overflow-wrap:anywhere}
 @media (max-width:767px){.ot-space.is-live .ot-item{max-width:88vw}}
+.ot-pic--wide{width:min(38vw,560px);aspect-ratio:16/9}
+@media (max-width:767px){.ot-pic--wide{width:84vw}}

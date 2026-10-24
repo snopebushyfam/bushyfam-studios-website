@@ -428,21 +428,24 @@ const OT_FRAMES = {
 };
 const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames/f-089.webp";
 
-/* Stationen im Flug: je Projekt bis zu drei – zuerst Filme, dann ein Foto */
+/* Stationen im Flug: zuerst je Projekt eine Hauptstation (Film, sonst Titelbild), dann – solange Platz ist
+   (höchstens 7) – je Projekt eine zweite (lieber ein Foto, sonst der nächste Film). Am Ende der eigene Kurzfilm. */
+const FLIGHT_MAX = 7;
 function flightItems(lang) {
-  const t = T[lang], o = t.ot, list = [];
-  for (const p of PROJECTS) {
-    const vids = (p.media || []).filter((m) => m.type === "video" && m.src).slice(0, 2);
+  const o = T[lang].ot;
+  const per = PROJECTS.map((p) => {
+    const vids = (p.media || []).filter((m) => m.type === "video" && m.src);
     const imgs = (p.media || []).filter((m) => m.type !== "video" && m.src && m.src !== p.cover.src);
     const href = hrefFor(lang, "project", p.slug), title = tr(p, "title", lang);
     const meta = [tr(p, "disciplines", lang) || catLabel(p.category, lang), p.year].filter(Boolean).join(" · ");
     const main = vids[0] ? { kind: "video", m: vids[0] } : { kind: "image", m: { src: p.cover.src, alt_de: p.cover.alt_de, alt_en: p.cover.alt_en, alt_tr: p.cover.alt_tr }, fit: p.cover.fit };
-    list.push({ ...main, href, title, meta, text: tr(p, "summary", lang), main: true });
-    /* Zweite Station: lieber ein Foto (Abwechslung), sonst der nächste Film */
-    if (imgs[0]) list.push({ kind: "image", m: imgs[0], fit: p.cover.fit, href, title: tr(imgs[0], "caption", lang) || tr(imgs[0], "title", lang) || catLabel("foto", lang), meta: `${o.fromProject} ${title}`, text: "" });
-    else if (vids[1]) list.push({ kind: "video", m: vids[1], href, title: tr(vids[1], "title", lang) || title, meta: `${o.fromProject} ${title}` });
-    if (list.length >= 8) break;
-  }
+    const second = imgs[0] ? { kind: "image", m: imgs[0], fit: p.cover.fit, title: tr(imgs[0], "caption", lang) || tr(imgs[0], "title", lang) || catLabel("foto", lang) }
+      : vids[1] ? { kind: "video", m: vids[1], title: tr(vids[1], "title", lang) || title } : null;
+    return { main: { ...main, href, title, meta, text: tr(p, "summary", lang), main: true }, second: second && { ...second, href, meta: `${o.fromProject} ${title}`, text: "" } };
+  }).slice(0, FLIGHT_MAX);
+  let room = FLIGHT_MAX - per.length;
+  const list = [];
+  for (const x of per) { list.push(x.main); if (x.second && room > 0) { list.push(x.second); room--; } }
   if (assetExists(OT_STILL)) list.push({ kind: "image", m: { src: OT_STILL, alt_de: tr(S.hero.video, "description", "de"), alt_en: tr(S.hero.video, "description", "en") }, title: o.ownFilm, meta: o.ownFilmMeta, text: o.ownFilmText, portrait: true });
   return list;
 }
@@ -450,7 +453,7 @@ function flightMedia(it, lang) {
   const alt = tr(it.m, "alt", lang) || tr(it.m, "title", lang) || it.title;
   if (it.kind === "video") {
     const d = it.m.poster ? imageSize(it.m.poster) || {} : {};
-    return `<div class="ot-pic ot-pic--portrait" data-cursor="Clip"><video muted loop playsinline preload="none"${it.m.poster ? ` poster="${esc(url(it.m.poster))}"` : ""}${d.w ? ` width="${d.w}" height="${d.h}"` : ""} data-ot-video aria-label="${esc(alt)}"><source src="${esc(url(it.m.src))}" type="video/mp4"></video></div>`;
+    return `<div class="ot-pic ot-pic--${d.w && d.w / d.h > 1.2 ? "wide" : "portrait"}" data-cursor="Clip"><video muted loop playsinline preload="none"${it.m.poster ? ` poster="${esc(url(it.m.poster))}"` : ""}${d.w ? ` width="${d.w}" height="${d.h}"` : ""} data-ot-video aria-label="${esc(alt)}"><source src="${esc(url(it.m.src))}" type="video/mp4"></video></div>`;
   }
   const dim = imageSize(it.m.src) || { w: 1, h: 1 };
   const shape = it.portrait || dim.h / dim.w > 1.25 ? "portrait" : dim.h / dim.w > 1.05 ? "tall" : "square";

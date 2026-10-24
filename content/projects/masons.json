@@ -35,6 +35,18 @@
   "media": [
     {
       "type": "video",
+      "src": "/assets/work/masons/videos/masons-location.mp4",
+      "poster": "/assets/work/masons/videos/masons-location.jpg",
+      "title_de": "Location-Film",
+      "title_en": "Location film",
+      "title_tr": "Mekân filmi",
+      "duration": "15 s",
+      "audio": true,
+      "alt_de": "",
+      "alt_en": ""
+    },
+    {
+      "type": "video",
       "src": "/assets/work/masons/videos/masons-lounge.mp4",
       "poster": "/assets/work/masons/videos/masons-lounge.jpg",
       "title_de": "Lounge-Clip",
