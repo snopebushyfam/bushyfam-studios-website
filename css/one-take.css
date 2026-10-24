@@ -318,11 +318,7 @@
   .ot-js [data-ot-reveal]{transform:none;opacity:1}
 }
 
-/* Schmale Handys: Instagram und Sprache stehen im Menü und im Footer, oben bleiben Logo, Ton, Anfrage, Menü */
-@media (max-width:519.98px){
-  .page-home .header-ig,.page-home .lang-switch--header{display:none}
-  .page-home .header-inner{gap:.6rem}
-}
+
 
 /* Touch-Geräte: kein animiertes Filmkorn und kein Mischmodus über dem bewegten Film (kostet Safari pro Bild) */
 @media (pointer:coarse){

@@ -468,7 +468,7 @@ function pageHome(lang) {
   const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
   const services = SERV.items || [];
   const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
-  const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.8).toFixed(2);
+  const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
   const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
 
   const body = `
@@ -489,7 +489,7 @@ ${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="t
       <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
       <div class="hero-foot">
         ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
-        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a>${SR ? `<button class="btn btn--ghost" type="button" data-ot-reel><span class="ot-tri" aria-hidden="true"></span>${esc(o.showreel)}</button>` : ""}</div>
       </div>
     </div>
   </div>
@@ -534,7 +534,7 @@ ${namedClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
   }).join("")).join("")}</div></div>
 </section>` : ""}
 
-${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene="cast" data-chapter="${esc(o.chCast)}" style="--hold:2.2" aria-labelledby="h-cast-home">
+${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene="cast" data-chapter="${esc(o.chCast)}" style="--hold:0.9" aria-labelledby="h-cast-home">
   <div class="ot-stage">
     <div class="ot-cast-text">
       <h2 id="h-cast-home">${esc(t.castHomeTitle)}</h2>
@@ -556,7 +556,7 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   <div class="ot-launch">
     <form class="ot-builder" data-ot-builder onsubmit="return false">
       <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-chips">
-        ${(CON.options || []).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
+        ${(CON.options || []).filter((op) => !/^(noch offen|still open|henüz belli değil)/i.test(pick(op, "de")) && !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
       </div></fieldset>
       <fieldset class="ot-q"><legend>${esc(o.qWhen)}</legend><div class="ot-chips">
         ${o.when.map((w, i) => `<input type="radio" name="ot-when" id="ot-t${i}" value="${esc(w)}"${i ? "" : " checked"}><label for="ot-t${i}">${esc(w)}</label>`).join("")}
@@ -622,7 +622,7 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
   </div>
 </section>` : ""}
 
-<section class="ot-scene ot-exit" id="kontakt" data-ot-scene="exit" data-chapter="${esc(o.chExit)}" style="--hold:2.4" aria-labelledby="h-cta">
+<section class="ot-scene ot-exit" id="kontakt" data-ot-scene="exit" data-chapter="${esc(o.chExit)}" style="--hold:1.3" aria-labelledby="h-cta">
   <div class="ot-stage">
     ${E ? `<canvas data-ot-canvas="exit" role="img" aria-label="${esc(tr(E, "description", lang))}" data-poster="${esc(url(E.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.exit.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.exit.m || ""))}"></canvas>` : ""}
     <div class="ot-grain" aria-hidden="true"></div>
@@ -639,8 +639,7 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
 </section>
 <p class="ot-fwm" aria-hidden="true">BushyFam</p>
 <script type="application/json" id="ot-i18n">${JSON.stringify(i18n).replace(/</g, "\\u003c")}</script>`;
-  const headerExtra = `<button class="ot-snd" type="button" data-ot-snd aria-pressed="false" aria-label="${esc(o.soundLabel)}" data-cursor="Ton"><span class="ot-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="ot-snd-l">${esc(o.soundOn)}</span></button>`;
-  return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body, headerExtra,
+  return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
     styles: ["one-take.css"], scripts: ["hero-scrub.js", "lenis.min.js", "one-take.js", ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 

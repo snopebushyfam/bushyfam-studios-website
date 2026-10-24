@@ -16,22 +16,28 @@
       "text_tr": "Akışta durduran Instagram ve TikTok klipleri – fikir, çekim ve kurgu tek elden.",
       "media": [
         {
-          "src": "/assets/work/masons/sketches/masons-sketch-cocktails.mp4"
+          "src": "/assets/showcase/feed-zwei-drinks.mp4",
+          "poster": "/assets/showcase/feed-zwei-drinks.jpg"
         },
         {
-          "src": "/assets/work/masons/sketches/masons-sketch-gastro-love-language.mp4"
+          "src": "/assets/showcase/feed-gastro.mp4",
+          "poster": "/assets/showcase/feed-gastro.jpg"
         },
         {
-          "src": "/assets/work/masons/videos/masons-location.mp4"
+          "src": "/assets/showcase/feed-location.mp4",
+          "poster": "/assets/showcase/feed-location.jpg"
         },
         {
-          "src": "/assets/work/masons/sketches/masons-sketch-kellnerin.mp4"
+          "src": "/assets/showcase/feed-kellnerin.mp4",
+          "poster": "/assets/showcase/feed-kellnerin.jpg"
         },
         {
-          "src": "/assets/work/masons/produkte/masons-produkt-oreo-eis.mp4"
+          "src": "/assets/showcase/feed-oreo.mp4",
+          "poster": "/assets/showcase/feed-oreo.jpg"
         },
         {
-          "src": "/assets/work/masons/sketches/masons-sketch-bar.mp4"
+          "src": "/assets/showcase/feed-bar.mp4",
+          "poster": "/assets/showcase/feed-bar.jpg"
         }
       ]
     },
@@ -45,13 +51,16 @@
       "text_tr": "Sosyal medya, reklam ve ekranlar için spotlar – konseptten son kurguya.",
       "media": [
         {
-          "src": "/assets/work/masons/produkte/masons-produkt-churchill.mp4"
+          "src": "/assets/showcase/spot-churchill.mp4",
+          "poster": "/assets/showcase/spot-churchill.jpg"
         },
         {
-          "src": "/assets/work/masons/produkte/masons-produkt-lotus-cheesecake.mp4"
+          "src": "/assets/showcase/spot-cheesecake.mp4",
+          "poster": "/assets/showcase/spot-cheesecake.jpg"
         },
         {
-          "src": "/assets/work/masons/produkte/masons-produkt-cay.mp4"
+          "src": "/assets/showcase/spot-cay.mp4",
+          "poster": "/assets/showcase/spot-cay.jpg"
         }
       ]
     },
@@ -120,8 +129,8 @@
       "text_tr": "Kimsenin sipariş etmediği filmler de yapıyoruz – bu sayfanın başladığı UFO kısa filmi gibi.",
       "media": [
         {
-          "src": "/assets/ending/ending-ufo-sq-540.mp4",
-          "poster": "/assets/ending/ending-ufo-sq-poster.jpg"
+          "src": "/assets/showcase/ufo-bullauge.mp4",
+          "poster": "/assets/showcase/ufo-bullauge.jpg"
         }
       ]
     }

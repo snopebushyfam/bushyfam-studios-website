@@ -908,3 +908,29 @@ h2.cast-card-name{margin:0}
   .film-row--mixed .clip:nth-child(3n+2){margin-top:0}
   .film-row--mixed .clip-frame{height:clamp(240px,24vw,340px);max-width:none}
 }
+
+/* ---------- Unterseiten im Stil der Startseite („One Take“): Unbounded für Überschriften, Bernstein als Akzent ---------- */
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin-ext.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+body:not(.page-home){--black:#050506;--surface:#121315;--iris:#e39a4b;--display:"Unbounded","Arial Black",system-ui,sans-serif;background:var(--black)}
+body:not(.page-home) ::selection{background:var(--iris);color:var(--black)}
+body:not(.page-home) :is(.page-title,.h2,.profile-name,.chapter-title,.next-title,.cta-title,.feature-title,.path-title,.moment-text h3,.form-done-title,.case-label,.cast-card-name,.ttl,.legal h2){font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:1;text-wrap:balance;overflow-wrap:break-word;hyphens:auto}
+body:not(.page-home) .page-title{font-size:clamp(2.25rem,1rem + 5vw,5.75rem);line-height:.98}
+body:not(.page-home) .page-title--sm{font-size:clamp(1.9rem,1rem + 3vw,3.5rem)}
+body:not(.page-home) .h2{font-size:clamp(1.75rem,1.1rem + 2.6vw,3.5rem)}
+body:not(.page-home) .profile-name{font-size:clamp(2.5rem,1rem + 5vw,5.5rem)}
+body:not(.page-home) .studio-statement p{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15}
+body:not(.page-home) .eyebrow{color:var(--iris)}
+body:not(.page-home) .eyebrow .crumb{color:inherit}
+body:not(.page-home) .role,body:not(.page-home) .cat,body:not(.page-home) .year{color:var(--iris)}
+body:not(.page-home) .btn{border-radius:999px;transition:background-color .25s,color .25s,border-color .25s,transform .25s}
+body:not(.page-home) .btn--primary:hover{background:var(--iris);border-color:var(--iris);color:var(--black)}
+body:not(.page-home) .btn--ghost{background:rgba(243,240,234,.12);border-color:transparent}
+body:not(.page-home) .btn--ghost:hover{background:var(--iris);border-color:var(--iris);color:var(--black)}
+body:not(.page-home) .btn:active{transform:scale(.96)}
+body:not(.page-home) .link-arrow{text-decoration-color:var(--iris)}
+body:not(.page-home) .link-arrow:hover{color:var(--iris)}
+body:not(.page-home) .filter[aria-pressed="true"]{background:var(--white);color:var(--black)}
+body:not(.page-home) .chip input:checked + .box{background:var(--iris);border-color:var(--iris)}
+body:not(.page-home) .site-header.solid{background:rgba(5,5,6,.94);border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+body:not(.page-home) .site-footer{background:var(--black)}
