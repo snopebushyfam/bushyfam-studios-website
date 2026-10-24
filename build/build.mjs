@@ -439,7 +439,7 @@ function pageHome(lang) {
   const services = SERV.items || [];
   const reelBtn = (label) => SR ? `<button class="ot-btn ot-btn--ghost" type="button" data-ot-reel data-cursor="Play"><span class="ot-tri" aria-hidden="true"></span>${esc(label)}</button>` : "";
   const flightHold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
-  const meLine = `<span class="ot-me">${img(STU.portrait.src, "", { cls: "ot-me-img", sizes: "48px", widths: [96, 192] })}<span>${esc(o.directMe.replace("{name}", String(STU.name || "").split(" ")[0]))}</span></span>`;
+  const meLine = `<span class="ot-me">${img(assetExists("/assets/studio/taha-guersoy-540.webp") ? "/assets/studio/taha-guersoy-540.webp" : STU.portrait.src, "", { cls: "ot-me-img", sizes: "48px", widths: [96, 192] })}<span>${esc(o.directMe.replace("{name}", String(STU.name || "").split(" ")[0]))}</span></span>`;
   const i18n = { ...o, channel: o.channel, labels: services.map((s) => tr(s, "title", lang)), wa: WA_URL, email: S.email || "" };
 
   const body = `
