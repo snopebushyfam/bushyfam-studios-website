@@ -386,3 +386,8 @@
 .ot-card{box-shadow:0 0 0 1px rgba(243,240,234,.14) inset}
 .ot-card::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(243,240,234,.16) inset;pointer-events:none}
 .ot-item--end .ot-go{align-self:center}
+/* Seitenverhältnis fest: Inhalte (Videos) dürfen Telefon, Leinwand und Stapel nicht strecken */
+.ot-phone,.ot-cinema,.ot-cards,.ot-port{min-height:0;overflow:hidden}
+.ot-phone-screen,.ot-cinema-screen{min-height:0}
+.ot-feed-item{min-height:0;overflow:hidden}
+.ot-feed-item video,.ot-feed-item img{height:100%;min-height:0}
