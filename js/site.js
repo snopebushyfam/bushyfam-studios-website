@@ -8,7 +8,7 @@
 
   /* ---------- Kopfleiste: auf der Startseite erst nach dem Scrollen hinterlegt ---------- */
   var header = document.querySelector("[data-header]");
-  if (header && document.body.classList.contains("page-home") && !document.querySelector(".ot-hero")) {
+  if (header && document.body.classList.contains("page-home") && !document.querySelector(".ot-tl")) {
     var onScroll = function () { header.classList.toggle("solid", window.scrollY > 8); };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();

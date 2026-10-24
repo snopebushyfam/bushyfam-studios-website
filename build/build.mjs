@@ -424,10 +424,9 @@ const frameSet = (folder, count) => {
    wird weich übergeblendet. Handys bekommen kleinere Bilder (wenig Arbeitsspeicher, Safari wirft sonst Bilder
    aus dem Speicher); Videos werden hier bewusst nicht gespult – Safari springt darin zu langsam. */
 const OT_FRAMES = {
-  hero: { d: frameSet("/assets/hero/hero-cockpit-hoch-frames-900", 85), m: frameSet("/assets/hero/hero-cockpit-hoch-frames-480", 85) },
   exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
 };
-const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames-900/f-045.webp";
+const OT_STILL = "/assets/hero/hero-cockpit-hoch-frames/f-089.webp";
 
 /* Stationen im Flug: je Projekt bis zu drei – zuerst Filme, dann ein Foto */
 function flightItems(lang) {
@@ -480,18 +479,26 @@ ${SR ? `<div class="ot-reel" data-ot-reel-box hidden role="dialog" aria-modal="t
   <button class="ot-btn ot-btn--ghost ot-reel-x" type="button" data-ot-reel-close>${esc(o.close)}</button>
 </div>` : ""}
 
-<section class="ot-scene ot-hero" id="top" data-ot-scene="hero" data-chapter="${esc(o.chIntro)}" style="--hold:2.6" aria-labelledby="h-home">
-  <div class="ot-stage">
-    <div class="ot-porthole"><canvas data-ot-canvas="hero" role="img" aria-label="${esc(tr(V, "description", lang))}" data-poster="${esc(url(V.poster))}" data-frames-d="${esc(JSON.stringify(OT_FRAMES.hero.d || ""))}" data-frames-m="${esc(JSON.stringify(OT_FRAMES.hero.m || ""))}"></canvas>
-      <img class="ot-fallback" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="" fetchpriority="high" decoding="async"></div>
-    <div class="ot-rim" aria-hidden="true"></div>
-    <h1 id="h-home"><span class="ot-wordmark" aria-hidden="true">BushyFam</span><span class="vh">${esc(S.brandName)}: </span>
-      <span class="ot-lede"><span>${esc(tr(H, "line1", lang))}</span><span class="ot-ctas"><a class="ot-btn" href="${R.contact}" data-cursor="Los">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a>${reelBtn(o.showreel)}</span></span></h1>
-    <div class="ot-cue" aria-hidden="true"><b>${esc(o.cueTitle)}</b>${esc(o.cueText)}<span class="ot-line"></span></div>
-    ${tr(H, "text", lang) ? `<p class="ot-tagline">${esc(tr(H, "text", lang))}</p>` : ""}
-    <div class="ot-grain" aria-hidden="true"></div>
-    <div class="ot-blackout" aria-hidden="true"></div>
+<!-- Einstieg: unverändert wie auf der bisherigen Seite (auf iPhones optimiertes Scroll-Video, js/hero-scrub.js) -->
+<section class="hero${V.height > V.width ? " hero--tall" : ""}" id="top" data-chapter="${esc(o.chIntro)}" data-hero style="--ar:${(V.width / V.height).toFixed(4)}" aria-labelledby="h-home">
+  <div class="hero-copy" data-hero-copy>
+    <div class="hero-copy-inner">
+      <h1 class="hero-title${tr(H, "line1", lang).length > 20 ? " hero-title--statement" : ""}${tr(H, "line1", lang).length > 45 ? " hero-title--long" : ""}" id="h-home">${tr(H, "line1", lang).includes(S.brandName) ? "" : `<span class="vh">${esc(S.brandName)}: </span>`}<span>${esc(tr(H, "line1", lang))}</span>${tr(H, "line2", lang) ? `<span>${esc(tr(H, "line2", lang))}</span>` : ""}</h1>
+      <div class="hero-foot">
+        ${tr(H, "text", lang) ? `<p class="hero-text">${esc(tr(H, "text", lang))}</p>` : ""}
+        <div class="btn-row"><a class="btn btn--primary" href="${R.contact}">${esc(t.cta)}</a></div>
+      </div>
+    </div>
   </div>
+  <div class="hero-scrub" data-hero-scrub>
+    <div class="hero-stage">
+      <figure class="hero-media" data-hero-media data-sources="${sourcesAttr(V)}"${HERO_FRAMES ? ` data-frames="${esc(JSON.stringify(HERO_FRAMES))}"` : ""}>
+        <img class="hero-poster" src="${esc(url(V.poster))}" width="${V.width}" height="${V.height}" alt="${esc(tr(V, "description", lang))}" fetchpriority="high" decoding="async">
+        <video class="hero-video" muted playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" width="${V.width}" height="${V.height}"></video>
+      </figure>
+    </div>
+  </div>
+  ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
 <section class="ot-scene ot-space" id="arbeiten" data-ot-scene="space" data-chapter="${esc(o.chWork)}" style="--hold:${flightHold}" aria-labelledby="h-work">
@@ -648,7 +655,7 @@ ${visiblePackages(lang).length ? `<section class="section packages-home" aria-la
 <script type="application/json" id="ot-i18n">${JSON.stringify(i18n).replace(/</g, "\\u003c")}</script>`;
   const headerExtra = `<button class="ot-snd" type="button" data-ot-snd aria-pressed="false" aria-label="${esc(o.soundLabel)}" data-cursor="Ton"><span class="ot-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="ot-snd-l">${esc(o.soundOn)}</span></button>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body, headerExtra,
-    styles: ["one-take.css"], scripts: ["lenis.min.js", "one-take.js", ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
+    styles: ["one-take.css"], scripts: ["hero-scrub.js", "lenis.min.js", "one-take.js", ...(visiblePackages(lang).length ? ["pixel-card.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
