@@ -899,3 +899,12 @@ h2.cast-card-name{margin:0}
 .pkg-addon-extra{flex:none;color:var(--muted);font-variant-numeric:tabular-nums}
 .pkg--addon-on .pkg-addon{border-color:var(--white)}
 @media (prefers-reduced-motion:reduce){.pkg-switch,.pkg-switch::after{transition:none}}
+
+/* Filme in gemischten Formaten (Hoch- und Querformat): gleiche Höhe, Breite aus dem Format, Reihe bricht um */
+.film-row--mixed .clip{width:auto}
+.film-row--mixed .clip-frame{height:min(52vh,340px);width:auto;max-width:88vw}
+@media (min-width:900px){
+  .film-row.film-row--mixed{display:flex;flex-wrap:wrap;gap:clamp(1rem,2vw,2rem)}
+  .film-row--mixed .clip:nth-child(3n+2){margin-top:0}
+  .film-row--mixed .clip-frame{height:clamp(240px,24vw,340px);max-width:none}
+}

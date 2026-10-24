@@ -698,7 +698,7 @@ function pageProject(p, lang, i) {
     const ttl = tr(m, "title", lang) || title;
     const meta = [m.duration, m.audio === true ? t.withSound : m.audio === false ? t.noSound : ""].filter(Boolean).join(" · ");
     const dim = m.poster ? imageSize(m.poster) || {} : {};
-    return `<li class="clip"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
+    return `<li class="clip${dim.w && dim.w / dim.h > 1.2 ? " clip--wide" : ""}"><div class="clip-frame" style="--ar:${dim.w ? (dim.w / dim.h).toFixed(4) : "0.5625"}" data-clip data-src="${esc(url(m.src))}">
         ${m.poster ? img(m.poster, "", { sizes: "(min-width: 900px) 30vw, 78vw" }) : ""}
         <button class="clip-play" type="button" data-clip-play data-title="${esc(ttl)}"><span class="clip-play-icon" aria-hidden="true"></span><span>${esc(t.play)}</span><span class="vh">: ${esc(ttl)}</span></button>
       </div><p class="m-cap"><strong>${esc(ttl)}</strong>${meta ? ` <span>${esc(meta)}</span>` : ""}</p></li>`;
@@ -720,7 +720,7 @@ function pageProject(p, lang, i) {
     const head = `<div class="wrap chapter-head"><span class="chapter-no" aria-hidden="true">${String(ci + 1).padStart(2, "0")}</span><h2 class="chapter-title" id="${id}">${esc(label)}</h2>${n > 1 ? `<span class="chapter-n">${n}</span>` : ""}</div>`;
     return kind === "film"
       ? `<section class="chapter chapter--film" aria-labelledby="${id}">${head}
-    <ul class="film-row${films.length > 1 ? "" : " film-row--single"}">${films.map(film).join("\n      ")}</ul>
+    <ul class="film-row${films.length > 1 ? "" : " film-row--single"}${(() => { const w = films.map((m) => { const d = m.poster ? imageSize(m.poster) : null; return d ? d.w / d.h > 1.2 : false; }); return w.some(Boolean) && !w.every(Boolean) ? " film-row--mixed" : ""; })()}">${films.map(film).join("\n      ")}</ul>
   </section>`
       : `<section class="chapter chapter--stills" aria-labelledby="${id}">${head}
     <ul class="wrap stills">${images.map(still).join("\n      ")}</ul>
