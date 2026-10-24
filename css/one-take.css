@@ -383,3 +383,6 @@
   .ot-still,.ot-port{width:62vw}
 }
 @media (prefers-reduced-motion:reduce){.ot-still{animation:none}}
+.ot-card{box-shadow:0 0 0 1px rgba(243,240,234,.14) inset}
+.ot-card::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(243,240,234,.16) inset;pointer-events:none}
+.ot-item--end .ot-go{align-self:center}
