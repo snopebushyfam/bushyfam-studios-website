@@ -203,7 +203,7 @@
     var cam = lerp(stops[k], stops[k + 1], ease(clamp((t - 0.14) / 0.72)));
     items.forEach(function (it, i) {
       var rel = zs[i] + cam, xf = phone ? 0 : +it.getAttribute("data-x");
-      var o = clamp(rel > -120 ? 1 - (rel + 120) / 420 : (rel + 2100) / 800);
+      var o = clamp(rel > -120 ? 1 - (rel + 120) / 420 : (rel + 1800) / 600); /* erst sichtbar, wenn die vorige Station weg ist */
       it.style.opacity = o;
       it.style.visibility = o < 0.01 ? "hidden" : "visible";
       it.style.pointerEvents = o > 0.6 ? "auto" : "none";
