@@ -81,10 +81,10 @@
     var dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
     if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
   }
-  function draw(c, fr, s, fx, fy, tx, ty) {
+  function draw(c, fr, s, fx, fy, tx, ty, bg) {
     var ctx = c.getContext("2d"), dpr = c.width / (c.clientWidth || 1);
     var w = dimW(fr) * s, h = dimH(fr) * s, x = (tx - fx * w) * dpr, y = (ty - fy * h) * dpr;
-    ctx.globalAlpha = 1; ctx.fillStyle = "#050506"; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.globalAlpha = 1; ctx.fillStyle = bg || "#050506"; ctx.fillRect(0, 0, c.width, c.height);
     ctx.drawImage(fr.a, x, y, w * dpr, h * dpr);
     if (fr.b && fr.b !== fr.a && fr.t > 0.02) { ctx.globalAlpha = fr.t; ctx.drawImage(fr.b, x, y, w * dpr, h * dpr); ctx.globalAlpha = 1; }
     return ctx;
@@ -266,6 +266,25 @@
   }
   if (exit && ec) scene(exit, exitRender, function () { exitRender(1); });
 
+  /* 6 · Studio: Taha mit Kamera – rückwärts: erst Kamera am Auge (Klick mit Blitz), dann der Blick aufs Display */
+  var tahaSec = $(".ot-taha"), tc2 = $('[data-ot-canvas="taha"]'), tahaFilm = null, flash = $(".ot-taha .ot-flash"), tahaTxt = $(".ot-taha .ot-studio-txt");
+  function tahaRender(p) {
+    var img = tahaFilm && frameAt(tahaFilm, 1 - ease(seg(p, 0.16, 0.86)));
+    if (img && tc2.clientWidth) {
+      var cw = tc2.clientWidth, ch = tc2.clientHeight, sc = Math.min(cw / dimW(img), ch / dimH(img));
+      draw(tc2, img, sc, 0.5, 1, cw / 2, ch, "#010101");
+    }
+    if (flash) {
+      /* Lichtblitz vom Objektiv aus: Position des Objektivs im Bild (links oben am Kopf) */
+      var mr = tc2.getBoundingClientRect(), st = tahaSec.querySelector(".ot-stage").getBoundingClientRect();
+      flash.style.setProperty("--fx", ((mr.left + mr.width * 0.36 - st.left) / st.width * 100).toFixed(1) + "%");
+      flash.style.setProperty("--fy", ((mr.top + mr.height * 0.36 - st.top) / st.height * 100).toFixed(1) + "%");
+      flash.style.opacity = (Math.max(0, 1 - Math.abs(p - 0.09) / 0.05)).toFixed(3);
+    }
+    if (tahaTxt) { var tt = seg(p, 0.22, 0.5); tahaTxt.style.opacity = 0.15 + 0.85 * tt; tahaTxt.style.transform = "translateY(" + (1 - tt) * 40 + "px)"; }
+  }
+  if (tahaSec && tc2) scene(tahaSec, tahaRender, function () { if (tahaTxt) { tahaTxt.style.opacity = 1; tahaTxt.style.transform = "none"; } });
+
   /* Iris-Blende am Studio-Foto */
   var iris = $("[data-ot-iris]");
   function irisRender() {
@@ -287,13 +306,17 @@
   }
   function layout() {
     W = innerWidth; H = svh(); phone = W < 768;
-    [hc, ec].forEach(function (c) { if (c) sizeCanvas(c); });
+    [hc, ec, tc2].forEach(function (c) { if (c) sizeCanvas(c); });
     castLayout(); fit(); dirty();
   }
 
   if (live) scenes.forEach(function (s) { s.el.classList.add("is-live"); });
   layout();
   if (hc) heroFilm = film(hc);
+  if (tc2) {
+    if (!live || !("IntersectionObserver" in window)) tahaFilm = film(tc2);
+    else new IntersectionObserver(function (en, ob) { if (en[0].isIntersecting) { tahaFilm = film(tc2); ob.disconnect(); } }, { rootMargin: "150% 0px" }).observe(tahaSec);
+  }
   if (ec) {
     if (!live || !("IntersectionObserver" in window)) exitFilm = film(ec);
     else new IntersectionObserver(function (en, ob) { if (en[0].isIntersecting) { exitFilm = film(ec); ob.disconnect(); } }, { rootMargin: "200% 0px" }).observe(exit);

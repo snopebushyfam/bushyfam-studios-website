@@ -394,6 +394,11 @@ const frameSet = (folder, count) => {
 /* Die beiden Filme laufen als Bildfolge auf einer Zeichenfläche: 85 bzw. 76 Bilder, zwischen zwei Bildern
    wird weich übergeblendet. Handys bekommen kleinere Bilder (wenig Arbeitsspeicher, Safari wirft sonst Bilder
    aus dem Speicher); Videos werden hier bewusst nicht gespult – Safari springt darin zu langsam. */
+/* Studio: Taha mit Kamera – rückwärts gespielt: erst durch den Sucher (Klick), dann der Blick aufs Display */
+const OT_TAHA = (() => {
+  const d = frameSet("/assets/studio/taha-kamera-frames-720", 60), m = frameSet("/assets/studio/taha-kamera-frames-480", 60);
+  return d && m && assetExists("/assets/studio/taha-kamera-poster.jpg") ? { d, m, poster: "/assets/studio/taha-kamera-poster.jpg" } : null;
+})();
 const OT_FRAMES = {
   exit: { d: frameSet("/assets/ending/ending-ufo-frames-760", 76), m: frameSet("/assets/ending/ending-ufo-frames-480", 76) },
 };
@@ -558,14 +563,17 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   </div>
 </section>
 
-<section class="ot-block" id="studio" data-chapter="${esc(o.chStudio)}" aria-labelledby="h-about">
-  <div class="ot-studio">
-    <div class="ot-iris" data-ot-iris>${img(STU.portrait.src, tr(STU.portrait, "alt", lang), { sizes: "(min-width: 900px) 45vw, 92vw" })}</div>
+<section class="ot-scene ot-taha" id="studio" data-ot-scene="taha" data-chapter="${esc(o.chStudio)}" style="--hold:1.5" aria-labelledby="h-about">
+  <div class="ot-stage">
+    <div class="ot-taha-media">
+      ${OT_TAHA ? `<canvas data-ot-canvas="taha" role="img" aria-label="${esc(tr(STU.portrait, "alt", lang) || STU.name)}" data-poster="${esc(url(OT_TAHA.poster))}" data-frames-d="${esc(JSON.stringify(OT_TAHA.d))}" data-frames-m="${esc(JSON.stringify(OT_TAHA.m))}"></canvas><img class="ot-taha-still" src="${esc(url(OT_TAHA.poster))}" alt="" width="720" height="1280" loading="lazy">` : img(STU.portrait.src, tr(STU.portrait, "alt", lang), { cls: "ot-taha-still", sizes: "(min-width: 900px) 45vw, 92vw" })}
+    </div>
+    <div class="ot-flash" aria-hidden="true"></div>
     <div class="ot-studio-txt">
-      <h2 id="h-about" data-ot-reveal>${esc(STU.name)}</h2>
-      <p class="ot-role" data-ot-reveal style="--d:.08s">${esc(tr(STU, "role", lang))}</p>
-      <p data-ot-reveal style="--d:.16s">${esc(tr(HOME, "aboutText", lang))}</p>
-      <a class="ot-btn ot-btn--ghost" href="${R.studio}" data-ot-reveal style="--d:.24s">${esc(t.discoverStory)} <span class="ot-arr" aria-hidden="true">→</span></a>
+      <h2 id="h-about">${esc(STU.name)}</h2>
+      <p class="ot-role">${esc(tr(STU, "role", lang))}</p>
+      <p>${esc(tr(HOME, "aboutText", lang))}</p>
+      <a class="ot-btn ot-btn--ghost" href="${R.studio}">${esc(t.discoverStory)} <span class="ot-arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
