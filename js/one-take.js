@@ -449,27 +449,44 @@
     var nextWorkday = function (d) { var x = new Date(d); x.setDate(x.getDate() + 1); while (x.getDay() === 0 || x.getDay() === 6) x.setDate(x.getDate() + 1); x.setHours(10, 0, 0, 0); return x; };
     var whens = $$("[data-ot-when]"), nowEl = $("[data-ot-now]"), mission = $("[data-ot-mission]"), preview = $("[data-ot-preview]");
     var wa = $("[data-ot-wa]"), mail = $("[data-ot-mail]");
+    var thr = $("[data-ot-thr]"), ticks = $$("[data-ot-tick]"), stat = $("[data-ot-stat]"), sum = $("[data-ot-sum]");
+    var consoleEl = $("[data-ot-console]"), lr = $(".ot-lr"), armed = false;
     var plan = function () {
       var now = new Date(), call = nextWorkday(now), offer = new Date(call.getTime() + 48 * 3600e3);
       var fmtS = function (d) { return d.toLocaleDateString(loc, { weekday: "short", day: "numeric", month: innerWidth < 768 ? undefined : "short" }); };
       var labels = [(L.today || "{t}").replace("{t}", fmtT(now)).replace(/,.*$/, ""), fmtS(call), fmtS(offer)];
       whens.forEach(function (el, i) { if (labels[i]) el.textContent = labels[i]; });
       var what = $$('input[type="checkbox"]:checked', builder).map(function (i) { return i.value; });
-      var budIn = $('input[name="ot-budget"]:checked', builder), budget = budIn ? budIn.value : "";
+      var bi = thr ? +thr.value : 0, budget = bi && ticks[bi] ? ticks[bi].getAttribute("data-full") : "";
+      if (thr) {
+        thr.parentNode.style.setProperty("--f", bi / 3);
+        if (ticks[bi]) thr.setAttribute("aria-valuetext", ticks[bi].getAttribute("data-full"));
+        ticks.forEach(function (t, i) { t.classList.toggle("on", i === bi); });
+      }
+      /* Zündknopf: der Ring füllt sich mit jeder Auswahl, die Zeile daneben fasst sie zusammen */
+      var p = (what.length ? 0.5 : 0) + (bi ? 0.5 : 0);
+      if (lr) lr.style.strokeDashoffset = String(339.3 * (1 - p));
+      if (sum) sum.textContent = what.length || bi ? what.concat(bi && ticks[bi] ? [ticks[bi].textContent] : []).join(" · ") : "–";
+      if (stat) stat.textContent = p === 1 ? (L.armed || "") : (L.armHint || "");
+      if (consoleEl) {
+        if (p === 1 && !armed && !reduced) { consoleEl.classList.remove("arm"); void consoleEl.offsetWidth; consoleEl.classList.add("arm"); }
+        consoleEl.classList.toggle("is-armed", p === 1);
+      }
+      armed = p === 1;
       var list = what.length ? what.join(", ") : (L.open || "");
       var msg = (L.msg || "").replace("{list}", list) + (budget ? " " + (L.budgetMsg || "{b}").replace("{b}", budget) : "");
       if (wa && L.wa) wa.href = L.wa + "?text=" + encodeURIComponent(msg);
       if (mail && L.email) mail.href = "mailto:" + L.email + "?subject=" + encodeURIComponent((L.subject || "").replace("{list}", list)) + "&body=" + encodeURIComponent(msg);
     };
     plan(); setInterval(plan, 60000);
-    builder.addEventListener("input", plan); builder.addEventListener("change", plan);
-
-    var consoleEl = $("[data-ot-console]"), lr = $(".ot-lr");
+    builder.addEventListener("input", plan);
+    builder.addEventListener("change", function () { plan(); if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) try { navigator.vibrate(8); } catch (e) {} });
+    ticks.forEach(function (t, i) { t.addEventListener("click", function () { if (!thr) return; thr.value = i; thr.dispatchEvent(new Event("change", { bubbles: true })); }); });
     $$("[data-ot-send-link]").forEach(function (a) {
       a.addEventListener("click", function () {
         if (!consoleEl || reduced) return;
         consoleEl.classList.remove("lift"); void consoleEl.offsetWidth; consoleEl.classList.add("lift");
-        if (lr && lr.animate) lr.animate([{ strokeDashoffset: 339.3 }, { strokeDashoffset: 0 }], { duration: 900, easing: "cubic-bezier(.6,0,.4,1)", fill: "forwards" });
+        if (lr) lr.style.strokeDashoffset = "0";
       });
     });
     var copy = $("[data-ot-copy]");

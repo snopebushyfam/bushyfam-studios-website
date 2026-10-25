@@ -535,11 +535,12 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
   </div>
   <div class="ot-launch">
     <form class="ot-builder" data-ot-builder onsubmit="return false">
-      <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-chips">
-        ${(CON.options || []).filter((op) => !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}">${esc(pick(op, lang))}</label>`).join("")}
+      <fieldset class="ot-q"><legend>${esc(o.qWhat)}</legend><div class="ot-switches">
+        ${(CON.options || []).filter((op) => !/noch offen/i.test(op.de || "")).map((op, i) => `<input type="checkbox" id="ot-w${i}" value="${esc(pick(op, lang))}"${i ? "" : " checked"}><label for="ot-w${i}"><i class="ot-sw" aria-hidden="true"></i><span>${esc(pick(op, lang))}</span></label>`).join("")}
       </div></fieldset>
-      <fieldset class="ot-q"><legend>${esc(o.qBudget)}</legend><div class="ot-chips">
-        ${o.budgets.map((b, i) => `<input type="radio" name="ot-budget" id="ot-b${i}" value="${esc(b)}"><label for="ot-b${i}">${esc(b)}</label>`).join("")}
+      <fieldset class="ot-q"><legend id="ot-thr-l">${esc(o.qBudget)}</legend><div class="ot-thr">
+        <input type="range" min="0" max="3" step="1" value="0" data-ot-thr aria-labelledby="ot-thr-l" aria-valuetext="${esc(o.budgets[3])}">
+        <div class="ot-thr-ticks">${[o.budgets[3], ...o.budgets.slice(0, 3)].map((b, i) => `<button type="button" data-ot-tick="${i}" data-full="${esc(b)}" tabindex="-1" style="--i:${i}">${esc(o.budgetsShort[i]).replace(/ /g, " ")}</button>`).join("")}</div>
       </div></fieldset>
     </form>
     <aside class="ot-plan" aria-label="${esc(o.plan)}">
@@ -547,8 +548,8 @@ ${CAST.length ? `<section class="ot-scene ot-cast" id="besetzung" data-ot-scene=
         ${steps.map((s, i) => `<li><b data-ot-when="${i}">${esc(tr(s, "figure", lang) || tr(s, "title", lang))}</b><span>${esc(tr(s, "title", lang))}</span></li>`).join("")}
       </ol>
       <div class="ot-console" data-ot-console>
-        ${WA_URL ? `<a class="ot-launch-btn" data-ot-wa data-ot-send-link href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-lbl">${esc(o.sendNow)}</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
-        <div class="ot-ctext">${meLine}<span class="ot-free">${esc(o.freeCall)}</span></div>
+        ${WA_URL ? `<a class="ot-launch-btn" data-ot-wa data-ot-send-link href="${WA_URL}" target="_blank" rel="noopener noreferrer" data-cursor="Senden"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ot-lr-bg" cx="60" cy="60" r="54"/><circle class="ot-lr" cx="60" cy="60" r="54"/></svg><span class="ot-ign" aria-hidden="true"></span><span class="ot-lbl">${esc(o.sendNow)}</span><span class="vh"> ${esc(t.newTab)}</span></a>` : ""}
+        <div class="ot-ctext"><span class="ot-stat" data-ot-stat>${esc(o.armHint)}</span><b class="ot-sum" data-ot-sum aria-live="polite"></b>${meLine}<span class="ot-free">${esc(o.freeCall)}</span></div>
       </div>
       <p class="ot-alt">${S.email ? `<a data-ot-mail data-ot-send-link href="mailto:${esc(S.email)}">${esc(o.orMail)}</a> · ` : ""}<a href="${R.contact}">${esc(o.formLink)}</a></p>
     </aside>
