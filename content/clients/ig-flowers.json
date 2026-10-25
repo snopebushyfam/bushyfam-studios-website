@@ -2,5 +2,6 @@
   "name": "IG Flowers",
   "logo": "/assets/clients/ig-flowers.webp",
   "url": "",
-  "order": 10
+  "order": 10,
+  "enabled": true
 }

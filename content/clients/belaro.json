@@ -2,5 +2,6 @@
   "name": "Belaro",
   "logo": "/assets/clients/belaro.webp",
   "url": "",
-  "order": 8
+  "order": 8,
+  "enabled": true
 }

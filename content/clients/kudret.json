@@ -2,5 +2,6 @@
   "name": "Kudret Kebab House",
   "logo": "/assets/clients/kudret.webp",
   "url": "",
-  "order": 5
+  "order": 5,
+  "enabled": true
 }

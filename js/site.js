@@ -8,7 +8,7 @@
 
   /* ---------- Kopfleiste: auf der Startseite erst nach dem Scrollen hinterlegt ---------- */
   var header = document.querySelector("[data-header]");
-  if (header && document.body.classList.contains("page-home")) {
+  if (header && document.body.classList.contains("page-home") && !document.querySelector(".ot-tl")) {
     var onScroll = function () { header.classList.toggle("solid", window.scrollY > 8); };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -50,6 +50,22 @@
       b.setAttribute("aria-expanded", open ? "true" : "false");
       document.getElementById(b.getAttribute("aria-controls")).hidden = !open;
     });
+  });
+
+  /* ---------- Pakete: Zusatz (z. B. Fotoshooting zur Website) umschalten – Preis und Anfrage-Link wechseln mit ---------- */
+  [].forEach.call(document.querySelectorAll("[data-pkg-addon]"), function (box) {
+    var card = box.closest(".pkg");
+    if (!card) return;
+    var base = card.querySelector('[data-pkg-price="base"]'), extra = card.querySelector('[data-pkg-price="addon"]');
+    var link = card.querySelector("[data-pkg-link]");
+    var sync = function () {
+      var on = box.checked;
+      if (base && extra) { base.hidden = on; extra.hidden = !on; }
+      card.classList.toggle("pkg--addon-on", on);
+      if (link) link.href = link.href.replace(/([?&]paket=)[^&#]*/, "$1" + encodeURIComponent(on ? box.getAttribute("data-addon-id") : link.getAttribute("data-base-id")));
+    };
+    box.addEventListener("change", sync);
+    sync();
   });
 
   /* ---------- Sprachauswahl: schließt bei Klick daneben oder mit Escape ---------- */

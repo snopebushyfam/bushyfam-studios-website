@@ -1,0 +1,37 @@
+{
+  "slug": "hoch-tief-branding-website",
+  "order": 4,
+  "featured": false,
+  "category": "branding",
+  "client": "Hoch & Tief",
+  "year": "[TODO: Jahr]",
+  "title_de": "Hoch & Tief – Branding & Website",
+  "title_en": "Hoch & Tief – Branding & Website",
+  "summary_de": "[TODO: Ein Satz: was für den Kunden entstanden ist]",
+  "summary_en": "[TODO: One sentence: what was made for the client]",
+  "disciplines_de": "Branding · Website",
+  "disciplines_en": "Branding · Website",
+  "industry_de": "[TODO: Branche]",
+  "industry_en": "[TODO: industry]",
+  "task_de": "[TODO: Aufgabe]",
+  "task_en": "[TODO: The brief]",
+  "solution_de": "[TODO: Lösung: was BushyFam gemacht hat]",
+  "solution_en": "[TODO: What we did]",
+  "result_de": "[TODO: Ergebnis – nur echte Angaben]",
+  "result_en": "[TODO: Result – real figures only]",
+  "quote": {
+    "text_de": "[TODO: Kundenzitat (optional)]",
+    "text_en": "[TODO: Client quote (optional)]",
+    "name": "[TODO: Name]",
+    "role_de": "[TODO: Rolle]",
+    "role_en": "[TODO: Role]"
+  },
+  "cover": {
+    "src": "/assets/clients/hoch-tief.webp",
+    "alt_de": "Logo Hoch & Tief",
+    "alt_en": "Hoch & Tief logo",
+    "fit": "contain"
+  },
+  "media": [],
+  "published": false
+}

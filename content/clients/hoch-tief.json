@@ -2,5 +2,6 @@
   "name": "Hoch & Tief",
   "logo": "/assets/clients/hoch-tief.webp",
   "url": "",
-  "order": 12
+  "order": 12,
+  "enabled": true
 }

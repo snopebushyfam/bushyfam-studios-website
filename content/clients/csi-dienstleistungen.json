@@ -2,5 +2,6 @@
   "name": "CSI Dienstleistungen",
   "logo": "/assets/clients/csi-dienstleistungen.webp",
   "url": "",
-  "order": 7
+  "order": 7,
+  "enabled": true
 }
