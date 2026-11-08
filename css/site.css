@@ -824,3 +824,10 @@ h2.cast-card-name{margin:0}
 }
 @media (max-height:620px){.is-pinned .process-lead{display:none}}
 @media (prefers-reduced-motion:reduce){.hiw-btn,.process-dot{transition:none}}
+/* „So läuft’s“: Größen passend zur Seite – nie breiter als der Bildschirm, Zeitmarke nicht größer als die übrigen großen Überschriften × 1,6 */
+.process-stage{min-width:0}
+.is-pinned .process-stage{grid-template-columns:minmax(0,1fr)}
+.process-steps,.process-step,.process-copy,.process-foot{min-width:0}
+.process-figure,.is-pinned .process-figure{font-size:min(calc((100vw - 2 * var(--gutter)) / (var(--len) * .66)),22svh,8.5rem);max-width:100%}
+.process-h{font-size:clamp(2.5rem,1.4rem + 4.6vw,5.5rem)}
+@media (min-width:900px){.process-figure,.is-pinned .process-figure{font-size:min(calc(min(100vw,var(--max)) * .6 / (var(--len) * .62)),26svh,11rem)}}

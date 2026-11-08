@@ -391,7 +391,7 @@ function processSection(lang, t, R) {
       </div>
       <ol class="wrap process-steps">
         ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
-          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 3)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
+          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 5)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
           <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
         </li>`; }).join("\n        ")}
       </ol>
