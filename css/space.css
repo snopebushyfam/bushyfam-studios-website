@@ -96,6 +96,9 @@
 @keyframes ot-float{50%{transform:translateY(-14px) rotate(-1deg)}}
 /* Bullauge */
 .ot-port{width:min(26vw,360px);aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:11px solid #23262c;background:#000}
+/* Video fest in den Kreis legen: Safari löst height:100% in einem aspect-ratio-Kasten nicht zuverlässig auf und zeichnete den Clip größer, nach rechts unten verschoben */
+.ot-port{position:relative;isolation:isolate}
+.ot-port video,.ot-port img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;border-radius:50%}
 /* Browser-Fenster: echte Kunden-Websites, scrollen von selbst */
 .ot-browser{width:min(44vw,640px);aspect-ratio:16/11;border-radius:12px;overflow:hidden;background:#1b1c1f;border:2px solid #2a2c31;display:flex;flex-direction:column;min-height:0}
 .ot-br-bar{flex:none;height:34px;display:flex;align-items:center;gap:7px;padding:0 12px}
