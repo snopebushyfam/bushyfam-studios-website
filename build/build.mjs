@@ -408,7 +408,7 @@ function spaceSection(lang) {
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name);
+  const logoClients = CLIENTS.filter((c) => c.name && c.enabled !== false && c.logo);
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
@@ -464,16 +464,15 @@ ${!CAST.length && featured.length ? `<section class="section work-feature" aria-
   </ul>
 </section>` : ""}
 
-${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
-  <div class="wrap objects-ctrl">
-    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
+${logoClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
+  <div class="wrap cast-head">
+    <div><p class="eyebrow">${esc(t.clientsEyebrow)}</p><h2 class="h2" id="h-clients">${esc(t.clientsTitle)}</h2></div>
+    <p class="lead">${esc(t.clientsLead)}</p>
   </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
-  </div>
+  <div class="ot-marq"><div class="ot-marq-track">${[0, 1].map((copy) => logoClients.map((c) => {
+    const d = imageSize(c.logo) || { w: 2, h: 1 };
+    return `<img${d.h / d.w > 0.55 ? ' class="sq"' : ""} src="${esc(url(c.logo))}" width="${d.w}" height="${d.h}" alt="${copy ? "" : esc(c.name)}" loading="lazy" decoding="async"${copy ? ' aria-hidden="true"' : ""}>`;
+  }).join("")).join("")}</div></div>
 </section>` : ""}
 
 ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
@@ -501,14 +500,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   </div>
 </section>
 
-${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
-  <div class="wrap"><h2 class="clients-title" id="h-clients">${esc(t.clients)}</h2>
-    <ul class="client-row">${namedClients.map((c) => {
-      const mark = c.logo ? img(c.logo, c.name, { cls: "client-logo", sizes: "200px" }) : `<span class="client-word">${esc(c.name)}</span>`;
-      return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
-    }).join("")}</ul>
-  </div>
-</section>` : ""}
+
 
 ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).toFixed(4)}" aria-label="${esc(t.ending)}">
   <div class="ending-track" data-ending-track>
@@ -532,7 +524,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    styles: STATIONS.length ? ["space.css"] : [], scripts: ["hero-scrub.js", ...(STATIONS.length ? ["space-flight.js"] : []), ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    styles: ["space.css"], scripts: ["hero-scrub.js", ...(STATIONS.length ? ["space-flight.js"] : []), ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {

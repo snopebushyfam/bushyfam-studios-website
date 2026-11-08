@@ -6,7 +6,7 @@
 @font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin-ext.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 
 .ot-space{
-  --void:#050506;
+  --void:#000;
   --hull:#121315;
   --ink:#f3f0ea;
   --dim:#a39e96;
@@ -127,3 +127,19 @@
 @media (prefers-reduced-motion:reduce){
   .ot-space *{animation:none!important;transition:none!important}
 }
+
+/* ---------- Schon an Bord: Logo-Laufband der Partner ---------- */
+.ot-board{
+  --void:#000;--hull:var(--surface);--ink:#f3f0ea;--dim:#a39e96;--iris:#e39a4b;
+  --ot-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  background:var(--void);color:var(--ink);overflow:hidden;padding-block:var(--section)}
+.ot-marq{overflow:hidden;background:var(--hull);padding-block:40px}
+.ot-marq-track{display:flex;gap:90px;width:max-content;align-items:center;animation:ot-run 40s linear infinite}
+.ot-marq img{height:52px;width:auto;filter:grayscale(1) brightness(2.2);opacity:.9;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.ot-marq img.sq{height:84px}
+.ot-marq:hover img{opacity:.3}
+.ot-marq img:hover{opacity:1;transform:scale(1.15)}
+.ot-marq:hover .ot-marq-track{animation-play-state:paused}
+@keyframes ot-run{to{transform:translateX(-50%)}}
+@media (max-width:767px){.ot-marq{padding-block:28px}.ot-marq-track{gap:56px}.ot-marq img{height:40px}.ot-marq img.sq{height:64px}}
+@media (prefers-reduced-motion:reduce){.ot-marq-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center;gap:40px 56px;padding-inline:var(--gutter)}.ot-marq-track img[aria-hidden]{display:none}}

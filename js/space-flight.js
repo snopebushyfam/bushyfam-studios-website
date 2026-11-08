@@ -61,7 +61,7 @@
       if (!on) return;
       var w = stars.width, h = stars.height, cx = w / 2, cy = h / 2, f = 420 * dpr * (phone ? 0.7 : 1);
       speed = lerp(speed, 1.6 + Math.min(60, Math.abs(vel) * 0.8) + warpBoost, 0.06);
-      ctx.fillStyle = "rgba(5,5,6,.6)"; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillRect(0, 0, w, h);
       ctx.strokeStyle = "#f3f0ea"; ctx.lineCap = "round";
       for (var j = 0; j < pts.length; j++) {
         var s = pts[j], pz = s.z; s.z -= speed;
