@@ -87,6 +87,9 @@
 .ot-card[data-pos="1"]{transform:translate(10%,-6%) rotate(6deg) scale(.93);opacity:.8;z-index:3}
 .ot-card[data-pos="2"]{transform:translate(-10%,-9%) rotate(-7deg) scale(.87);opacity:.55;z-index:2}
 .ot-fit-contain .ot-card img{object-fit:contain}
+/* Logos sind quadratisch: Stapel ebenfalls quadratisch, damit oben/unten keine Balken entstehen */
+.ot-cards.ot-fit-contain{aspect-ratio:1/1}
+.ot-fit-contain .ot-card{background:transparent}
 /* Einzelbild, schwebt */
 .ot-still{width:min(26vw,360px);animation:ot-float 7s ease-in-out infinite}
 .ot-still img{border-radius:12px;height:auto}
