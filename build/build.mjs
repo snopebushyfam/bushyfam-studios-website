@@ -378,6 +378,34 @@ function stationDevice(s, lang) {
   if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px", false)}</div>`;
   return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
 }
+function processSection(lang, t, R) {
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  if (!tr(HOME, "processTitle", lang) || !steps.length) return "";
+  const lead = tr(HOME, "processLead", lang);
+  return `<section class="section process" data-process aria-labelledby="h-process" style="--steps:${steps.length}">
+  <div class="process-track">
+    <div class="process-stage">
+      <div class="wrap process-head">
+        <h2 class="h2 process-h" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
+        ${lead ? `<p class="process-lead">${esc(lead)}</p>` : ""}
+      </div>
+      <ol class="wrap process-steps">
+        ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
+          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 3)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
+          <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
+        </li>`; }).join("\n        ")}
+      </ol>
+      <div class="wrap process-foot">
+        <div class="process-nav" data-process-nav hidden>
+          ${steps.map((s, i) => `<button type="button" class="process-dot" data-goto="${i}"${i ? "" : ' aria-current="step"'}><span class="process-dot-label">${esc(tr(s, "title", lang))}</span><span class="process-bar" aria-hidden="true"><span class="process-fill"></span></span></button>`).join("")}
+        </div>
+        <a class="hiw-btn process-cta" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
 function spaceSection(lang) {
   const t = T[lang], R = ROUTES[lang];
   const hold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
@@ -475,6 +503,8 @@ ${logoClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
   }).join("")).join("")}</div></div>
 </section>` : ""}
 
+${processSection(lang, t, R)}
+
 ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   <div class="wrap">
     <div class="head-row"><h2 class="h2" id="h-reel">${esc(tr(SR, "title", lang))}${SR.duration ? ` <span class="muted">${esc(SR.duration)}</span>` : ""}</h2></div>
@@ -524,7 +554,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    styles: ["space.css"], scripts: ["hero-scrub.js", ...(STATIONS.length ? ["space-flight.js"] : []), ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    styles: ["space.css"], scripts: ["hero-scrub.js", ...(STATIONS.length ? ["space-flight.js"] : []), ...(processSection(lang, t, R) ? ["process.js"] : []), ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -865,7 +895,7 @@ write("/404.html", page404());
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "space-flight.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "space-flight.js", "process.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
 
 // robots.txt und sitemap.xml

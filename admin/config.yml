@@ -325,6 +325,27 @@ collections:
           - { label: "Abschlusstext (EN)", name: ctaText_en, widget: text }
           - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
 
+          - { label: "„So läuft’s“ – Überschrift (DE)", name: processTitle_de, widget: string, required: false, hint: "Block nach dem Partner-Laufband. Leer lassen = Block ausblenden." }
+          - { label: "„So läuft’s“ – Überschrift (EN)", name: processTitle_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Überschrift (TR)", name: processTitle_tr, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (DE)", name: processLead_de, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (EN)", name: processLead_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (TR)", name: processLead_tr, widget: string, required: false }
+          - label: "„So läuft’s“ – Schritte"
+            name: processSteps
+            widget: list
+            required: false
+            summary: "{{title_de}}"
+            fields:
+              - { label: "Schritt (DE)", name: title_de, widget: string }
+              - { label: "Schritt (EN)", name: title_en, widget: string, required: false }
+              - { label: "Schritt (TR)", name: title_tr, widget: string, required: false }
+              - { label: "Große Zeitmarke (DE)", name: figure_de, widget: string, required: false, hint: "Kurz halten, z. B. „Jetzt“, „20 Min.“, „48 h“. Leer = Schrittname wird groß gezeigt." }
+              - { label: "Große Zeitmarke (EN)", name: figure_en, widget: string, required: false }
+              - { label: "Große Zeitmarke (TR)", name: figure_tr, widget: string, required: false }
+              - { label: "Text (DE)", name: text_de, widget: text }
+              - { label: "Text (EN)", name: text_en, widget: text, required: false }
+              - { label: "Text (TR)", name: text_tr, widget: text, required: false }
       - name: "services"
         label: "Leistungen"
         file: "content/services.json"
