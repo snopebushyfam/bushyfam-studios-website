@@ -108,7 +108,11 @@
         if (k === d.i) { void im.offsetWidth; var dist = Math.max(0, im.offsetHeight - d.view.offsetHeight); im.style.transition = "transform " + (d.period - 700) + "ms cubic-bezier(.45,0,.2,1)"; im.style.transform = "translateY(" + (-dist) + "px)"; }
       });
       if (d.url) d.url.textContent = d.slides[d.i].getAttribute("data-url") || "";
-    } else if (d.kind === "porthole") { play(vidOf(d.el)); }
+    } else if (d.kind === "porthole") {
+      /* Läuft einmal und bleibt auf dem Endbild stehen – dort sitzt das UFO mittig im Kreis */
+      var pv = vidOf(d.el);
+      if (pv) { if (pv.ended) pv.currentTime = 0; play(pv); }
+    }
   }
   function devVisible(d) {
     if (document.hidden) return false;

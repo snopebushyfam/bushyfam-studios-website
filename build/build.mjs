@@ -351,10 +351,10 @@ if (errors.length) { console.error("\n✖ Build abgebrochen – bitte im Admin k
 const SPACE_END = { de: "Und was machen wir für dich?", en: "So what shall we make for you?", tr: "Peki senin için ne yapalım?" };
 const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src || "");
 const posterFor = (m) => m.poster || (isVideo(m.src) && assetExists(m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg")) ? m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg") : "");
-function stationMedia(m, cls, lang, sizes) {
+function stationMedia(m, cls, lang, sizes, loop = true) {
   if (isVideo(m.src)) {
     const p = posterFor(m);
-    return `<video class="${cls}" muted loop playsinline preload="none"${p ? ` poster="${esc(url(p))}"` : ""}><source src="${esc(url(m.src))}" type="video/mp4"></video>`;
+    return `<video class="${cls}" muted${loop ? " loop" : ""} playsinline preload="none"${p ? ` poster="${esc(url(p))}"` : ""}><source src="${esc(url(m.src))}" type="video/mp4"></video>`;
   }
   return img(m.src, tr(m, "alt", lang), { sizes, cls, widths: [480, 960] });
 }
@@ -375,7 +375,7 @@ function stationDevice(s, lang) {
       <div class="ot-br-bar"><i></i><i></i><i></i><span class="ot-br-url">${esc(media[0].url || "")}</span></div>
       <div class="ot-br-view">${media.map((m, i) => `<div class="ot-br-page${i ? "" : " is-on"}" data-url="${esc(m.url || "")}">${img(m.src, "", { sizes: "(min-width: 900px) 44vw, 86vw", widths: [480, 960], lazy: true })}</div>`).join("")}</div>
     </div>`;
-  if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px")}</div>`;
+  if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px", false)}</div>`;
   return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
 }
 function spaceSection(lang) {
