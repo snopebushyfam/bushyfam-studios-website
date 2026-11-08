@@ -197,7 +197,7 @@ const hrefFor = (lang, key, slug) => {
 /* Instagram-Symbol (Umriss, weiß über currentColor) für den Header */
 const IG_ICON = `<svg class="ig-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>`;
 const igLink = (lang, cls) => S.instagramUrl ? `<a class="${cls}" href="${esc(S.instagramUrl)}" target="_blank" rel="noopener noreferrer">${IG_ICON}<span class="vh">Instagram ${esc(S.instagramHandle || "")} ${esc(T[lang].newTab)}</span></a>` : "";
-function layout({ lang, key, slug, title, description, body, scripts = [], ogImage = S.seo?.image }) {
+function layout({ lang, key, slug, title, description, body, scripts = [], styles = [], ogImage = S.seo?.image }) {
   const t = T[lang], others = LANGS.filter((l) => l !== lang);
   const site = (S.siteUrl || "").replace(/\/+$/, "");
   const here = hrefFor(lang, key, slug), hrefIn = (l) => (key === "home404" ? ROUTES[l].home : hrefFor(l, key, slug));
@@ -237,7 +237,7 @@ ${site && ogImage ? `<meta property="og:image" content="${abs(url(ogImage))}">\n
 <link rel="apple-touch-icon" href="/assets/brand/icons/icon-180.png?v=2">
 <link rel="preload" href="/assets/fonts/poppins-bold.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
-<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${styles.map((c) => `<link rel="stylesheet" href="/css/${c}">\n`).join("")}<script type="application/ld+json">${JSON.stringify(ld)}</script>
 </head>
 <body class="page-${key}">
 <a class="skip" href="#main">${esc(t.skip)}</a>
@@ -340,11 +340,103 @@ function projectCard(p, lang, { headingLevel = 3 } = {}) {
 }
 const sourcesAttr = (v) => esc(JSON.stringify((v.sources || []).map((s) => ({ ...s, src: url(s.src) }))));
 
+/* ---------- Leistungen im All ----------
+   Flug durch die Sterne: je Leistung eine Station, gezeigt in einem „Gerät“ (Smartphone-Feed, Kinoleinwand,
+   Kartenstapel, Browser-Fenster, Bullauge, Einzelbild). Inhalte aus content/showcase.json (Admin: Seiten → Leistungen im All).
+   Ohne JavaScript oder mit reduzierter Bewegung stehen die Stationen ruhig untereinander (css/space.css, js/space-flight.js). */
+const SHOW = fs.existsSync(path.join(ROOT, "content/showcase.json")) ? readJson("content/showcase.json") : { stations: [] };
+const STATIONS = (SHOW.stations || []).filter((s) => s.kind && (s.media || []).length);
+for (const s of STATIONS) for (const m of s.media) need(assetExists(m.src), `Leistungen im All → „${s.title_de}“: Datei nicht gefunden: ${m.src}`);
+if (errors.length) { console.error("\n✖ Build abgebrochen – bitte im Admin korrigieren:\n" + errors.map((e) => "  • " + e).join("\n") + "\n"); process.exit(1); }
+const SPACE_END = { de: "Und was machen wir für dich?", en: "So what shall we make for you?", tr: "Peki senin için ne yapalım?" };
+const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src || "");
+const posterFor = (m) => m.poster || (isVideo(m.src) && assetExists(m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg")) ? m.src.replace(/\.(mp4|webm|mov)$/i, ".jpg") : "");
+function stationMedia(m, cls, lang, sizes, loop = true) {
+  if (isVideo(m.src)) {
+    const p = posterFor(m);
+    return `<video class="${cls}" muted${loop ? " loop" : ""} playsinline preload="none"${p ? ` poster="${esc(url(p))}"` : ""}><source src="${esc(url(m.src))}" type="video/mp4"></video>`;
+  }
+  return img(m.src, tr(m, "alt", lang), { sizes, cls, widths: [480, 960] });
+}
+const HEART = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.2 5.2 3 1.6-1.8 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>`;
+const BUBBLE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c5 0 9 3.4 9 7.7s-4 7.7-9 7.7c-1 0-2-.1-2.9-.4L4 20l1.4-4C4 14.6 3 12.8 3 10.7 3 6.4 7 3 12 3z" fill="currentColor"/></svg>`;
+const PLANE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.8 10.6c-.8.3-.8 1.4 0 1.7l6.6 2.3 2.3 6.6c.3.8 1.4.8 1.7 0L21.5 3.5z" fill="currentColor"/></svg>`;
+function stationDevice(s, lang) {
+  const media = s.media || [], fit = s.fit === "contain" ? " ot-fit-contain" : "";
+  if (s.kind === "feed") return `<div class="ot-dev ot-phone" data-dev="feed" aria-hidden="true"><div class="ot-phone-screen">
+      <div class="ot-feed-track">${media.map((m) => `<div class="ot-feed-item">${stationMedia(m, "", lang, "300px")}</div>`).join("")}</div>
+      <div class="ot-feed-ui"><span>${HEART}</span><span>${BUBBLE}</span><span>${PLANE}</span></div>
+      <div class="ot-feed-handle">${esc(S.instagramHandle || "@bushyfamstudios")}</div>
+      <div class="ot-feed-bar"><i></i></div>
+    </div></div>`;
+  if (s.kind === "cinema") return `<div class="ot-dev ot-cinema" data-dev="cinema" aria-hidden="true"><div class="ot-cinema-screen">${media.map((m, i) => `<div class="ot-cine-shot${i ? "" : " is-on"}">${stationMedia(m, "", lang, "(min-width: 900px) 46vw, 88vw")}</div>`).join("")}</div></div>`;
+  if (s.kind === "cards") return `<div class="ot-dev ot-cards${fit}" data-dev="cards" aria-hidden="true">${media.map((m, i) => `<div class="ot-card" data-pos="${i}">${stationMedia(m, "", lang, "(min-width: 900px) 26vw, 62vw")}</div>`).join("")}</div>`;
+  if (s.kind === "browser") return `<div class="ot-dev ot-browser" data-dev="browser" aria-hidden="true">
+      <div class="ot-br-bar"><i></i><i></i><i></i><span class="ot-br-url">${esc(media[0].url || "")}</span></div>
+      <div class="ot-br-view">${media.map((m, i) => `<div class="ot-br-page${i ? "" : " is-on"}" data-url="${esc(m.url || "")}">${img(m.src, "", { sizes: "(min-width: 900px) 44vw, 86vw", widths: [480, 960], lazy: true })}</div>`).join("")}</div>
+    </div>`;
+  if (s.kind === "porthole") return `<div class="ot-dev ot-port" data-dev="porthole" aria-hidden="true">${stationMedia(media[0], "", lang, "360px", false)}</div>`;
+  return `<div class="ot-dev ot-still" aria-hidden="true">${stationMedia(media[0], "", lang, "(min-width: 900px) 28vw, 70vw")}</div>`;
+}
+function processSection(lang, t, R) {
+  const steps = (HOME.processSteps || []).filter((s) => tr(s, "title", lang));
+  if (!tr(HOME, "processTitle", lang) || !steps.length) return "";
+  const lead = tr(HOME, "processLead", lang);
+  return `<section class="section process" data-process aria-labelledby="h-process" style="--steps:${steps.length}">
+  <div class="process-track">
+    <div class="process-stage">
+      <div class="wrap process-head">
+        <h2 class="h2 process-h" id="h-process">${esc(tr(HOME, "processTitle", lang))}</h2>
+        ${lead ? `<p class="process-lead">${esc(lead)}</p>` : ""}
+      </div>
+      <ol class="wrap process-steps">
+        ${steps.map((s, i) => { const fig = tr(s, "figure", lang) || tr(s, "title", lang); return `<li class="process-step" data-step${i ? "" : " data-active"}>
+          <p class="process-figure" aria-hidden="true" style="--len:${Math.max([...fig].length, 5)}">${[...fig].map((c, j) => `<span style="--i:${j}">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("")}</p>
+          <div class="process-copy"><h3 class="process-title">${esc(tr(s, "title", lang))}</h3><p class="process-text">${esc(tr(s, "text", lang))}</p></div>
+        </li>`; }).join("\n        ")}
+      </ol>
+      <div class="wrap process-foot">
+        <div class="process-nav" data-process-nav hidden>
+          ${steps.map((s, i) => `<button type="button" class="process-dot" data-goto="${i}"${i ? "" : ' aria-current="step"'}><span class="process-dot-label">${esc(tr(s, "title", lang))}</span><span class="process-bar" aria-hidden="true"><span class="process-fill"></span></span></button>`).join("")}
+        </div>
+        <a class="hiw-btn process-cta" href="${R.contact}">${esc(t.cta)} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+function spaceSection(lang) {
+  const t = T[lang], R = ROUTES[lang];
+  const hold = Math.max(2.4, (STATIONS.length + 1) * 0.7).toFixed(2);
+  return `<section class="ot-scene ot-space" id="${t.servicesId}" data-ot-scene="space" style="--hold:${hold}" aria-labelledby="h-svc" tabindex="-1">
+  <div class="ot-stage">
+    <canvas class="ot-stars" aria-hidden="true"></canvas>
+    <div class="ot-world">
+      <div class="ot-item ot-item--title" data-z="0" data-x="0">
+        <h2 id="h-svc">${esc(tr(SHOW, "title", lang) || tr(SERV, "title", lang) || t.nav.services)}</h2>
+        ${tr(SHOW, "lead", lang) ? `<p>${esc(tr(SHOW, "lead", lang))}</p>` : ""}
+      </div>
+      ${STATIONS.map((s, k) => `<div class="ot-item ot-item--dev${k % 2 ? " ot-item--flip" : ""}" data-z="${-1900 * (k + 1)}" data-x="${k % 2 ? 0.12 : -0.12}">
+        ${stationDevice(s, lang)}
+        <div class="ot-cap"><h3>${esc(tr(s, "title", lang))}</h3>${tr(s, "text", lang) ? `<p>${esc(tr(s, "text", lang))}</p>` : ""}</div>
+      </div>`).join("\n      ")}
+      <div class="ot-item ot-item--end" data-z="${-1900 * (STATIONS.length + 1)}" data-x="0">
+        <h3>${esc(SPACE_END[lang] || SPACE_END.en)}</h3>
+        <div class="ot-ctas"><a class="ot-btn" href="${R.contact}">${esc(t.cta)} <span class="ot-arr" aria-hidden="true">→</span></a></div>
+        <a class="ot-go" href="${R.work}">${esc(t.allWork)} →</a>
+      </div>
+    </div>
+    <div class="ot-warp-out" aria-hidden="true"></div>
+  </div>
+</section>`;
+}
+
 /* ---------- Seiten ---------- */
 function pageHome(lang) {
   const t = T[lang], R = ROUTES[lang], H = S.hero, V = H.video;
   const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-  const namedClients = CLIENTS.filter((c) => c.name);
+  const logoClients = CLIENTS.filter((c) => c.name && c.enabled !== false && c.logo);
   const E = S.ending && S.ending.enabled !== false && S.ending.video && (S.ending.video.sources || []).length ? S.ending.video : null;
   const SR = S.showreel && S.showreel.enabled && S.showreel.src ? S.showreel : null;
   const body = `
@@ -369,7 +461,7 @@ function pageHome(lang) {
   ${tr(H, "outro", lang) ? `<div class="hero-outro" data-hero-outro><div class="hero-outro-stage"><p class="hero-outro-text">${esc(tr(H, "outro", lang))}</p></div></div>` : ""}
 </section>
 
-<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
+${STATIONS.length ? spaceSection(lang) : `<section class="section services" id="${t.servicesId}" aria-labelledby="h-svc" tabindex="-1">
   <div class="wrap">
     <p class="eyebrow">${esc(t.nav.services)}</p>
     <h2 class="h2 svc-title" id="h-svc">${esc(tr(SERV, "title", lang) || t.nav.services)}</h2>
@@ -380,7 +472,7 @@ function pageHome(lang) {
   <div class="wrap">
     ${tr(SERV, "note", lang) ? svcNote(tr(SERV, "note", lang), R.contact, t) : ""}
   </div>
-</section>
+</section>`}
 
 ${CAST.length ? `<section class="section cast-home" aria-labelledby="h-cast-home">
   <div class="wrap cast-head">
@@ -400,17 +492,18 @@ ${!CAST.length && featured.length ? `<section class="section work-feature" aria-
   </ul>
 </section>` : ""}
 
-${OBJECTS.length ? `<section class="section objects-motion" aria-labelledby="h-obj">
-  <h2 class="vh" id="h-obj">${esc(t.objectsTitle)}</h2>
-  <div class="wrap objects-ctrl">
-    <button class="marquee-toggle" type="button" data-marquee-toggle data-pause-label="${esc(t.pauseMotion)}" data-resume-label="${esc(t.resumeMotion)}" hidden><span class="marquee-toggle-icon" aria-hidden="true"></span><span data-marquee-toggle-label>${esc(t.pauseMotion)}</span></button>
+${logoClients.length ? `<section class="ot-board" aria-labelledby="h-clients">
+  <div class="wrap cast-head">
+    <div><p class="eyebrow">${esc(t.clientsEyebrow)}</p><h2 class="h2" id="h-clients">${esc(t.clientsTitle)}</h2></div>
+    <p class="lead">${esc(t.clientsLead)}</p>
   </div>
-  <div class="marquee" data-marquee>
-    <div class="marquee-row marquee-row--front" data-marquee-row>
-      <ul class="marquee-track" data-marquee-track>${OBJECTS.map((o) => objectTile(o, lang)).join("")}</ul>
-    </div>
-  </div>
+  <div class="ot-marq"><div class="ot-marq-track">${[0, 1].map((copy) => logoClients.map((c) => {
+    const d = imageSize(c.logo) || { w: 2, h: 1 };
+    return `<img${d.h / d.w > 0.55 ? ' class="sq"' : ""} src="${esc(url(c.logo))}" width="${d.w}" height="${d.h}" alt="${copy ? "" : esc(c.name)}" loading="lazy" decoding="async"${copy ? ' aria-hidden="true"' : ""}>`;
+  }).join("")).join("")}</div></div>
 </section>` : ""}
+
+${processSection(lang, t, R)}
 
 ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   <div class="wrap">
@@ -437,14 +530,7 @@ ${SR ? `<section class="section showreel" aria-labelledby="h-reel">
   </div>
 </section>
 
-${namedClients.length ? `<section class="section clients" aria-labelledby="h-clients">
-  <div class="wrap"><h2 class="clients-title" id="h-clients">${esc(t.clients)}</h2>
-    <ul class="client-row">${namedClients.map((c) => {
-      const mark = c.logo ? img(c.logo, c.name, { cls: "client-logo", sizes: "200px" }) : `<span class="client-word">${esc(c.name)}</span>`;
-      return c.url ? `<li><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${mark}<span class="vh"> ${esc(t.newTab)}</span></a></li>` : `<li>${mark}</li>`;
-    }).join("")}</ul>
-  </div>
-</section>` : ""}
+
 
 ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).toFixed(4)}" aria-label="${esc(t.ending)}">
   <div class="ending-track" data-ending-track>
@@ -468,7 +554,7 @@ ${E ? `<section class="ending" data-ending style="--ar:${(E.width / E.height).to
   </div>
 </section>`;
   return layout({ lang, key: "home", title: tr(S.seo, "title", lang), description: tr(S.seo, "description", lang), body,
-    scripts: ["hero-scrub.js", ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
+    styles: ["space.css"], scripts: ["hero-scrub.js", ...(STATIONS.length ? ["space-flight.js"] : []), ...(processSection(lang, t, R) ? ["process.js"] : []), ...(E ? ["ending-scrub.js"] : []), ...(SR ? ["video-preview.js"] : [])], ogImage: S.seo?.image || V.poster });
 }
 
 function pageWork(lang) {
@@ -809,7 +895,7 @@ write("/404.html", page404());
 // Statische Dateien übernehmen (nur was die Seite braucht)
 for (const dir of ["assets", "css", "admin"]) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 fs.mkdirSync(path.join(OUT, "js"), { recursive: true });
-for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
+for (const f of ["site.js", "contact.js", "hero-scrub.js", "ending-scrub.js", "video-preview.js", "space-flight.js", "process.js"]) fs.copyFileSync(path.join(ROOT, "js", f), path.join(OUT, "js", f));
 // Inhalte für den Admin nicht öffentlich ausliefern ist nicht nötig – sie liegen ohnehin im Repository.
 
 // robots.txt und sitemap.xml

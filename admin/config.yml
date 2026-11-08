@@ -325,6 +325,27 @@ collections:
           - { label: "Abschlusstext (EN)", name: ctaText_en, widget: text }
           - { label: "Abschlusstext (TR)", name: ctaText_tr, widget: text, required: false }
 
+          - { label: "„So läuft’s“ – Überschrift (DE)", name: processTitle_de, widget: string, required: false, hint: "Block nach dem Partner-Laufband. Leer lassen = Block ausblenden." }
+          - { label: "„So läuft’s“ – Überschrift (EN)", name: processTitle_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Überschrift (TR)", name: processTitle_tr, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (DE)", name: processLead_de, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (EN)", name: processLead_en, widget: string, required: false }
+          - { label: "„So läuft’s“ – Einleitungssatz (TR)", name: processLead_tr, widget: string, required: false }
+          - label: "„So läuft’s“ – Schritte"
+            name: processSteps
+            widget: list
+            required: false
+            summary: "{{title_de}}"
+            fields:
+              - { label: "Schritt (DE)", name: title_de, widget: string }
+              - { label: "Schritt (EN)", name: title_en, widget: string, required: false }
+              - { label: "Schritt (TR)", name: title_tr, widget: string, required: false }
+              - { label: "Große Zeitmarke (DE)", name: figure_de, widget: string, required: false, hint: "Kurz halten, z. B. „Jetzt“, „20 Min.“, „48 h“. Leer = Schrittname wird groß gezeigt." }
+              - { label: "Große Zeitmarke (EN)", name: figure_en, widget: string, required: false }
+              - { label: "Große Zeitmarke (TR)", name: figure_tr, widget: string, required: false }
+              - { label: "Text (DE)", name: text_de, widget: text }
+              - { label: "Text (EN)", name: text_en, widget: text, required: false }
+              - { label: "Text (TR)", name: text_tr, widget: text, required: false }
       - name: "services"
         label: "Leistungen"
         file: "content/services.json"
@@ -356,6 +377,48 @@ collections:
           - { label: "Zusatzsatz unter den Leistungen (DE)", name: note_de, widget: text, required: false, hint: "Erscheint als große Zeile mit Pfeil zum Kontakt. Alles bis zum ersten Fragezeichen steht klein darüber, der Rest groß." }
           - { label: "Zusatzsatz unter den Leistungen (EN)", name: note_en, widget: text, required: false }
           - { label: "Zusatzsatz unter den Leistungen (TR)", name: note_tr, widget: text, required: false }
+
+      - name: "showcase"
+        label: "Leistungen im All (Startseite)"
+        file: "content/showcase.json"
+        description: "Die Stationen im Flug auf der Startseite: je eine Leistung, gezeigt mit eurer Arbeit als Dekoration. Keine Kundennamen nötig."
+        fields:
+          - { label: "Überschrift (DE)", name: title_de, widget: string }
+          - { label: "Überschrift (EN)", name: title_en, widget: string }
+          - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
+          - { label: "Einleitungssatz (DE)", name: lead_de, widget: text, required: false }
+          - { label: "Einleitungssatz (EN)", name: lead_en, widget: text, required: false }
+          - { label: "Einleitungssatz (TR)", name: lead_tr, widget: text, required: false }
+          - label: "Stationen"
+            name: stations
+            widget: list
+            summary: "{{title_de}}"
+            fields:
+              - label: "Darstellung"
+                name: kind
+                widget: select
+                options:
+                  - { label: "Smartphone mit Feed (Clips wischen automatisch weiter)", value: "feed" }
+                  - { label: "Kinoleinwand (Querformat-Clips wechseln)", value: "cinema" }
+                  - { label: "Kartenstapel (Bilder oder Clips)", value: "cards" }
+                  - { label: "Einzelbild (schwebt leicht)", value: "still" }
+                  - { label: "Bullauge (ein Clip, rund)", value: "porthole" }
+                  - { label: "Browser-Fenster (Website-Screenshots scrollen, mit Adresse)", value: "browser" }
+              - { label: "Bilder ganz zeigen (für Logos)", name: fit, widget: select, required: false, options: [{ label: "Füllen", value: "cover" }, { label: "Ganz zeigen", value: "contain" }] }
+              - { label: "Überschrift (DE)", name: title_de, widget: string }
+              - { label: "Überschrift (EN)", name: title_en, widget: string, required: false }
+              - { label: "Überschrift (TR)", name: title_tr, widget: string, required: false }
+              - { label: "Satz dazu (DE)", name: text_de, widget: text, required: false }
+              - { label: "Satz dazu (EN)", name: text_en, widget: text, required: false }
+              - { label: "Satz dazu (TR)", name: text_tr, widget: text, required: false }
+              - label: "Clips & Bilder"
+                name: media
+                widget: list
+                summary: "{{src}}"
+                fields:
+                  - { label: "Datei (MP4 oder Bild)", name: src, widget: file }
+                  - { label: "Vorschaubild für Clips (optional)", name: poster, widget: image, required: false, hint: "Leer = gleichnamige .jpg neben dem Clip, falls vorhanden" }
+                  - { label: "Adresse (nur Browser-Fenster)", name: url, widget: string, required: false, hint: "z. B. kms.koeln – erscheint in der Adressleiste" }
 
       - name: "studio"
         label: "Studio (Taha & Stationen)"

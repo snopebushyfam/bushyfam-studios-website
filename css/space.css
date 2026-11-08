@@ -1,0 +1,148 @@
+/* BushyFam Studios – Startseite: „Leistungen im All“.
+   Flug durch die Sterne: die Kamera fliegt beim Scrollen von Station zu Station (je eine Leistung, in einem Gerät gezeigt).
+   Ohne JavaScript oder mit reduzierter Bewegung (.ot-space ohne .is-live) stehen alle Stationen ruhig untereinander.
+   Übernommen aus dem Entwurf „One Take“ – nur dieser Abschnitt, der Rest der Seite bleibt unverändert. */
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Unbounded";src:url("/assets/fonts/unbounded-latin-ext.woff2") format("woff2");font-weight:500 900;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+.ot-space{
+  --void:#000;
+  --hull:#121315;
+  --ink:#f3f0ea;
+  --dim:#a39e96;
+  --iris:#e39a4b;
+  --ot-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --m:clamp(16px,2.6vw,40px);
+  position:relative;background:var(--void);color:var(--ink);overflow-x:clip;color-scheme:dark;scroll-margin-top:0}
+.ot-space:focus{outline:none}
+.ot-space h2,.ot-space h3{font-family:var(--ot-display);font-weight:900;letter-spacing:-.03em;line-height:.95;text-wrap:balance;margin:0;color:var(--ink)}
+.ot-space ::selection{background:var(--iris);color:var(--void)}
+
+/* Knöpfe */
+.ot-btn{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:14px 26px;border-radius:999px;background:var(--ink);color:var(--void);font-weight:500;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:var(--font);transition:background .25s,transform .25s,color .25s;white-space:nowrap}
+.ot-btn:hover{background:var(--iris)}
+.ot-btn:active{transform:scale(.96)}
+.ot-arr{transition:transform .25s}
+.ot-btn:hover .ot-arr{transform:translateX(4px)}
+.ot-ctas{display:flex;flex-wrap:wrap;gap:10px}
+
+/* Bühne: bleibt stehen, während die Seite darunter weiterscrollt */
+.ot-stage{position:relative;overflow:clip;background:var(--void)}
+.ot-space.is-live{height:calc((var(--hold) + 1) * 100svh)}
+.ot-space.is-live > .ot-stage{position:sticky;top:0;height:100svh}
+
+.ot-stars{position:absolute;inset:0;width:100%;height:100%}
+.ot-item{display:flex;gap:28px;align-items:center}
+.ot-cap{display:flex;flex-direction:column;gap:14px;max-width:400px}
+.ot-item h3{font-size:clamp(32px,4vw,64px)}
+.ot-item p{font-size:19px;line-height:1.5;margin:0}
+.ot-go{font-weight:500;font-size:15px;text-decoration:none;color:var(--ink);align-self:center;border-bottom:2px solid var(--iris);padding-bottom:2px}
+.ot-item--title{flex-direction:column;align-items:flex-start;gap:20px}
+.ot-item--title h2{font-size:clamp(36px,9vw,170px);overflow-wrap:anywhere}
+.ot-item--title p{max-width:34ch;font-size:clamp(18px,1.5vw,22px)}
+.ot-item--flip{flex-direction:row-reverse;text-align:right}
+.ot-item--flip .ot-cap{align-items:flex-end}
+.ot-item--end{flex-direction:column;gap:22px;text-align:center;align-items:center}
+.ot-item--end h3{font-size:clamp(34px,5vw,80px)}
+.ot-item--end .ot-ctas{justify-content:center}
+.ot-warp-out{position:absolute;inset:0;background:var(--void);opacity:0;pointer-events:none}
+
+/* Ruhige Fassung: untereinander */
+.ot-space:not(.is-live) .ot-stars{display:none}
+.ot-space:not(.is-live) .ot-world{display:flex;flex-direction:column;gap:96px;padding:140px var(--m)}
+/* Flug: 3D-Raum */
+.ot-space.is-live .ot-world{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 50%;transform-style:preserve-3d}
+.ot-space.is-live .ot-item{position:absolute;left:50%;top:50%;will-change:transform,opacity;transform-style:preserve-3d;width:max-content;max-width:min(94vw,1200px)}
+.ot-space.is-live .ot-item--title,.ot-space.is-live .ot-item--end{width:min(92vw,1100px)}
+
+/* ---------- Geräte: Leistungen, gezeigt mit eigener Arbeit als Dekoration ---------- */
+.ot-item--dev .ot-cap{max-width:380px}
+.ot-item--dev h3{font-size:clamp(30px,3.6vw,58px)}
+.ot-dev{position:relative;flex:none}
+.ot-dev video,.ot-dev img{display:block;width:100%;height:100%;object-fit:cover}
+/* Smartphone mit Feed */
+.ot-phone{width:min(21vw,290px);aspect-ratio:9/19.5;border-radius:42px;background:#0d0e10;padding:9px;border:2px solid #2a2c31}
+.ot-phone::before{content:"";position:absolute;top:18px;left:50%;width:28%;height:22px;margin-left:-14%;border-radius:12px;background:#000;z-index:3}
+.ot-phone-screen{position:relative;width:100%;height:100%;border-radius:33px;overflow:hidden;background:#000}
+.ot-phone-screen::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);pointer-events:none;z-index:1}
+.ot-feed-track{display:flex;flex-direction:column;height:100%;transition:transform .65s cubic-bezier(.7,0,.2,1)}
+.ot-feed-item{flex:none;height:100%}
+.ot-feed-ui{position:absolute;right:10px;bottom:24%;display:flex;flex-direction:column;gap:18px;color:#fff;z-index:2}
+.ot-feed-ui svg{width:26px;height:26px;display:block}
+.ot-feed-ui span:first-child{transition:transform .3s,color .3s}
+.ot-feed-ui span.pop{color:#ff3b5c;transform:scale(1.25)}
+.ot-feed-handle{position:absolute;left:14px;bottom:28px;color:#fff;font:500 13px var(--font);z-index:2}
+.ot-feed-bar{position:absolute;left:14px;right:14px;bottom:16px;height:2px;background:rgba(255,255,255,.3);z-index:2;border-radius:2px;overflow:hidden}
+.ot-feed-bar i{display:block;height:100%;width:0;background:#fff}
+/* Kinoleinwand */
+.ot-cinema{width:min(44vw,660px);aspect-ratio:16/9;padding:10px;background:#0d0e10;border-radius:14px;border:2px solid #2a2c31}
+.ot-cinema-screen{position:relative;width:100%;height:100%;border-radius:6px;overflow:hidden;background:#000}
+.ot-cine-shot{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.ot-cine-shot.is-on{opacity:1}
+/* Kartenstapel */
+.ot-cards{width:min(24vw,340px);aspect-ratio:4/5}
+.ot-card{position:absolute;inset:0;border-radius:12px;overflow:hidden;background:#161719;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s;transform:scale(.8);opacity:0;z-index:0;box-shadow:0 0 0 1px rgba(243,240,234,.14) inset}
+.ot-card::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(243,240,234,.16) inset;pointer-events:none}
+.ot-card[data-pos="0"]{transform:none;opacity:1;z-index:4}
+.ot-card[data-pos="1"]{transform:translate(10%,-6%) rotate(6deg) scale(.93);opacity:.8;z-index:3}
+.ot-card[data-pos="2"]{transform:translate(-10%,-9%) rotate(-7deg) scale(.87);opacity:.55;z-index:2}
+.ot-fit-contain .ot-card img{object-fit:contain}
+/* Logos sind quadratisch: Stapel ebenfalls quadratisch, damit oben/unten keine Balken entstehen */
+.ot-cards.ot-fit-contain{aspect-ratio:1/1}
+.ot-fit-contain .ot-card{background:transparent}
+/* Einzelbild, schwebt */
+.ot-still{width:min(26vw,360px);animation:ot-float 7s ease-in-out infinite}
+.ot-still img{border-radius:12px;height:auto}
+@keyframes ot-float{50%{transform:translateY(-14px) rotate(-1deg)}}
+/* Bullauge */
+.ot-port{width:min(26vw,360px);aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:11px solid #23262c;background:#000}
+/* Video fest in den Kreis legen: Safari löst height:100% in einem aspect-ratio-Kasten nicht zuverlässig auf und zeichnete den Clip größer, nach rechts unten verschoben */
+.ot-port{position:relative;isolation:isolate}
+.ot-port video,.ot-port img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;border-radius:50%}
+/* Browser-Fenster: echte Kunden-Websites, scrollen von selbst */
+.ot-browser{width:min(44vw,640px);aspect-ratio:16/11;border-radius:12px;overflow:hidden;background:#1b1c1f;border:2px solid #2a2c31;display:flex;flex-direction:column;min-height:0}
+.ot-br-bar{flex:none;height:34px;display:flex;align-items:center;gap:7px;padding:0 12px}
+.ot-br-bar i{width:10px;height:10px;border-radius:50%;background:#3a3c42}
+.ot-br-url{margin-left:10px;flex:1;height:22px;border-radius:6px;background:#0f1012;color:var(--dim);font:500 12px var(--font);display:flex;align-items:center;padding:0 10px;white-space:nowrap;overflow:hidden}
+.ot-br-view{position:relative;flex:1;min-height:0;overflow:hidden;background:#fff}
+.ot-br-page{position:absolute;inset:0;opacity:0;transition:opacity .6s}
+.ot-br-page.is-on{opacity:1}
+.ot-br-page img{display:block;width:100%;height:auto;object-fit:initial}
+/* Seitenverhältnis fest: Videos dürfen Telefon, Leinwand und Stapel nicht strecken */
+.ot-phone,.ot-cinema,.ot-cards,.ot-port{min-height:0;overflow:hidden}
+.ot-phone-screen,.ot-cinema-screen{min-height:0}
+.ot-feed-item{min-height:0;overflow:hidden}
+.ot-feed-item video,.ot-feed-item img{height:100%;min-height:0}
+
+@media (max-width:767px){
+  .ot-item{flex-direction:column!important;text-align:left!important;gap:16px}
+  .ot-cap{align-items:flex-start!important;max-width:78vw}
+  .ot-item--end{align-items:center;text-align:center!important}
+  .ot-item p{font-size:16px}
+  .ot-space.is-live .ot-item{max-width:88vw}
+  .ot-phone{width:54vw;border-radius:34px;padding:7px}
+  .ot-phone-screen{border-radius:27px}
+  .ot-cinema{width:86vw;padding:6px}
+  .ot-cards{width:60vw}
+  .ot-still,.ot-port{width:62vw}
+  .ot-browser{width:86vw}
+}
+@media (prefers-reduced-motion:reduce){
+  .ot-space *{animation:none!important;transition:none!important}
+}
+
+/* ---------- Schon an Bord: Logo-Laufband der Partner ---------- */
+.ot-board{
+  --void:#000;--hull:var(--surface);--ink:#f3f0ea;--dim:#a39e96;--iris:#e39a4b;
+  --ot-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  background:var(--void);color:var(--ink);overflow:hidden;padding-block:var(--section)}
+.ot-marq{overflow:hidden;background:var(--hull);padding-block:40px}
+.ot-marq-track{display:flex;gap:90px;width:max-content;align-items:center;animation:ot-run 40s linear infinite}
+.ot-marq img{height:52px;width:auto;filter:grayscale(1) brightness(2.2);opacity:.9;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.ot-marq img.sq{height:84px}
+.ot-marq:hover img{opacity:.3}
+.ot-marq img:hover{opacity:1;transform:scale(1.15)}
+.ot-marq:hover .ot-marq-track{animation-play-state:paused}
+@keyframes ot-run{to{transform:translateX(-50%)}}
+@media (max-width:767px){.ot-marq{padding-block:28px}.ot-marq-track{gap:56px}.ot-marq img{height:40px}.ot-marq img.sq{height:64px}}
+@media (prefers-reduced-motion:reduce){.ot-marq-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center;gap:40px 56px;padding-inline:var(--gutter)}.ot-marq-track img[aria-hidden]{display:none}}
