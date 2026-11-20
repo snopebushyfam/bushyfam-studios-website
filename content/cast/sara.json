@@ -1,0 +1,18 @@
+{
+  "consent": true,
+  "visible": true,
+  "order": 50,
+  "name": "Sara",
+  "slug": "sara",
+  "role_de": "Model & Schauspielerin",
+  "role_en": "Model & Actress",
+  "role_tr": "Model & Oyuncu",
+  "photos": [
+    {
+      "src": "/assets/uploads/besetzung/sara.jpg",
+      "alt_de": "Ganzkörperporträt von Sara mit hochgestecktem dunklem Haar in einem langen braunen Volantkleid vor hellem Studiohintergrund",
+      "alt_en": "Full-length portrait of Sara with her dark hair pinned up, wearing a long brown tiered ruffle dress against a light studio backdrop",
+      "alt_tr": "Koyu saçlarını toplamış Sara, uzun kahverengi fırfırlı elbisesiyle açık renk stüdyo fonunun önünde boy portresi"
+    }
+  ]
+}
